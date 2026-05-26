@@ -1433,8 +1433,15 @@ function renderRootCause(active){
 
 
 // ── FETCH data.json (Auto Update Mode) ──
+const DATA_URL = 'data.json';
+
 function fetchDataJSON(){
-  fetch('data.json?t=' + Date.now())
+  // Always use relative path — works on GitHub Pages and localhost
+  const url = DATA_URL + '?t=' + Date.now();
+
+  if(window.location.protocol === 'file:'){ return; }
+
+  fetch(url)
     .then(r => {
       if(!r.ok) throw new Error('data.json not found');
       return r.json();
