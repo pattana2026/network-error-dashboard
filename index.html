@@ -8,284 +8,403 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#f0f5ff; --surface:#ffffff; --surface2:#e8f0fe;
-  --border:#dbeafe; --border2:#bfdbfe;
-  --red:#dc2626; --red-dim:#fee2e2;
-  --amber:#b45309; --amber-dim:#fef3c7;
-  --green:#15803d; --green-dim:#dcfce7;
-  --blue:#1d4ed8; --blue-dim:#dbeafe;
-  --text:#1e293b; --text-muted:#64748b; --text-dim:#94a3b8;
-  --mono:'IBM Plex Mono',monospace; --sans:'IBM Plex Sans Thai',sans-serif;
+:root{
+  --bg:#080d18;--surface:#0f1623;--surface2:#151e2e;--surface3:#1a2540;
+  --border:#1e2d45;--border2:#243454;
+  --red:#ff3b5c;--red-dim:rgba(255,59,92,.13);--red-glow:rgba(255,59,92,.25);
+  --amber:#f59e0b;--amber-dim:rgba(245,158,11,.13);
+  --orange:#f97316;--orange-dim:rgba(249,115,22,.13);
+  --green:#10b981;--green-dim:rgba(16,185,129,.12);
+  --blue:#3b82f6;--blue-dim:rgba(59,130,246,.12);
+  --purple:#a78bfa;--purple-dim:rgba(167,139,250,.12);
+  --crisis:#ff1a1a;--crisis-dim:rgba(255,26,26,.18);
+  --text:#e2e8f0;--text-muted:#64748b;--text-dim:#94a3b8;
+  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans Thai',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
 body::before{content:'';position:fixed;inset:0;
-  background-image:linear-gradient(rgba(29,78,216,.04) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(29,78,216,.04) 1px,transparent 1px);
+  background-image:linear-gradient(rgba(59,130,246,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,.03) 1px,transparent 1px);
   background-size:40px 40px;pointer-events:none;z-index:0;}
 
-/* HEADER */
-header{position:relative;z-index:10;background:#fff;border-bottom:1px solid var(--border2);
-  padding:0 24px;display:flex;align-items:center;justify-content:space-between;
-  height:56px;box-shadow:0 1px 8px rgba(29,78,216,.06);}
+/* ── HEADER ── */
+header{position:relative;z-index:10;background:rgba(15,22,35,.97);
+  border-bottom:1px solid var(--border2);padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:56px;backdrop-filter:blur(12px);
+  box-shadow:0 1px 0 var(--border2),0 4px 24px rgba(0,0,0,.4);}
 .logo{display:flex;align-items:center;gap:10px;}
-.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#1d4ed8,#2563eb);
-  border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;
-  box-shadow:0 2px 10px rgba(29,78,216,.3);}
-.logo-text{font-size:15px;font-weight:700;color:var(--text);}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--red),#ff6b35);
+  border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;
+  box-shadow:0 0 20px var(--red-glow);}
+.logo-text{font-size:15px;font-weight:700;letter-spacing:.02em;color:var(--text);}
 .logo-sub{font-size:11px;color:var(--text-muted);font-family:var(--mono);}
 .header-right{display:flex;align-items:center;gap:10px;}
 .mode-badge{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;
   font-size:11px;font-family:var(--mono);font-weight:500;border:1px solid;}
-.mode-badge.file{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe;}
-.mode-badge.api{background:#dcfce7;color:#15803d;border-color:#86efac;}
+.mode-badge.file{background:var(--blue-dim);color:var(--blue);border-color:rgba(59,130,246,.3);}
+.mode-badge.api{background:var(--green-dim);color:var(--green);border-color:rgba(16,185,129,.3);}
 .live-dot{width:6px;height:6px;border-radius:50%;animation:pulse 1.5s infinite;}
-.file .live-dot{background:#1d4ed8;}
-.api .live-dot{background:#15803d;}
+.file .live-dot{background:var(--blue);}
+.api  .live-dot{background:var(--green);}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
-.upload-btn{background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;border:none;
-  border-radius:8px;padding:7px 16px;font-size:13px;font-family:var(--sans);font-weight:600;
+.upload-btn{background:linear-gradient(135deg,var(--red),#e0295a);color:#fff;border:none;
+  border-radius:8px;padding:7px 16px;font-size:13px;font-family:var(--sans);font-weight:700;
   cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;
-  box-shadow:0 2px 10px rgba(29,78,216,.25);}
-.upload-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(29,78,216,.35);}
-.upload-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+  box-shadow:0 0 16px var(--red-glow);}
+.upload-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px var(--red-glow);}
 .refresh-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;
   padding:7px 12px;font-size:13px;color:var(--blue);cursor:pointer;transition:all .2s;
   font-family:var(--sans);}
-.refresh-btn:hover{background:var(--blue-dim);}
+.refresh-btn:hover{border-color:var(--blue);}
 
-/* MAIN */
-main{position:relative;z-index:1;padding:20px 24px;max-width:1440px;margin:0 auto;}
+/* ── MAIN ── */
+main{position:relative;z-index:1;padding:20px 24px;max-width:1500px;margin:0 auto;}
 
 /* UPLOAD ZONE */
-.upload-zone{background:#fff;border:2px dashed var(--border2);border-radius:16px;
-  padding:48px 24px;text-align:center;margin-bottom:20px;transition:all .2s;cursor:pointer;}
-.upload-zone:hover,.upload-zone.drag{border-color:var(--blue);background:var(--blue-dim);}
+.upload-zone{background:var(--surface);border:2px dashed var(--border2);border-radius:16px;
+  padding:56px 24px;text-align:center;margin-bottom:20px;transition:all .2s;cursor:pointer;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--red);background:var(--red-dim);}
 .upload-zone.hidden{display:none;}
-.upload-icon{font-size:48px;margin-bottom:12px;}
-.upload-title{font-size:18px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.upload-icon{font-size:52px;margin-bottom:14px;}
+.upload-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;}
 .upload-sub{font-size:13px;color:var(--text-muted);}
-.upload-sub span{color:var(--blue);font-weight:500;}
+.upload-sub span{color:var(--red);font-weight:600;}
 
 /* DATE BAR */
 .date-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .date-label{font-size:13px;color:var(--text-muted);font-family:var(--mono);}
 .date-label span{color:var(--blue);font-weight:500;}
-.file-info{font-size:12px;color:var(--text-muted);font-family:var(--mono);
-  background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:4px 10px;}
-.filter-tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border2);
-  border-radius:10px;padding:4px;box-shadow:0 1px 4px rgba(29,78,216,.06);}
-.filter-tab{padding:5px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;
-  transition:all .15s;color:var(--text-muted);border:none;background:none;font-family:var(--sans);}
-.filter-tab.active{background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;
-  box-shadow:0 2px 8px rgba(29,78,216,.25);}
+.file-info{font-size:11px;color:var(--text-muted);font-family:var(--mono);
+  background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:3px 9px;margin-top:4px;}
 
 /* KPI */
-.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
-.kpi-card{background:var(--surface);border:1px solid var(--border2);border-radius:12px;
-  padding:16px 20px;position:relative;overflow:hidden;transition:all .2s;
-  box-shadow:0 1px 6px rgba(29,78,216,.06);}
-.kpi-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(29,78,216,.1);}
-.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-.kpi-card.red::before{background:linear-gradient(90deg,#dc2626,#ef4444);}
-.kpi-card.amber::before{background:linear-gradient(90deg,#b45309,#d97706);}
-.kpi-card.green::before{background:linear-gradient(90deg,#15803d,#16a34a);}
-.kpi-card.blue::before{background:linear-gradient(90deg,#1d4ed8,#2563eb);}
-.kpi-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--text-muted);margin-bottom:10px;}
-.kpi-value{font-size:36px;font-weight:700;font-family:var(--mono);line-height:1;margin-bottom:6px;}
-.kpi-card.red .kpi-value{color:var(--red);}
-.kpi-card.amber .kpi-value{color:var(--amber);}
-.kpi-card.green .kpi-value{color:var(--green);}
-.kpi-card.blue .kpi-value{color:var(--blue);}
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:14px 18px;position:relative;overflow:hidden;transition:all .2s;}
+.kpi-card:hover{transform:translateY(-2px);border-color:var(--border2);}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi-card.red::before   {background:linear-gradient(90deg,var(--red),#ff6b35);}
+.kpi-card.amber::before {background:var(--amber);}
+.kpi-card.orange::before{background:var(--orange);}
+.kpi-card.crisis::before{background:linear-gradient(90deg,var(--crisis),var(--red));
+  box-shadow:0 0 8px var(--red-glow);}
+.kpi-card.blue::before  {background:var(--blue);}
+.kpi-card.crisis{border-color:rgba(255,26,26,.3);background:linear-gradient(135deg,var(--surface),var(--crisis-dim));}
+.kpi-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text-muted);margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.kpi-value{font-size:34px;font-weight:700;font-family:var(--mono);line-height:1;margin-bottom:5px;}
+.kpi-card.red    .kpi-value{color:var(--red);}
+.kpi-card.amber  .kpi-value{color:var(--amber);}
+.kpi-card.orange .kpi-value{color:var(--orange);}
+.kpi-card.crisis .kpi-value{color:var(--crisis);text-shadow:0 0 12px var(--red-glow);}
+.kpi-card.blue   .kpi-value{color:var(--blue);}
 .kpi-sub{font-size:11px;color:var(--text-muted);}
-.kpi-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:28px;opacity:.1;}
+.kpi-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:26px;opacity:.12;}
+.crisis-pulse{animation:crisis-blink 1.2s infinite;}
+@keyframes crisis-blink{0%,100%{opacity:1}50%{opacity:.5}}
 
 /* CONTENT GRID */
-.content-grid{display:grid;grid-template-columns:1fr 290px;gap:16px;}
+.content-grid{display:grid;grid-template-columns:1fr 280px;gap:16px;}
 
 /* PANEL */
-.panel{background:var(--surface);border:1px solid var(--border2);border-radius:12px;
-  overflow:hidden;box-shadow:0 1px 6px rgba(29,78,216,.06);}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
 .panel-header{display:flex;align-items:center;justify-content:space-between;
-  padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface2);}
+  padding:13px 18px;border-bottom:1px solid var(--border);background:var(--surface2);}
 .panel-title{font-size:13px;font-weight:600;color:var(--text);}
 .panel-actions{display:flex;gap:8px;align-items:center;}
 .search-box{background:var(--bg);border:1px solid var(--border2);border-radius:7px;
   padding:5px 10px;font-size:12px;color:var(--text);font-family:var(--sans);
   outline:none;width:200px;transition:border-color .2s;}
-.search-box:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,78,216,.1);}
-.search-box::placeholder{color:var(--text-dim);}
-.icon-btn{background:var(--surface);border:1px solid var(--border2);border-radius:7px;
-  padding:5px 12px;font-size:12px;color:var(--text-muted);cursor:pointer;
+.search-box:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(59,130,246,.15);}
+.search-box::placeholder{color:var(--text-muted);}
+.icon-btn{background:var(--surface2);border:1px solid var(--border);border-radius:7px;
+  padding:5px 12px;font-size:12px;color:var(--text-dim);cursor:pointer;
   transition:all .15s;font-family:var(--sans);}
-.icon-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-dim);}
+.icon-btn:hover{border-color:var(--blue);color:var(--blue);}
 
 /* TABS */
 .tab-nav{display:flex;border-bottom:1px solid var(--border);background:var(--surface);}
 .tab{padding:10px 20px;font-size:12px;font-weight:500;cursor:pointer;
   border-bottom:2px solid transparent;color:var(--text-muted);transition:all .15s;
   display:flex;align-items:center;gap:6px;}
-.tab.active-red{color:var(--red);border-bottom-color:var(--red);background:#fff5f5;}
-.tab.active-amber{color:var(--amber);border-bottom-color:var(--amber);background:#fffbeb;}
-.tab.active-green{color:var(--green);border-bottom-color:var(--green);background:#f0fdf4;}
+.tab.t-red   {color:var(--red);   border-bottom-color:var(--red);   background:var(--red-dim);}
+.tab.t-amber {color:var(--amber); border-bottom-color:var(--amber); background:var(--amber-dim);}
+.tab.t-green {color:var(--green); border-bottom-color:var(--green); background:var(--green-dim);}
 .tab-count{font-family:var(--mono);font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700;}
-.tab.active-red .tab-count{background:#fee2e2;color:var(--red);}
-.tab.active-amber .tab-count{background:#fef3c7;color:var(--amber);}
-.tab.active-green .tab-count{background:#dcfce7;color:var(--green);}
-.tab:not(.active-red):not(.active-amber):not(.active-green) .tab-count{background:var(--surface2);color:var(--text-muted);}
+.tab.t-red   .tab-count{background:var(--red-dim);  color:var(--red);}
+.tab.t-amber .tab-count{background:var(--amber-dim);color:var(--amber);}
+.tab.t-green .tab-count{background:var(--green-dim);color:var(--green);}
+.tab:not(.t-red):not(.t-amber):not(.t-green) .tab-count{background:var(--surface2);color:var(--text-muted);}
 
 /* TABLE */
 .table-wrap{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:12px;}
-thead th{background:var(--bg);padding:10px 12px;text-align:left;font-size:10px;font-weight:600;
+thead th{background:var(--bg);padding:9px 12px;text-align:left;font-size:10px;font-weight:700;
   letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);
   border-bottom:1px solid var(--border2);white-space:nowrap;}
-tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
-tbody tr:hover{background:#f0f5ff;}
-tbody td{padding:10px 12px;vertical-align:middle;}
-.site-id{font-family:var(--mono);font-size:11px;color:var(--blue);font-weight:500;}
-.site-name{font-weight:500;font-size:12px;color:var(--text);max-width:200px;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.timestamp{font-family:var(--mono);font-size:11px;color:var(--text-muted);}
-.duration-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;
-  font-family:var(--mono);font-size:11px;font-weight:600;}
-.duration-chip.critical{background:#fee2e2;color:var(--red);border:1px solid #fca5a5;}
-.duration-chip.warning{background:#fef3c7;color:var(--amber);border:1px solid #fde68a;}
-.duration-chip.ok{background:#dcfce7;color:var(--green);border:1px solid #86efac;}
+tbody tr{border-bottom:1px solid rgba(30,45,69,.5);transition:background .1s;}
+tbody tr:hover{background:rgba(59,130,246,.04);}
+tbody tr.crisis-row{background:rgba(255,26,26,.05);}
+tbody tr.crisis-row:hover{background:rgba(255,26,26,.09);}
+tbody td{padding:9px 12px;vertical-align:top;}
+tbody td.single{vertical-align:middle;white-space:nowrap;}
+
+/* CELLS */
+.site-id{font-family:var(--mono);font-size:11px;color:var(--blue);font-weight:600;white-space:nowrap;}
+.site-name{font-weight:600;font-size:12px;color:var(--text);white-space:nowrap;
+  max-width:220px;overflow:hidden;text-overflow:ellipsis;display:block;}
+.province-tag{font-size:10px;color:var(--text-muted);margin-top:2px;white-space:nowrap;}
+.timestamp{font-family:var(--mono);font-size:11px;color:var(--text-muted);white-space:nowrap;}
+
+/* DURATION / AGE */
+.age-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;
+  font-family:var(--mono);font-size:11px;font-weight:700;white-space:nowrap;}
+.age-chip.today  {background:var(--amber-dim); color:var(--amber); border:1px solid rgba(245,158,11,.3);}
+.age-chip.days13 {background:var(--orange-dim);color:var(--orange);border:1px solid rgba(249,115,22,.3);}
+.age-chip.crisis {background:var(--crisis-dim);color:var(--crisis);border:1px solid rgba(255,26,26,.4);
+  animation:crisis-blink 1.4s infinite;box-shadow:0 0 8px rgba(255,26,26,.2);}
+
+/* NOTE */
+.note-wrap{font-size:11px;color:var(--text-dim);line-height:1.5;max-width:220px;
+  white-space:normal;word-break:break-word;cursor:pointer;}
+.note-wrap:hover{color:var(--text);}
+
+/* STATUS */
 .status-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;
-  font-size:10px;font-weight:600;}
-.status-chip.open{background:#fee2e2;color:var(--red);border:1px solid #fca5a5;}
-.status-chip.resolved{background:#dcfce7;color:var(--green);border:1px solid #86efac;}
-.status-chip.progress{background:#fef3c7;color:var(--amber);border:1px solid #fde68a;}
-.note-cell{color:var(--text-dim);font-size:11px;max-width:180px;overflow:hidden;
-  text-overflow:ellipsis;white-space:nowrap;cursor:help;}
-.action-group{display:flex;gap:4px;}
+  font-size:10px;font-weight:700;letter-spacing:.04em;white-space:nowrap;}
+.status-chip.open    {background:var(--red-dim);  color:var(--red);  border:1px solid rgba(255,59,92,.25);}
+.status-chip.progress{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,.25);}
+.status-chip.resolved{background:var(--green-dim);color:var(--green);border:1px solid rgba(16,185,129,.25);}
+
+/* ACTIONS */
+.action-group{display:flex;gap:4px;flex-wrap:nowrap;}
 .act-btn{padding:4px 8px;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;
   border:1px solid;transition:all .15s;font-family:var(--sans);white-space:nowrap;}
-.act-btn.resolve{border-color:#86efac;color:var(--green);background:#dcfce7;}
-.act-btn.resolve:hover{background:#bbf7d0;}
-.act-btn.export{border-color:var(--border2);color:var(--text-muted);background:transparent;}
-.act-btn.export:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-dim);}
-.act-btn.notify{border-color:#fde68a;color:var(--amber);background:#fef3c7;}
-.act-btn.notify:hover{background:#fde68a;}
-.empty-state{text-align:center;padding:48px 24px;color:var(--text-muted);}
-.empty-icon{font-size:36px;margin-bottom:8px;}
+.act-btn.resolve{border-color:rgba(16,185,129,.3);color:var(--green);background:var(--green-dim);}
+.act-btn.resolve:hover{background:rgba(16,185,129,.22);}
+.act-btn.notify {border-color:rgba(245,158,11,.3); color:var(--amber);background:var(--amber-dim);}
+.act-btn.notify:hover {background:rgba(245,158,11,.22);}
 
-/* TABLE FOOTER */
+/* FOOTER */
 .table-footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;
   align-items:center;justify-content:space-between;font-size:11px;
   color:var(--text-muted);font-family:var(--mono);}
 .pagination{display:flex;gap:4px;}
 .page-btn{width:26px;height:26px;display:flex;align-items:center;justify-content:center;
-  border-radius:5px;font-size:11px;cursor:pointer;border:1px solid var(--border2);
+  border-radius:5px;font-size:11px;cursor:pointer;border:1px solid var(--border);
   background:transparent;color:var(--text-muted);transition:all .15s;font-family:var(--mono);}
-.page-btn.active{background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;
-  border-color:transparent;font-weight:700;}
-.page-btn:hover:not(.active){border-color:var(--blue);color:var(--blue);background:var(--blue-dim);}
+.page-btn.active{background:var(--red);color:#fff;border-color:var(--red);font-weight:700;}
+.page-btn:hover:not(.active){border-color:var(--blue);color:var(--blue);}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:48px 24px;color:var(--text-muted);}
+.empty-icon{font-size:36px;margin-bottom:8px;}
 
 /* SIDE */
 .side-col{display:flex;flex-direction:column;gap:14px;}
-.mini-panel{background:var(--surface);border:1px solid var(--border2);border-radius:12px;
-  overflow:hidden;box-shadow:0 1px 6px rgba(29,78,216,.06);}
-.mini-header{padding:12px 16px;border-bottom:1px solid var(--border);font-size:11px;
-  font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+.mini-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.mini-header{padding:11px 16px;border-bottom:1px solid var(--border);font-size:10px;
+  font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);
   background:var(--surface2);display:flex;align-items:center;gap:6px;}
 
-/* SUMMARY */
+/* SUMMARY BARS */
 .summary-list{padding:12px 16px;display:flex;flex-direction:column;gap:10px;}
 .sum-row{display:flex;align-items:center;gap:10px;}
-.sum-label{font-size:12px;color:var(--text-dim);flex:1;}
-.sum-bar-wrap{flex:2;height:5px;background:var(--bg);border-radius:3px;
-  overflow:hidden;border:1px solid var(--border);}
-.sum-bar{height:100%;border-radius:3px;transition:width .6s ease;}
-.sum-val{font-family:var(--mono);font-size:11px;font-weight:600;width:24px;text-align:right;}
+.sum-label{font-size:11px;color:var(--text-dim);flex:1;white-space:nowrap;}
+.sum-bar-wrap{flex:2;height:5px;background:var(--bg);border-radius:3px;overflow:hidden;border:1px solid var(--border);}
+.sum-bar{height:100%;border-radius:3px;transition:width .7s ease;}
+.sum-val{font-family:var(--mono);font-size:11px;font-weight:700;width:24px;text-align:right;}
+
+/* DAILY BREAKDOWN */
+.daily-list{padding:12px 16px;display:flex;flex-direction:column;gap:8px;}
+.daily-row{display:flex;align-items:center;justify-content:space-between;
+  padding:8px 10px;border-radius:8px;border:1px solid var(--border);}
+.daily-row.today  {border-color:rgba(245,158,11,.3); background:var(--amber-dim);}
+.daily-row.days13 {border-color:rgba(249,115,22,.3); background:var(--orange-dim);}
+.daily-row.crisis {border-color:rgba(255,26,26,.4);  background:var(--crisis-dim);}
+.daily-label{font-size:11px;font-weight:600;}
+.daily-row.today  .daily-label{color:var(--amber);}
+.daily-row.days13 .daily-label{color:var(--orange);}
+.daily-row.crisis .daily-label{color:var(--crisis);}
+.daily-count{font-family:var(--mono);font-size:16px;font-weight:700;}
+.daily-row.today  .daily-count{color:var(--amber);}
+.daily-row.days13 .daily-count{color:var(--orange);}
+.daily-row.crisis .daily-count{color:var(--crisis);}
+.daily-sub{font-size:10px;color:var(--text-muted);}
 
 /* TIMELINE */
-.timeline{padding:14px 16px;display:flex;flex-direction:column;gap:0;max-height:260px;overflow-y:auto;}
-.tl-item{display:flex;gap:12px;padding-bottom:14px;position:relative;}
+.timeline{padding:12px 16px;display:flex;flex-direction:column;gap:0;max-height:240px;overflow-y:auto;}
+.tl-item{display:flex;gap:10px;padding-bottom:14px;position:relative;}
 .tl-item:not(:last-child)::after{content:'';position:absolute;left:7px;top:16px;bottom:0;
-  width:1px;background:var(--border2);}
+  width:1px;background:var(--border);}
 .tl-dot{width:15px;height:15px;border-radius:50%;flex-shrink:0;margin-top:2px;
-  display:flex;align-items:center;justify-content:center;font-size:8px;}
-.tl-dot.red{background:#fee2e2;border:2px solid #fca5a5;color:var(--red);}
-.tl-dot.amber{background:#fef3c7;border:2px solid #fde68a;color:var(--amber);}
-.tl-dot.green{background:#dcfce7;border:2px solid #86efac;color:var(--green);}
+  display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;}
+.tl-dot.red  {background:var(--red-dim);  border:2px solid var(--red);  color:var(--red);}
+.tl-dot.green{background:var(--green-dim);border:2px solid var(--green);color:var(--green);}
 .tl-content{flex:1;}
-.tl-title{font-size:12px;font-weight:500;color:var(--text);}
-.tl-site{font-size:11px;font-family:var(--mono);color:var(--text-muted);}
-.tl-time{font-size:10px;color:var(--text-dim);margin-top:2px;}
+.tl-title{font-size:12px;font-weight:600;color:var(--text);}
+.tl-site {font-size:11px;font-family:var(--mono);color:var(--text-muted);}
+.tl-time {font-size:10px;color:var(--text-muted);margin-top:2px;}
 
 /* NOTIFY */
-.notify-form{padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
-.notify-option{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;
-  background:var(--bg);border:1px solid var(--border2);cursor:pointer;transition:all .15s;}
-.notify-option:hover{border-color:var(--blue);background:var(--blue-dim);}
-.notify-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;
-  justify-content:center;font-size:16px;}
-.notify-icon.line{background:#dcfce7;}
+.notify-form{padding:12px 16px;display:flex;flex-direction:column;gap:8px;}
+.notify-option{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;
+  background:var(--bg);border:1px solid var(--border);cursor:pointer;transition:all .15s;}
+.notify-option:hover{border-color:var(--blue);}
+.notify-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;
+  justify-content:center;font-size:15px;}
+.notify-icon.line {background:rgba(16,185,129,.15);}
 .notify-icon.email{background:var(--blue-dim);}
 .notify-info{flex:1;}
 .notify-name{font-size:12px;font-weight:500;color:var(--text);}
 .notify-desc{font-size:10px;color:var(--text-muted);}
-.send-btn{background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;border:none;
-  border-radius:8px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;
+.send-btn{background:linear-gradient(135deg,var(--red),#e0295a);color:#fff;border:none;
+  border-radius:8px;padding:9px;font-size:12px;font-weight:700;cursor:pointer;
   font-family:var(--sans);transition:all .2s;text-align:center;
-  box-shadow:0 2px 10px rgba(29,78,216,.25);}
-.send-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(29,78,216,.35);}
+  box-shadow:0 0 12px var(--red-glow);}
+.send-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px var(--red-glow);}
 
 /* MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(30,41,59,.5);
-  z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);
+  z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
 .modal-overlay.open{display:flex;}
-.modal{background:var(--surface);border:1px solid var(--border2);border-radius:14px;
-  padding:24px;width:420px;box-shadow:0 20px 60px rgba(29,78,216,.15);}
-.modal h3{font-size:15px;font-weight:600;margin-bottom:4px;color:var(--text);}
-.modal-site{font-size:12px;font-family:var(--mono);color:var(--blue);margin-bottom:4px;}
+.modal{background:var(--surface2);border:1px solid var(--border2);border-radius:14px;
+  padding:24px;width:420px;box-shadow:0 20px 60px rgba(0,0,0,.6);}
+.modal h3{font-size:15px;font-weight:700;margin-bottom:4px;color:var(--text);}
+.modal-site{font-size:12px;font-family:var(--mono);color:var(--blue);margin-bottom:3px;}
 .modal-detail{font-size:11px;color:var(--text-muted);margin-bottom:16px;}
 .modal textarea{width:100%;background:var(--bg);border:1px solid var(--border2);
   border-radius:8px;padding:10px 12px;color:var(--text);font-family:var(--sans);
   font-size:13px;resize:none;outline:none;transition:border-color .2s;}
-.modal textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,78,216,.1);}
+.modal textarea:focus{border-color:var(--blue);}
 .modal-actions{display:flex;gap:8px;margin-top:12px;}
-.modal-cancel{flex:1;background:transparent;border:1px solid var(--border2);border-radius:8px;
+.modal-cancel{flex:1;background:transparent;border:1px solid var(--border);border-radius:8px;
   padding:9px;font-size:13px;color:var(--text-muted);cursor:pointer;font-family:var(--sans);}
-.modal-cancel:hover{border-color:var(--text-dim);color:var(--text);}
-.modal-confirm{flex:2;background:linear-gradient(135deg,#15803d,#16a34a);border:none;
-  border-radius:8px;padding:9px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;
+.modal-confirm{flex:2;background:linear-gradient(135deg,var(--green),#059669);border:none;
+  border-radius:8px;padding:9px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;
   font-family:var(--sans);transition:all .2s;}
-.modal-confirm:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(21,128,61,.35);}
+.modal-confirm:hover{transform:translateY(-1px);}
 
 /* NOTE MODAL */
-.note-modal{background:var(--surface);border:1px solid var(--border2);border-radius:14px;
-  padding:20px;width:360px;box-shadow:0 20px 60px rgba(29,78,216,.15);}
-.note-modal h3{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
-.note-body{font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap;}
-.note-close{margin-top:14px;width:100%;background:var(--surface2);border:1px solid var(--border2);
-  border-radius:8px;padding:8px;font-size:13px;cursor:pointer;font-family:var(--sans);}
+.note-modal{background:var(--surface2);border:1px solid var(--border2);border-radius:14px;
+  padding:22px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.6);}
+.note-modal h3{font-size:14px;font-weight:700;margin-bottom:10px;}
+.note-body{font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;
+  background:var(--bg);border-radius:8px;padding:12px;border:1px solid var(--border);}
+.note-close{margin-top:14px;width:100%;background:var(--surface3);border:1px solid var(--border);
+  border-radius:8px;padding:8px;font-size:13px;cursor:pointer;font-family:var(--sans);color:var(--text-dim);}
+
+/* SORTABLE HEADERS */
+thead th{cursor:pointer;user-select:none;position:relative;}
+thead th:hover{color:var(--text);background:var(--surface2);}
+thead th.sort-asc::after {content:'▲';position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--blue);}
+thead th.sort-desc::after{content:'▼';position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--blue);}
+thead th{padding-right:20px;}
+
+
+/* KPI CLICKABLE */
+.kpi-card{cursor:pointer;}
+.kpi-card.kpi-active{border-color:var(--blue);box-shadow:0 0 0 2px rgba(59,130,246,.3),0 4px 20px rgba(0,0,0,.3);}
+.kpi-card.kpi-active.red   {border-color:var(--red);   box-shadow:0 0 0 2px var(--red-glow),0 4px 20px rgba(0,0,0,.3);}
+.kpi-card.kpi-active.amber {border-color:var(--amber);  box-shadow:0 0 0 2px rgba(245,158,11,.35);}
+.kpi-card.kpi-active.orange{border-color:var(--orange); box-shadow:0 0 0 2px rgba(249,115,22,.35);}
+.kpi-card.kpi-active.crisis{border-color:var(--crisis); box-shadow:0 0 0 2px rgba(255,26,26,.5);}
+.kpi-card.kpi-active.green {border-color:var(--green);  box-shadow:0 0 0 2px rgba(16,185,129,.35);}
+.kpi-card.kpi-active.blue  {border-color:var(--blue);   box-shadow:0 0 0 2px rgba(59,130,246,.35);}
+
+
+/* NAV BUTTONS */
+.nav-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;
+  padding:7px 14px;font-size:12px;font-weight:600;color:var(--text-dim);cursor:pointer;
+  transition:all .2s;font-family:var(--sans);}
+.nav-btn:hover{border-color:var(--blue);color:var(--blue);}
+.nav-btn.active{background:var(--blue-dim);border-color:var(--blue);color:var(--blue);}
+
+/* ANALYSIS PAGE */
+#analysisPage{display:none;}
+.analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.analysis-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+.a-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.a-header{padding:12px 18px;border-bottom:1px solid var(--border);background:var(--surface2);
+  font-size:12px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;}
+.a-body{padding:16px 18px;}
+
+/* CAUSE BAR CHART */
+.cause-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.cause-label{font-size:12px;color:var(--text-dim);width:140px;flex-shrink:0;}
+.cause-bar-wrap{flex:1;height:20px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--border);position:relative;}
+.cause-bar{height:100%;border-radius:4px;transition:width .8s ease;display:flex;align-items:center;padding-left:6px;}
+.cause-bar-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.9);font-family:var(--mono);}
+.cause-count{font-family:var(--mono);font-size:11px;font-weight:700;width:28px;text-align:right;}
+
+/* CRISIS TABLE */
+.crisis-table{width:100%;border-collapse:collapse;font-size:11px;}
+.crisis-table th{background:var(--bg);padding:7px 10px;text-align:left;font-size:10px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border2);}
+.crisis-table td{padding:8px 10px;border-bottom:1px solid rgba(30,45,69,.4);vertical-align:top;}
+.crisis-table tr:hover td{background:rgba(59,130,246,.04);}
+.crisis-table tr.ultra td{background:rgba(255,26,26,.06);}
+
+/* AGE BADGE */
+.age-badge{display:inline-block;padding:2px 7px;border-radius:5px;font-family:var(--mono);font-size:10px;font-weight:700;}
+.age-badge.c1{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,.3);}
+.age-badge.c2{background:var(--orange-dim);color:var(--orange);border:1px solid rgba(249,115,22,.3);}
+.age-badge.c3{background:var(--crisis-dim);color:var(--crisis);border:1px solid rgba(255,26,26,.4);}
+.age-badge.c4{background:rgba(180,0,0,.2);color:#ff6666;border:1px solid rgba(255,0,0,.5);animation:crisis-blink 1s infinite;}
+
+/* ROOT CAUSE CARDS */
+.rc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.rc-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+.rc-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.rc-body{font-size:11px;color:var(--text-dim);line-height:1.6;}
+.rc-action{margin-top:8px;font-size:11px;color:var(--green);font-weight:600;}
+
+/* TREND BARS */
+.trend-row{display:flex;align-items:flex-end;gap:6px;height:80px;margin-bottom:8px;}
+.trend-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.trend-bar{width:100%;border-radius:4px 4px 0 0;transition:height .6s ease;min-height:2px;}
+.trend-bar.today{background:var(--amber);}
+.trend-bar.past{background:var(--red);}
+.trend-label{font-size:9px;color:var(--text-muted);text-align:center;font-family:var(--mono);}
+.trend-val{font-size:10px;font-weight:700;font-family:var(--mono);}
+
+/* STAT BOXES */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.stat-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;text-align:center;}
+.stat-val{font-size:22px;font-weight:700;font-family:var(--mono);}
+.stat-lbl{font-size:10px;color:var(--text-muted);margin-top:2px;}
+
+
+/* STORAGE INDICATOR */
+.storage-badge{display:flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;
+  font-size:10px;font-family:var(--mono);font-weight:600;
+  background:var(--green-dim);color:var(--green);border:1px solid rgba(16,185,129,.3);}
+.storage-badge.warn{background:var(--amber-dim);color:var(--amber);border-color:rgba(245,158,11,.3);}
+
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <div class="logo">
-    <div class="logo-icon">⚡</div>
+    
     <div>
-      <div class="logo-text" id="headerTitle">Network Error Dashboard</div>
-      <div class="logo-sub" id="headerSubtitle">AMS · ATG · ic05 Monitor</div>
+      <div class="logo-text">Network Error Dashboard</div>
+      <div class="logo-sub">Created by Pattana Chancheam</div>
     </div>
   </div>
   <div class="header-right">
-    <div class="mode-badge" id="modeBadge">
+    <div class="storage-badge" id="storageBadge" title="สถานะ localStorage">💾 —</div>
+    <div class="mode-badge file" id="modeBadge">
       <div class="live-dot"></div>
       <span id="modeText">FILE MODE</span>
     </div>
     <button class="refresh-btn" id="refreshBtn" onclick="handleRefresh()" style="display:none">🔄 Refresh</button>
-    <button class="upload-btn" id="uploadBtn" onclick="document.getElementById('fileInput').click()">
-      ⬆ Upload Excel
-    </button>
+    <button class="nav-btn" id="navDashboard" onclick="showPage('dashboard')">📊 Dashboard</button>
+    <button class="nav-btn active" id="navAnalysis" onclick="showPage('analysis')" style="display:none">🔍 Analysis</button>
+    <button class="upload-btn" id="uploadBtn" onclick="document.getElementById('fileInput').click()">⬆ Upload Excel</button>
     <input id="fileInput" type="file" accept=".xlsx,.xls" style="display:none" onchange="handleFileUpload(event)">
   </div>
 </header>
@@ -298,75 +417,42 @@ tbody td{padding:10px 12px;vertical-align:middle;}
     ondrop="handleDrop(event)"
     onclick="document.getElementById('fileInput').click()">
     <div class="upload-icon">📂</div>
-    <div class="upload-title">วาง หรือ คลิกเพื่อเลือกไฟล์ Excel</div>
-    <div class="upload-sub">รองรับ <span>atg_site.xlsx</span> — ลาก & วางได้เลย</div>
+    <div class="upload-title">วาง หรือ คลิกเลือกไฟล์ Excel</div>
+    <div class="upload-sub">รองรับ <span>atg_site.xlsx</span> — ลากแล้ววางได้เลย</div>
   </div>
 
-  <!-- DASHBOARD (hidden until file loaded) -->
   <div id="dashboard" style="display:none">
 
     <!-- DATE BAR -->
     <div class="date-bar">
       <div>
-        <div class="date-label">ข้อมูล ณ <span id="dataTimestamp">—</span></div>
-        <div class="file-info" id="fileInfo" style="margin-top:4px">—</div>
-      </div>
-      <div style="display:flex;gap:10px;align-items:center">
-        <div class="filter-tabs">
-          <button class="filter-tab active" onclick="setDayFilter(this,0)">วันนี้</button>
-          <button class="filter-tab" onclick="setDayFilter(this,7)">7 วัน</button>
-          <button class="filter-tab" onclick="setDayFilter(this,30)">30 วัน</button>
-          <button class="filter-tab" onclick="setDayFilter(this,-1)">ทั้งหมด</button>
-        </div>
+        <div class="date-label">โหลดข้อมูลเมื่อ <span id="dataTimestamp">—</span></div>
+        
       </div>
     </div>
 
-    <!-- KPI -->
-    <div class="kpi-grid">
-      <div class="kpi-card red">
-        <div class="kpi-label">Network Error</div>
-        <div class="kpi-value" id="kpiNetwork">0</div>
-        <div class="kpi-sub">ขาดการเชื่อมต่อ &gt;30 นาที</div>
-        <div class="kpi-icon">📡</div>
-      </div>
-      <div class="kpi-card amber">
-        <div class="kpi-label">Closeday Error</div>
-        <div class="kpi-value" id="kpiCloseday">0</div>
-        <div class="kpi-sub">ไม่มีข้อมูล ic05 ปิดวัน</div>
-        <div class="kpi-icon">📋</div>
-      </div>
-      <div class="kpi-card green">
-        <div class="kpi-label">Resolved วันนี้</div>
-        <div class="kpi-value" id="kpiResolved">0</div>
-        <div class="kpi-sub">แก้ไขแล้วในเซสชันนี้</div>
-        <div class="kpi-icon">✅</div>
-      </div>
-      <div class="kpi-card blue">
-        <div class="kpi-label">สถานีทั้งหมด</div>
-        <div class="kpi-value" id="kpiTotal">0</div>
-        <div class="kpi-sub">ในไฟล์ที่โหลด</div>
-        <div class="kpi-icon">🏪</div>
-      </div>
-    </div>
+    <!-- KPI: dynamic per tab -->
+    <div class="kpi-grid" id="kpiGrid"></div>
 
     <!-- CONTENT -->
     <div class="content-grid">
-      <!-- MAIN TABLE -->
+
+      <!-- TABLE PANEL -->
       <div class="panel">
         <div class="panel-header">
-          <div class="panel-title">รายการ Error</div>
+          <div class="panel-title" id="panelTitle">รายการ Network Error</div>
           <div class="panel-actions">
-            <input class="search-box" placeholder="🔍 รหัส / ชื่อสถานี / จังหวัด..." oninput="onSearch(this.value)">
+            <input class="search-box" placeholder="🔍 รหัส / ชื่อ / จังหวัด..." oninput="onSearch(this.value)">
             <button class="icon-btn" onclick="exportCSV()">⬇ Export CSV</button>
           </div>
         </div>
 
         <div class="tab-nav">
-          <div class="tab active-red" onclick="switchTab(this,'network')">
-            🔴 Network Error <span class="tab-count" id="tcNetwork">0</span>
+          <div class="tab t-red" onclick="switchTab(this,'network')">
+            📡 Network Error <span class="tab-count" id="tcNetwork">0</span>
           </div>
           <div class="tab" onclick="switchTab(this,'closeday')">
-            🟡 Closeday Error <span class="tab-count" id="tcCloseday">0</span>
+            📋 Closeday Error <span class="tab-count" id="tcCloseday">0</span>
           </div>
           <div class="tab" onclick="switchTab(this,'resolved')">
             ✅ Resolved <span class="tab-count" id="tcResolved">0</span>
@@ -374,21 +460,8 @@ tbody td{padding:10px 12px;vertical-align:middle;}
         </div>
 
         <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>รหัสสถานี</th>
-                <th>ชื่อสถานี</th>
-                <th>จังหวัด</th>
-                <th>คงเหลือล่าสุด</th>
-                <th>ปิดวันล่าสุด</th>
-                <th>ขาดการเชื่อมต่อ</th>
-                <th>ประเภท Error</th>
-                <th>หมายเหตุ</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
+          <table id="mainTable">
+            <thead id="tableHead"></thead>
             <tbody id="tableBody"></tbody>
           </table>
         </div>
@@ -401,23 +474,51 @@ tbody td{padding:10px 12px;vertical-align:middle;}
       <!-- SIDE -->
       <div class="side-col">
 
-        <!-- SUMMARY -->
+        <!-- DAILY BREAKDOWN -->
+        <div class="mini-panel">
+          <div class="mini-header">📅 ค้างกี่วัน</div>
+          <div class="daily-list">
+            <div class="daily-row today">
+              <div>
+                <div class="daily-label">🟡 วันนี้</div>
+                <div class="daily-sub">เกิดวันนี้</div>
+              </div>
+              <div class="daily-count" id="dToday">0</div>
+            </div>
+            <div class="daily-row days13">
+              <div>
+                <div class="daily-label">🟠 1–3 วัน</div>
+                <div class="daily-sub">ค้างมา 1 ถึง 3 วัน</div>
+              </div>
+              <div class="daily-count" id="dDays13">0</div>
+            </div>
+            <div class="daily-row crisis">
+              <div>
+                <div class="daily-label">🚨 วิกฤติ &gt;3 วัน</div>
+                <div class="daily-sub">ค้างเกิน 3 วัน</div>
+              </div>
+              <div class="daily-count" id="dCrisis">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUMMARY BARS -->
         <div class="mini-panel">
           <div class="mini-header">📊 สรุปภาพรวม</div>
           <div class="summary-list">
             <div class="sum-row">
               <div class="sum-label">Network Error</div>
-              <div class="sum-bar-wrap"><div class="sum-bar" id="barNetwork" style="background:#dc2626;width:0%"></div></div>
+              <div class="sum-bar-wrap"><div class="sum-bar" id="barNetwork" style="background:var(--red)"></div></div>
               <div class="sum-val" style="color:var(--red)" id="sNetwork">0</div>
             </div>
             <div class="sum-row">
               <div class="sum-label">Closeday Error</div>
-              <div class="sum-bar-wrap"><div class="sum-bar" id="barCloseday" style="background:#b45309;width:0%"></div></div>
+              <div class="sum-bar-wrap"><div class="sum-bar" id="barCloseday" style="background:var(--amber)"></div></div>
               <div class="sum-val" style="color:var(--amber)" id="sCloseday">0</div>
             </div>
             <div class="sum-row">
               <div class="sum-label">Resolved</div>
-              <div class="sum-bar-wrap"><div class="sum-bar" id="barResolved" style="background:#15803d;width:0%"></div></div>
+              <div class="sum-bar-wrap"><div class="sum-bar" id="barResolved" style="background:var(--green)"></div></div>
               <div class="sum-val" style="color:var(--green)" id="sResolved">0</div>
             </div>
           </div>
@@ -427,16 +528,16 @@ tbody td{padding:10px 12px;vertical-align:middle;}
         <div class="mini-panel">
           <div class="mini-header">🕐 กิจกรรมล่าสุด</div>
           <div class="timeline" id="timeline">
-            <div class="empty-state" style="padding:20px">
-              <div style="font-size:24px">📋</div>
-              <div style="font-size:12px;margin-top:6px">ยังไม่มีกิจกรรม</div>
+            <div class="empty-state" style="padding:16px">
+              <div style="font-size:20px">📋</div>
+              <div style="font-size:11px;margin-top:4px">ยังไม่มีกิจกรรม</div>
             </div>
           </div>
         </div>
 
         <!-- NOTIFY -->
         <div class="mini-panel">
-          <div class="mini-header">🔔 แจ้งเตือน</div>
+          <div class="mini-header">🔔 แจ้งเตือน / Export</div>
           <div class="notify-form">
             <div class="notify-option">
               <div class="notify-icon line">💬</div>
@@ -452,13 +553,75 @@ tbody td{padding:10px 12px;vertical-align:middle;}
                 <div class="notify-desc">สรุปรายงานประจำวัน</div>
               </div>
             </div>
-            <button class="send-btn" onclick="exportCSV()">📤 Export รายงานตอนนี้</button>
+            <button class="send-btn" onclick="exportCSV()">📤 Export รายงาน CSV</button>
           </div>
         </div>
+
       </div>
     </div>
   </div>
 </main>
+
+
+<!-- ANALYSIS PAGE -->
+<div id="analysisPage" style="display:none;">
+<div style="position:relative;z-index:1;padding:20px 24px;max-width:1500px;margin:0 auto;">
+
+  <!-- STAT SUMMARY ROW -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <div style="font-size:13px;font-weight:600;color:var(--text)">📊 วิเคราะห์ข้อมูล Network Error</div>
+    <div style="display:flex;gap:8px;">
+      <button class="icon-btn" onclick="clearStorageConfirm()" style="color:var(--red);border-color:rgba(255,59,92,.3)">🗑 ล้างข้อมูลที่บันทึก</button>
+      <button class="icon-btn" onclick="exportHistory()">📥 Export ประวัติ Resolve</button>
+    </div>
+  </div>
+  <div class="stat-row" id="aStatRow">
+    <div class="stat-box"><div class="stat-val" style="color:var(--red)" id="aTot">—</div><div class="stat-lbl">สถานีทั้งหมด</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:var(--crisis)" id="aCrisis">—</div><div class="stat-lbl">วิกฤติ &gt;1 วัน</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:var(--amber)" id="aAvgDay">—</div><div class="stat-lbl">ค้างเฉลี่ย (วัน)</div></div>
+  </div>
+
+  <!-- ROW 1: Cause + Crisis list -->
+  <div class="analysis-grid">
+
+    <!-- CAUSE CHART -->
+    <div class="a-panel">
+      <div class="a-header">🔧 สาเหตุ Network Error (จากหมายเหตุ)</div>
+      <div class="a-body" id="causeChart"></div>
+    </div>
+
+    <!-- DAILY TREND -->
+    <div class="a-panel">
+      <div class="a-header">📅 สถานีค้างแต่ละวัน (ย้อนหลัง)</div>
+      <div class="a-body" id="trendChart"></div>
+    </div>
+
+  </div>
+
+  <!-- ROW 2: Crisis table full width -->
+  <div class="a-panel" style="margin-bottom:16px;">
+    <div class="a-header">🚨 รายการวิกฤติ — ยังไม่ได้แก้ไข (เรียงตามวันที่ค้างมากสุด)</div>
+    <div style="overflow-x:auto;">
+      <table class="crisis-table" id="crisisTable">
+        <thead><tr>
+          <th>ค้างมา</th><th>รหัสสถานี</th><th>ชื่อสถานี</th>
+          <th>จังหวัด</th><th>สาเหตุ</th><th>หมายเหตุล่าสุด</th>
+        </tr></thead>
+        <tbody id="crisisBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ROW 3: Root cause recommendations -->
+  <div class="a-panel">
+    <div class="a-header">💡 Root Cause & คำแนะนำแก้ไขที่ยั่งยืน</div>
+    <div class="a-body">
+      <div class="rc-grid" id="rcGrid"></div>
+    </div>
+  </div>
+
+</div>
+</div>
 
 <!-- RESOLVE MODAL -->
 <div class="modal-overlay" id="resolveModal">
@@ -484,442 +647,806 @@ tbody td{padding:10px 12px;vertical-align:middle;}
 </div>
 
 <script>
-// ─── STATE ───────────────────────────────────────────────
-const cfg = typeof DASHBOARD_CONFIG !== 'undefined' ? DASHBOARD_CONFIG : {
-  mode:'file', networkErrorMinutes:30, closedayFilterToday:true,
-  rowsPerPage:10, title:'Network Error Dashboard', subtitle:'AMS · ATG · ic05 Monitor'
-};
 
-let allData = [];          // raw rows from Excel / API
-let displayData = [];      // after classify + filter
-let resolvedIds = new Set();
-let resolveTarget = null;
-let currentTab = 'network';
-let currentPage = 1;
-let searchQuery = '';
-let dayFilter = 0;         // 0=today, 7, 30, -1=all
-let apiTimer = null;
-let loadedFileName = '';
-let loadedFileTime = '';
+// ══════════════════════════════════════════════════════════
+//  STORAGE MODULE — localStorage persistence
+// ══════════════════════════════════════════════════════════
+const SK_EXCEL    = 'ned_excel_data';
+const SK_EXCEL_TS = 'ned_excel_ts';
+const SK_EXCEL_FN = 'ned_excel_fname';
+const SK_RESOLVED = 'ned_resolved';
+const SK_HISTORY  = 'ned_history';
 
-// ─── INIT ─────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('headerTitle').textContent = cfg.title;
-  document.getElementById('headerSubtitle').textContent = cfg.subtitle;
-  initMode();
-});
+function lsSave(key, val){
+  try{ localStorage.setItem(key, JSON.stringify(val)); return true; }
+  catch(e){ console.warn('localStorage save failed:', e); return false; }
+}
+function lsLoad(key, def=null){
+  try{ const v=localStorage.getItem(key); return v!==null?JSON.parse(v):def; }
+  catch(e){ return def; }
+}
+function lsClear(key){ try{ localStorage.removeItem(key); }catch(e){} }
 
-function initMode() {
-  const badge = document.getElementById('modeBadge');
-  const modeText = document.getElementById('modeText');
-  if (cfg.mode === 'api') {
-    badge.className = 'mode-badge api';
-    modeText.textContent = 'API · LIVE';
-    document.getElementById('uploadBtn').style.display = 'none';
-    document.getElementById('refreshBtn').style.display = 'flex';
-    document.getElementById('uploadZone').style.display = 'none';
-    fetchFromAPI();
-    if (cfg.api.intervalSeconds > 0) {
-      apiTimer = setInterval(fetchFromAPI, cfg.api.intervalSeconds * 1000);
-    }
+function saveResolved(siteId, note, siteName){
+  const db = lsLoad(SK_RESOLVED, {});
+  db[siteId] = { ts: new Date().toISOString(), note: note||'', siteName: siteName||'' };
+  lsSave(SK_RESOLVED, db);
+  const hist = lsLoad(SK_HISTORY, []);
+  hist.unshift({ siteId, siteName: siteName||'', note: note||'', ts: new Date().toISOString(), type:'resolved' });
+  if(hist.length > 200) hist.splice(200);
+  lsSave(SK_HISTORY, hist);
+}
+
+function saveExcel(rows, filename){
+  try{
+    lsSave(SK_EXCEL, rows);
+    lsSave(SK_EXCEL_TS, new Date().toISOString());
+    lsSave(SK_EXCEL_FN, filename||'');
+    updateStorageBadge();
+  }catch(e){ console.warn('Excel save failed (too large?):', e); }
+}
+
+function loadSavedExcel(){
+  return {
+    rows: lsLoad(SK_EXCEL, null),
+    ts:   lsLoad(SK_EXCEL_TS, null),
+    fn:   lsLoad(SK_EXCEL_FN, '')
+  };
+}
+
+function updateStorageBadge(){
+  const el = document.getElementById('storageBadge');
+  if(!el) return;
+  const ts  = lsLoad(SK_EXCEL_TS);
+  const res = Object.keys(lsLoad(SK_RESOLVED,{})).length;
+  if(ts){
+    const d = new Date(ts);
+    const label = d.toLocaleDateString('th-TH',{day:'2-digit',month:'2-digit'})
+      + ' ' + d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+    el.className = 'storage-badge';
+    el.innerHTML = `💾 ${label} · ✅${res}`;
   } else {
-    badge.className = 'mode-badge file';
-    modeText.textContent = 'FILE MODE';
-    document.getElementById('refreshBtn').style.display = 'none';
+    el.className = 'storage-badge warn';
+    el.innerHTML = '💾 ยังไม่มีข้อมูล';
   }
 }
 
-// ─── FILE UPLOAD ──────────────────────────────────────────
-function handleDrop(e) {
+function restoreResolvedState(){
+  const db = lsLoad(SK_RESOLVED, {});
+  resolvedIds.clear();
+  displayData.forEach(r=>{
+    if(db[r.siteId]){
+      resolvedIds.add(r._idx);
+      r.status = 'resolved';
+      r.resolveNote = db[r.siteId].note || '';
+    }
+  });
+}
+
+function restoreTimeline(){
+  const hist = lsLoad(SK_HISTORY, []);
+  const tl   = document.getElementById('timeline');
+  if(!tl || !hist.length) return;
+  tl.innerHTML = '';
+  hist.slice(0,12).forEach(h=>{
+    const d       = new Date(h.ts);
+    const timeStr = d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+    const dateStr = d.toLocaleDateString('th-TH',{day:'2-digit',month:'2-digit'});
+    const item    = document.createElement('div');
+    item.className = 'tl-item';
+    item.innerHTML = `<div class="tl-dot green">✓</div>
+      <div class="tl-content">
+        <div class="tl-title">Resolved แล้ว</div>
+        <div class="tl-site">${h.siteId} · ${(h.siteName||'').substring(0,28)}</div>
+        <div class="tl-time">${dateStr} ${timeStr} น.</div>
+      </div>`;
+    tl.appendChild(item);
+  });
+}
+
+function clearStorageConfirm(){
+  if(!confirm('ต้องการล้างข้อมูลที่บันทึกทั้งหมดไหม?\n(Excel + Resolved + ประวัติ)')) return;
+  [SK_EXCEL,SK_EXCEL_TS,SK_EXCEL_FN,SK_RESOLVED,SK_HISTORY].forEach(lsClear);
+  updateStorageBadge();
+  alert('ล้างข้อมูลแล้วครับ');
+}
+
+function exportHistory(){
+  const hist = lsLoad(SK_HISTORY, []);
+  if(!hist.length){ alert('ยังไม่มีประวัติ Resolve'); return; }
+  const headers = ['วันที่','รหัสสถานี','ชื่อสถานี','หมายเหตุการแก้ไข'];
+  const rows = hist.map(h=>[
+    new Date(h.ts).toLocaleString('th-TH'),
+    h.siteId,
+    '"'+(h.siteName||'').replace(/"/g,'""')+'"',
+    '"'+(h.note||'').replace(/"/g,'""')+'"'
+  ].join(','));
+  const csv = [headers.join(','),...rows].join('\n');
+  const a   = document.createElement('a');
+  a.href    = URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download= 'resolve_history_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
+
+function tryAutoLoad(){
+  const {rows,ts,fn} = loadSavedExcel();
+  if(!rows||!rows.length){ updateStorageBadge(); return; }
+  const d     = new Date(ts);
+  const label = d.toLocaleDateString('th-TH')+' '+d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  const ok    = confirm(
+    '💾 พบข้อมูลที่บันทึกไว้\n\n'+
+    'ไฟล์: '+fn+'\n'+
+    'บันทึกเมื่อ: '+label+'\n'+
+    'จำนวน '+rows.length+' สถานี\n\n'+
+    'ต้องการโหลดข้อมูลนี้ไหม?\n(กด Cancel เพื่อ Upload ไฟล์ใหม่)'
+  );
+  if(!ok){ updateStorageBadge(); return; }
+  loadedFileName = fn;
+  allData = rows;
+  resolvedIds.clear();
+  processData();
+  restoreResolvedState();
+  renderAll();
+  showDashboard();
+  restoreTimeline();
+}
+// ══════════════════════════════════════════════════════════
+
+// ── CONFIG ──
+const cfg = typeof DASHBOARD_CONFIG!=='undefined' ? DASHBOARD_CONFIG : {
+  mode:'file', networkErrorMinutes:30, closedayFilterToday:true,
+  rowsPerPage:10, title:'Network Error Dashboard'
+};
+
+// ── STATE ──
+let allData=[], displayData=[], resolvedIds=new Set();
+
+let sortCol=null, sortDir=1;
+let kpiFilter = null; // active KPI filter key
+ // sortDir: 1=asc, -1=desc
+
+let resolveTarget=null, currentTab='network';
+let currentPage=1, searchQuery='';
+let loadedFileName='';
+
+// ── INIT ──
+// API mode init
+if(typeof cfg!=='undefined' && cfg.mode==='api'){
+  window.addEventListener('DOMContentLoaded', ()=>{
+  if(true){
+    const b=document.getElementById('modeBadge');
+    b.className='mode-badge api';
+    document.getElementById('modeText').textContent='API · LIVE';
+    document.getElementById('uploadBtn').style.display='none';
+    document.getElementById('refreshBtn').style.display='flex';
+    document.getElementById('uploadZone').style.display='none';
+    fetchFromAPI();
+    if(cfg.api?.intervalSeconds>0)
+      setInterval(fetchFromAPI, cfg.api.intervalSeconds*1000);
+  }
+});
+
+// ── FILE ──
+function handleDrop(e){
   e.preventDefault();
   document.getElementById('uploadZone').classList.remove('drag');
-  const file = e.dataTransfer.files[0];
-  if (file) processFile(file);
+  const f=e.dataTransfer.files[0]; if(f) processFile(f);
 }
+function handleFileUpload(e){ const f=e.target.files[0]; if(f) processFile(f); }
 
-function handleFileUpload(e) {
-  const file = e.target.files[0];
-  if (file) processFile(file);
-}
-
-function processFile(file) {
-  loadedFileName = file.name;
-  loadedFileTime = new Date().toLocaleString('th-TH');
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const wb = XLSX.read(e.target.result, {type:'array', cellDates:true});
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(ws, {raw:false, dateNF:'yyyy-mm-dd hh:mm'});
-      allData = rows;
+function processFile(file){
+  loadedFileName=file.name;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const wb=XLSX.read(e.target.result,{type:'array',cellDates:true});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const rows=XLSX.utils.sheet_to_json(ws,{raw:false,dateNF:'yyyy-mm-dd hh:mm'});
+      allData=rows;
+      saveExcel(rows, file.name);  // 💾 save to localStorage
       resolvedIds.clear();
       processData();
+      restoreResolvedState();      // 💾 restore previous resolved
+      renderAll();
       showDashboard();
-    } catch(err) {
-      alert('ไม่สามารถอ่านไฟล์ได้: ' + err.message);
-    }
+    }catch(err){ alert('ไม่สามารถอ่านไฟล์: '+err.message); }
   };
   reader.readAsArrayBuffer(file);
 }
 
-// ─── API MODE ─────────────────────────────────────────────
-async function fetchFromAPI() {
-  try {
-    const res = await fetch(cfg.api.url, {headers: cfg.api.headers || {}});
-    const json = await res.json();
-    allData = Array.isArray(json) ? json : json.data || [];
-    processData();
-    showDashboard();
-    document.getElementById('dataTimestamp').textContent =
-      new Date().toLocaleString('th-TH');
-  } catch(err) {
-    console.error('API Error:', err);
-  }
+// ── API ──
+async function fetchFromAPI(){
+  try{
+    const r=await fetch(cfg.api.url,{headers:cfg.api.headers||{}});
+    allData=await r.json();
+    processData(); showDashboard();
+  }catch(e){ console.error('API Error:',e); }
+}
+function handleRefresh(){ fetchFromAPI(); }
+
+// ── PARSE ──
+function parseDate(s){
+  if(!s) return null;
+  if(s instanceof Date) return isNaN(s)?null:s;
+  const m=String(s).match(/(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}))?/);
+  if(!m) return null;
+  return new Date(+m[1],+m[2]-1,+m[3],+(m[4]||0),+(m[5]||0));
+}
+function today0(){ const d=new Date(); return new Date(d.getFullYear(),d.getMonth(),d.getDate()); }
+function daysDiff(d){ return (today0()-new Date(d.getFullYear(),d.getMonth(),d.getDate()))/(86400000); }
+function fmtTS(d){ if(!d) return '—'; return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())} ${z(d.getHours())}:${z(d.getMinutes())}`; }
+function z(n){ return String(n).padStart(2,'0'); }
+function fmtAge(days){
+  if(days<1) return 'วันนี้';
+  if(days<2) return '1 วัน';
+  return `${Math.floor(days)} วัน`;
 }
 
-function handleRefresh() { fetchFromAPI(); }
+// ── PROCESS ──
+function processData(){
+  const now=new Date(), tod=today0();
+  displayData=allData.map((row,idx)=>{
+    const siteId  = String(row['รหัสสถานี']||row['site_id']||'');
+    const siteName= row['ชื่อ']||row['name']||'';
+    const province= String(row['จังหวัด']||'').trim().replace(/\s+/g,'');
+    const lastData= parseDate(row['คงเหลือล่าสุด']||row['last_update']);
+    const closeday= parseDate(row['ปิดวันล่าสุด']||row['closeday']);
+    const note    = row['หมายเหตุ']||row['note']||'';
+    const phone   = row['โทร']||'';
+    const contact = row['ชื่อผู้ติดต่อ']||'';
 
-// ─── DATA PROCESSING ──────────────────────────────────────
-function parseThaiDate(str) {
-  if (!str) return null;
-  // format: "2026-05-25 15:49" or Date object
-  if (str instanceof Date) return str;
-  const m = String(str).match(/(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2})/);
-  if (!m) return null;
-  return new Date(+m[1], +m[2]-1, +m[3], +m[4], +m[5]);
-}
+    // Age in days from lastData
+    const ageDays = lastData ? daysDiff(lastData) : 999;
+    const ageLabel= ageDays<1?'today': ageDays<=3?'days13':'crisis';
 
-function getToday() {
-  const d = new Date();
-  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-}
-
-function diffMinutes(a, b) {
-  return (b - a) / 60000;
-}
-
-function formatDuration(minutes) {
-  if (minutes < 60) return `${Math.round(minutes)}m`;
-  const h = Math.floor(minutes / 60);
-  const m = Math.round(minutes % 60);
-  return m > 0 ? `${h}h ${m}m` : `${h}h`;
-}
-
-function formatTS(str) {
-  if (!str) return '—';
-  return String(str).replace('T',' ').substring(0,16);
-}
-
-function processData() {
-  const now = new Date();
-  const today = getToday();
-  const threshold = cfg.networkErrorMinutes * 60 * 1000;
-
-  displayData = allData.map((row, idx) => {
-    const siteId   = row['รหัสสถานี'] || row['site_id'] || '';
-    const siteName = row['ชื่อ'] || row['name'] || '';
-    const province = String(row['จังหวัด'] || row['province'] || '').trim();
-    const lastData = parseThaiDate(row['คงเหลือล่าสุด'] || row['last_update']);
-    const closeday = parseThaiDate(row['ปิดวันล่าสุด'] || row['closeday']);
-    const note     = row['หมายเหตุ'] || row['note'] || '';
-    const phone    = row['โทร'] || row['phone'] || '';
-    const contact  = row['ชื่อผู้ติดต่อ'] || row['contact'] || '';
-
-    // Network Error: lastData > 30 min ago
-    let networkError = false;
-    let diffMin = null;
-    if (lastData) {
-      diffMin = diffMinutes(lastData, now);
-      networkError = diffMin > cfg.networkErrorMinutes;
+    // Closeday: in file = has error; exclude if closeday = today
+    let closedayError=true;
+    if(closeday){
+      const cdDate=new Date(closeday.getFullYear(),closeday.getMonth(),closeday.getDate());
+      if(cdDate>=tod) closedayError=false;
     }
 
-    // Closeday Error: มีรายชื่อในไฟล์ = มีปัญหาแล้ว
-    // ตัดออกถ้าปิดวันล่าสุด = วันนี้
-    let closedayError = false;
-    if (cfg.closedayFilterToday && closeday) {
-      const cdDate = new Date(closeday.getFullYear(), closeday.getMonth(), closeday.getDate());
-      closedayError = cdDate < today;  // ถ้าปิดวันล่าสุดไม่ใช่วันนี้ = Error
-    } else if (!closeday) {
-      closedayError = true;  // ไม่มีข้อมูลปิดวัน = Error
-    }
-
-    return {
-      _idx: idx,
-      siteId, siteName, province, note, phone, contact,
-      lastData, closeday, diffMin,
-      networkError, closedayError,
-      status: resolvedIds.has(idx) ? 'resolved' : (networkError || closedayError ? 'open' : 'ok'),
-      resolveNote: '',
-    };
-  }).filter(r => r.networkError || r.closedayError || resolvedIds.has(r._idx));
+    return {_idx:idx, siteId, siteName, province, note, phone, contact,
+            lastData, closeday, ageDays, ageLabel,
+            networkError:true,  // all rows = network error
+            closedayError,
+            status: resolvedIds.has(idx)?'resolved':'open',
+            resolveNote:''};
+  });
 
   renderAll();
 }
 
-// ─── FILTERS ──────────────────────────────────────────────
-function getFiltered() {
-  const now = new Date();
-  return displayData.filter(r => {
+// ── FILTER ──
+function getFiltered(){
+  return displayData.filter(r=>{
     // Tab filter
-    if (currentTab === 'resolved') {
-      if (r.status !== 'resolved') return false;
-    } else if (currentTab === 'network') {
-      if (r.status === 'resolved' || !r.networkError) return false;
-    } else if (currentTab === 'closeday') {
-      if (r.status === 'resolved' || !r.closedayError) return false;
+    if(currentTab==='resolved') { if(r.status!=='resolved') return false; }
+    else if(currentTab==='network')  { if(r.status==='resolved'||!r.networkError) return false; }
+    else if(currentTab==='closeday') { if(r.status==='resolved'||!r.closedayError) return false; }
+    // KPI sub-filter
+    if(kpiFilter){
+      const [tabK, subK] = kpiFilter.split('-');
+      if(subK==='today')  return r.ageLabel==='today';
+      if(subK==='13')     return r.ageLabel==='days13';
+      if(subK==='crisis') return r.ageLabel==='crisis';
+      // 'all' = no sub-filter beyond tab
     }
-
-    // Day filter (based on lastData)
-    if (dayFilter >= 0 && r.lastData) {
-      const cutoff = new Date(now - dayFilter * 86400000);
-      if (dayFilter === 0) {
-        const today = getToday();
-        if (r.lastData < today) return false;
-      } else {
-        if (r.lastData < cutoff) return false;
-      }
-    }
-
     // Search
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      return r.siteId.toLowerCase().includes(q) ||
-             r.siteName.toLowerCase().includes(q) ||
+    if(searchQuery){
+      const q=searchQuery;
+      return r.siteId.toLowerCase().includes(q)||
+             r.siteName.toLowerCase().includes(q)||
              r.province.toLowerCase().includes(q);
     }
     return true;
   });
 }
 
-// ─── RENDER ───────────────────────────────────────────────
-function renderAll() {
-  updateKPI();
-  renderTable();
-  updateSummaryBars();
+// ── RENDER ALL ──
+function renderAll(){ updateKPI(); renderTable(); updateBars(); }
+
+function updateKPI(){
+  const active = displayData.filter(r=>r.status!=='resolved');
+  const tot    = active.length;
+  const tod    = active.filter(r=>r.ageLabel==='today').length;
+  const d13    = active.filter(r=>r.ageLabel==='days13').length;
+  const cris   = active.filter(r=>r.ageLabel==='crisis').length;
+  const res    = displayData.filter(r=>r.status==='resolved').length;
+  const cls    = active.filter(r=>r.closedayError).length;
+
+  // Tab counts
+  setEl('tcNetwork',  tot);
+  setEl('tcCloseday', cls);
+  setEl('tcResolved', res);
+  setEl('dToday',  tod);
+  setEl('dDays13', d13);
+  setEl('dCrisis', cris);
+  setEl('sNetwork',  tot);
+  setEl('sCloseday', cls);
+  setEl('sResolved', res);
+
+  // KPI cards — depends on active tab
+  const grid = document.getElementById('kpiGrid');
+  if(currentTab === 'network'){
+    grid.innerHTML = kpiCard('red',   '📡 Network Error ทั้งหมด', tot,  'สถานีทั้งหมดที่ error',  'network-all')
+      + kpiCard('amber',  '⚡ วันนี้',          tod,  'เกิดขึ้นวันนี้',           'network-today')
+      + kpiCard('orange', '⏳ 1–3 วัน',         d13,  'ค้างมา 1–3 วัน',           'network-13')
+      + kpiCard('crisis', '🚨 วิกฤติ >3 วัน',   cris, 'ต้องแก้ไขด่วน!',          'network-crisis')
+      + kpiCard('blue',   '✅ Resolved',         res,  'แก้ไขแล้วในเซสชันนี้',    'resolved-all');
+  } else if(currentTab === 'closeday'){
+    grid.innerHTML = kpiCard('amber', '📋 Closeday Error ทั้งหมด', cls, 'ไม่มีข้อมูล ic05 ปิดวัน', 'closeday-all')
+      + kpiCard('red',    '🚨 วิกฤติ >3 วัน', active.filter(r=>r.closedayError&&r.ageLabel==='crisis').length, 'ค้างเกิน 3 วัน', 'closeday-crisis')
+      + kpiCard('orange', '⏳ 1–3 วัน', active.filter(r=>r.closedayError&&r.ageLabel==='days13').length, 'ค้างมา 1–3 วัน', 'closeday-13')
+      + kpiCard('green',  '⚡ วันนี้', active.filter(r=>r.closedayError&&r.ageLabel==='today').length, 'เกิดขึ้นวันนี้', 'closeday-today')
+      + kpiCard('blue',   '✅ Resolved', res, 'แก้ไขแล้วในเซสชันนี้', 'resolved-all');
+  } else {
+    // resolved tab
+    const rToday = displayData.filter(r=>r.status==='resolved'&&r.ageLabel==='today').length;
+    const rCris  = displayData.filter(r=>r.status==='resolved'&&r.ageLabel==='crisis').length;
+    grid.innerHTML = kpiCard('green',  '✅ Resolved ทั้งหมด',    res,    'แก้ไขแล้วทั้งหมด',      'resolved-all')
+      + kpiCard('blue',   '✅ วันนี้',            rToday, 'Resolved วันนี้',       'resolved-today')
+      + kpiCard('red',    '🔴 Network Error',     tot,    'ยังค้างอยู่',           'network-all')
+      + kpiCard('amber',  '📋 Closeday Error',    cls,    'ยังค้างอยู่',           'closeday-all')
+      + kpiCard('crisis', '🚨 วิกฤติ >3 วัน',    rCris,  'ที่แก้ไขแล้ว',         null);
+  }
+  // restore active state
+  document.querySelectorAll('#kpiGrid .kpi-card[data-filter]').forEach(el=>{
+    if(el.dataset.filter === kpiFilter) el.classList.add('kpi-active');
+  });
 }
 
-function updateKPI() {
-  const net  = displayData.filter(r => r.networkError  && r.status !== 'resolved').length;
-  const cls  = displayData.filter(r => r.closedayError && r.status !== 'resolved').length;
-  const res  = displayData.filter(r => r.status === 'resolved').length;
-  const tot  = allData.length;
-  document.getElementById('kpiNetwork').textContent  = net;
-  document.getElementById('kpiCloseday').textContent = cls;
-  document.getElementById('kpiResolved').textContent = res;
-  document.getElementById('kpiTotal').textContent    = tot;
-  document.getElementById('tcNetwork').textContent   = net;
-  document.getElementById('tcCloseday').textContent  = cls;
-  document.getElementById('tcResolved').textContent  = res;
-  document.getElementById('sNetwork').textContent    = net;
-  document.getElementById('sCloseday').textContent   = cls;
-  document.getElementById('sResolved').textContent   = res;
+function kpiCard(color, label, value, sub, filterKey){
+  const clickable = filterKey ? `data-filter="${filterKey}" onclick="kpiClick('${filterKey}')"` : '';
+  return `<div class="kpi-card ${color}" ${clickable}>
+    <div class="kpi-label">${label}</div>
+    <div class="kpi-value">${value}</div>
+    <div class="kpi-sub">${sub}</div>
+  </div>`;
+}
+function setEl(id,v){ const el=document.getElementById(id); if(el) el.textContent=v; }
+
+function updateBars(){
+  const net =parseInt(document.getElementById('sNetwork').textContent)||0;
+  const cls =parseInt(document.getElementById('sCloseday').textContent)||0;
+  const res =parseInt(document.getElementById('sResolved').textContent)||0;
+  const mx  =Math.max(net,cls,res,1);
+  document.getElementById('barNetwork').style.width =(net/mx*100)+'%';
+  document.getElementById('barCloseday').style.width=(cls/mx*100)+'%';
+  document.getElementById('barResolved').style.width=(res/mx*100)+'%';
 }
 
-function updateSummaryBars() {
-  const net = parseInt(document.getElementById('kpiNetwork').textContent);
-  const cls = parseInt(document.getElementById('kpiCloseday').textContent);
-  const res = parseInt(document.getElementById('kpiResolved').textContent);
-  const max = Math.max(net, cls, res, 1);
-  document.getElementById('barNetwork').style.width  = (net/max*100)+'%';
-  document.getElementById('barCloseday').style.width = (cls/max*100)+'%';
-  document.getElementById('barResolved').style.width = (res/max*100)+'%';
-}
+// ── TABLE ──
+function renderTable(){
+  const rows=getFiltered();
+  // Sort
+  rows.sort((a,b)=>{
+    // default: crisis first if no explicit sort
+    if(!sortCol && currentTab!=='resolved'){
+      const order={crisis:0,days13:1,today:2};
+      return (order[a.ageLabel]??3)-(order[b.ageLabel]??3);
+    }
+    if(!sortCol) return 0;
+    let av, bv;
+    if(sortCol==='ts'){
+      av = currentTab==='closeday' ? (a.closeday||new Date(0)) : (a.lastData||new Date(0));
+      bv = currentTab==='closeday' ? (b.closeday||new Date(0)) : (b.lastData||new Date(0));
+      return sortDir*(av-bv);
+    }
+    av = a[sortCol]??''; bv = b[sortCol]??'';
+    if(typeof av==='number') return sortDir*(av-bv);
+    return sortDir*String(av).localeCompare(String(bv),'th');
+  });
 
-function renderTable() {
-  const rows = getFiltered();
-  const start = (currentPage - 1) * cfg.rowsPerPage;
-  const pageRows = rows.slice(start, start + cfg.rowsPerPage);
-  const tbody = document.getElementById('tableBody');
+  // Render head based on tab
+  const isResolved = currentTab==='resolved';
+  const isCloseday = currentTab==='closeday';
+  const cols = [
+    {key:'siteId',   label:'รหัสสถานี'},
+    {key:'siteName', label:'ชื่อสถานี'},
+    {key:'province', label:'จังหวัด'},
+    {key:'ts',       label: isCloseday?'ปิดวันล่าสุด':'คงเหลือล่าสุด'},
+    ...(!isResolved?[{key:'ageDays', label:'ค้างมา'}]:[]),
+    {key:'note',     label:'หมายเหตุ', nosort:true},
+    {key:'status',   label:'Status'},
+    {key:'_action',  label:'Action', nosort:true},
+  ];
+  document.getElementById('tableHead').innerHTML='<tr>'+cols.map(c=>{
+    if(c.nosort) return `<th>${c.label}</th>`;
+    const cls = sortCol===c.key ? (sortDir===1?'sort-asc':'sort-desc') : '';
+    return `<th class="${cls}" onclick="applySort('${c.key}')">${c.label}</th>`;
+  }).join('')+'</tr>';
 
-  if (pageRows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="10">
-      <div class="empty-state">
-        <div class="empty-icon">✅</div>
-        <div>ไม่มีรายการใน Tab นี้</div>
-      </div></td></tr>`;
-    document.getElementById('rowCount').textContent = 'ไม่มีรายการ';
-    document.getElementById('pagination').innerHTML = '';
+  document.getElementById('panelTitle').textContent =
+    currentTab==='network'  ? 'รายการ Network Error' :
+    currentTab==='closeday' ? 'รายการ Closeday Error' : 'รายการ Resolved';
+
+  const start=(currentPage-1)*cfg.rowsPerPage;
+  const pageRows=rows.slice(start,start+cfg.rowsPerPage);
+  const tbody=document.getElementById('tableBody');
+
+  if(!pageRows.length){
+    const cols = isResolved?7:(isCloseday?7:7);
+    tbody.innerHTML=`<tr><td colspan="${cols}">
+      <div class="empty-state"><div class="empty-icon">✅</div><div>ไม่มีรายการ</div></div>
+    </td></tr>`;
+    document.getElementById('rowCount').textContent='ไม่มีรายการ';
+    document.getElementById('pagination').innerHTML='';
     return;
   }
 
-  const statusLabel = {open:'รอดำเนินการ', resolved:'Resolved', ok:'ปกติ'};
-  const statusDot   = {open:'🔴', resolved:'🟢', ok:'⚪'};
+  const slabel={open:'รอดำเนินการ',progress:'กำลังแก้ไข',resolved:'Resolved'};
+  const sdot  ={open:'🔴',progress:'🟡',resolved:'🟢'};
 
-  tbody.innerHTML = pageRows.map(r => {
-    // Duration chip
-    let durHtml = '—';
-    if (r.diffMin !== null) {
-      const cls2 = r.diffMin > 120 ? 'critical' : r.diffMin > 30 ? 'warning' : 'ok';
-      durHtml = `<span class="duration-chip ${cls2}">⚠ ${formatDuration(r.diffMin)}</span>`;
-    }
-    // Error type
-    const errTypes = [];
-    if (r.networkError)  errTypes.push(`<span style="color:var(--red);font-size:11px;font-weight:500">📡 Network</span>`);
-    if (r.closedayError) errTypes.push(`<span style="color:var(--amber);font-size:11px;font-weight:500">📋 Closeday</span>`);
-    const errHtml = errTypes.join('<br>') || '—';
+  tbody.innerHTML=pageRows.map(r=>{
+    const isCrisis = r.ageLabel==='crisis';
 
-    // Note (truncated, clickable)
+    // Age chip
+    const ageHtml = !isResolved ? (()=>{
+      const label=fmtAge(r.ageDays);
+      return `<span class="age-chip ${r.ageLabel}">${
+        r.ageLabel==='crisis'?'🚨':r.ageLabel==='days13'?'⚠':r.ageLabel==='today'?'⚡':''
+      } ${label}</span>`;
+    })() : '';
+
+    // Timestamp cell
+    const tsCell = isCloseday
+      ? `<span class="timestamp">${fmtTS(r.closeday)}</span>`
+      : `<span class="timestamp">${fmtTS(r.lastData)}</span>`;
+
+    // Note: wrap text
     const noteHtml = r.note
-      ? `<span class="note-cell" title="${r.note.replace(/"/g,'&quot;')}" onclick="showNote(${r._idx})">${r.note.substring(0,40)}${r.note.length>40?'...':''}</span>`
-      : '<span style="color:var(--text-dim);font-size:11px">—</span>';
+      ? `<span class="note-wrap" onclick="showNote(${r._idx})" title="คลิกเพื่อดูทั้งหมด">${r.note}</span>`
+      : `<span style="color:var(--text-muted);font-size:11px">—</span>`;
 
     // Actions
-    const actions = r.status !== 'resolved'
+    const actions = r.status!=='resolved'
       ? `<div class="action-group">
            <button class="act-btn resolve" onclick="openResolveModal(${r._idx})">✓ Resolve</button>
-           <button class="act-btn notify" title="แจ้งเตือน" onclick="notifySite(${r._idx})">🔔</button>
+           <button class="act-btn notify"  onclick="notifySite(${r._idx})">🔔</button>
          </div>`
-      : `<div class="action-group">
-           <span style="font-size:11px;color:var(--green)">✅ เสร็จแล้ว</span>
-         </div>`;
+      : `<span style="color:var(--green);font-size:11px;font-weight:600">✅ เสร็จแล้ว</span>`;
 
-    return `<tr>
-      <td><span class="site-id">${r.siteId}</span></td>
-      <td><span class="site-name" title="${r.siteName}">${r.siteName}</span></td>
-      <td><span style="font-size:11px;color:var(--text-muted)">${r.province||'—'}</span></td>
-      <td><span class="timestamp">${formatTS(r.lastData)}</span></td>
-      <td><span class="timestamp">${formatTS(r.closeday)}</span></td>
-      <td>${durHtml}</td>
-      <td>${errHtml}</td>
+    return `<tr class="${isCrisis&&!isResolved?'crisis-row':''}">
+      <td class="single"><span class="site-id">${r.siteId}</span></td>
+      <td class="single">
+        <span class="site-name" title="${r.siteName}">${r.siteName}</span>
+      </td>
+      <td class="single"><span style="font-size:11px;color:var(--text-muted)">${r.province||'—'}</span></td>
+      <td class="single">${tsCell}</td>
+      ${!isResolved?`<td class="single">${ageHtml}</td>`:''}
       <td>${noteHtml}</td>
-      <td><span class="status-chip ${r.status}">${statusDot[r.status]} ${statusLabel[r.status]}</span></td>
-      <td>${actions}</td>
+      <td class="single"><span class="status-chip ${r.status}">${sdot[r.status]} ${slabel[r.status]}</span></td>
+      <td class="single">${actions}</td>
     </tr>`;
   }).join('');
 
-  document.getElementById('rowCount').textContent = `แสดง ${pageRows.length} จาก ${rows.length} รายการ`;
+  document.getElementById('rowCount').textContent=`แสดง ${pageRows.length} จาก ${rows.length} รายการ`;
   renderPagination(rows.length);
 }
 
-function renderPagination(total) {
-  const pages = Math.ceil(total / cfg.rowsPerPage);
-  const el = document.getElementById('pagination');
-  if (pages <= 1) { el.innerHTML = ''; return; }
-  let html = '';
-  const start = Math.max(1, currentPage - 2);
-  const end   = Math.min(pages, currentPage + 2);
-  if (start > 1) html += `<button class="page-btn" onclick="goPage(1)">1</button>`;
-  if (start > 2) html += `<span style="padding:0 4px;color:var(--text-dim)">…</span>`;
-  for (let i = start; i <= end; i++)
-    html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
-  if (end < pages - 1) html += `<span style="padding:0 4px;color:var(--text-dim)">…</span>`;
-  if (end < pages) html += `<button class="page-btn" onclick="goPage(${pages})">${pages}</button>`;
-  if (currentPage < pages) html += `<button class="page-btn" onclick="goPage(${currentPage+1})">›</button>`;
-  el.innerHTML = html;
+function renderPagination(total){
+  const pages=Math.ceil(total/cfg.rowsPerPage);
+  const el=document.getElementById('pagination');
+  if(pages<=1){el.innerHTML='';return;}
+  let h='';
+  const s=Math.max(1,currentPage-2), e=Math.min(pages,currentPage+2);
+  if(s>1) h+=`<button class="page-btn" onclick="goPage(1)">1</button>`;
+  if(s>2) h+=`<span style="padding:0 4px;color:var(--text-muted)">…</span>`;
+  for(let i=s;i<=e;i++) h+=`<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  if(e<pages-1) h+=`<span style="padding:0 4px;color:var(--text-muted)">…</span>`;
+  if(e<pages) h+=`<button class="page-btn" onclick="goPage(${pages})">${pages}</button>`;
+  if(currentPage<pages) h+=`<button class="page-btn" onclick="goPage(${currentPage+1})">›</button>`;
+  el.innerHTML=h;
 }
 
-// ─── CONTROLS ─────────────────────────────────────────────
-function switchTab(el, tab) {
-  document.querySelectorAll('.tab').forEach(t => t.className = 'tab');
-  currentTab = tab; currentPage = 1;
-  if (tab === 'network')  el.classList.add('active-red');
-  if (tab === 'closeday') el.classList.add('active-amber');
-  if (tab === 'resolved') el.classList.add('active-green');
+
+
+// ── KPI CLICK ──
+function kpiClick(filterKey){
+  if(kpiFilter === filterKey){ kpiFilter = null; } // toggle off
+  else { kpiFilter = filterKey; }
+  // switch tab if needed
+  if(filterKey && filterKey.startsWith('closeday')) {
+    if(currentTab!=='closeday'){ forceSwitchTab('closeday'); return; }
+  } else if(filterKey && filterKey.startsWith('resolved')) {
+    if(currentTab!=='resolved'){ forceSwitchTab('resolved'); return; }
+  } else if(filterKey && filterKey.startsWith('network')) {
+    if(currentTab!=='network'){ forceSwitchTab('network'); return; }
+  }
+  currentPage=1; renderAll();
+}
+function forceSwitchTab(tab){
+  const tabEls = document.querySelectorAll('.tab');
+  tabEls.forEach(t=>t.className='tab');
+  currentTab=tab;
+  const map={network:0,closeday:1,resolved:2};
+  const el=tabEls[map[tab]];
+  if(el){
+    if(tab==='network')  el.classList.add('t-red');
+    if(tab==='closeday') el.classList.add('t-amber');
+    if(tab==='resolved') el.classList.add('t-green');
+  }
+  currentPage=1; renderAll();
+}
+
+// ── SORT ──
+function applySort(col){
+  if(sortCol===col){ sortDir*=-1; }
+  else { sortCol=col; sortDir=1; }
+  currentPage=1;
   renderTable();
 }
 
-function onSearch(q) { searchQuery = q.toLowerCase(); currentPage = 1; renderTable(); }
-function goPage(p) { currentPage = p; renderTable(); }
-
-function setDayFilter(el, days) {
-  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  dayFilter = days; currentPage = 1;
-  renderTable();
+// ── CONTROLS ──
+function switchTab(el,tab){
+  document.querySelectorAll('.tab').forEach(t=>t.className='tab');
+  currentTab=tab; currentPage=1; kpiFilter=null;
+  if(tab==='network')  el.classList.add('t-red');
+  if(tab==='closeday') el.classList.add('t-amber');
+  if(tab==='resolved') el.classList.add('t-green');
+  renderAll();
 }
+function onSearch(q){ searchQuery=q.toLowerCase(); currentPage=1; renderTable(); }
+function goPage(p){ currentPage=p; renderTable(); }
 
-// ─── RESOLVE ──────────────────────────────────────────────
-function openResolveModal(idx) {
-  resolveTarget = idx;
-  const r = displayData.find(x => x._idx === idx);
-  document.getElementById('modalSite').textContent = `${r.siteId} · ${r.siteName}`;
-  document.getElementById('modalDetail').textContent =
-    `${r.province || ''} | คงเหลือล่าสุด: ${formatTS(r.lastData)}`;
-  document.getElementById('resolveNote').value = '';
+// ── RESOLVE ──
+function openResolveModal(idx){
+  resolveTarget=idx;
+  const r=displayData.find(x=>x._idx===idx);
+  document.getElementById('modalSite').textContent=`${r.siteId} · ${r.siteName}`;
+  document.getElementById('modalDetail').textContent=
+    `${r.province||''} | คงเหลือล่าสุด: ${fmtTS(r.lastData)} | ค้างมา: ${fmtAge(r.ageDays)}`;
+  document.getElementById('resolveNote').value='';
   document.getElementById('resolveModal').classList.add('open');
 }
-
-function confirmResolve() {
-  if (resolveTarget === null) return;
-  const note = document.getElementById('resolveNote').value;
-  const r = displayData.find(x => x._idx === resolveTarget);
-  resolvedIds.add(resolveTarget);
-  r.status = 'resolved';
-  r.resolveNote = note;
-
-  // Add timeline
-  const tl = document.getElementById('timeline');
-  const empty = tl.querySelector('.empty-state');
-  if (empty) tl.innerHTML = '';
-  const now = new Date();
-  const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} น.`;
-  const item = document.createElement('div');
-  item.className = 'tl-item';
-  item.innerHTML = `<div class="tl-dot green">✓</div>
+function confirmResolve(){
+  if(resolveTarget===null) return;
+  const note=document.getElementById('resolveNote').value;
+  const r=displayData.find(x=>x._idx===resolveTarget);
+  resolvedIds.add(resolveTarget); r.status='resolved'; r.resolveNote=note;
+  saveResolved(r.siteId, note, r.siteName);
+  saveResolved(r.siteId, note, r.siteName);  // 💾 persist
+  // Timeline
+  const tl=document.getElementById('timeline');
+  const emp=tl.querySelector('.empty-state'); if(emp) tl.innerHTML='';
+  const now=new Date();
+  const item=document.createElement('div'); item.className='tl-item';
+  item.innerHTML=`<div class="tl-dot green">✓</div>
     <div class="tl-content">
       <div class="tl-title">Resolved แล้ว</div>
       <div class="tl-site">${r.siteId} · ${r.siteName}</div>
-      <div class="tl-time">${timeStr}</div>
+      <div class="tl-time">${z(now.getHours())}:${z(now.getMinutes())} น.</div>
     </div>`;
   tl.prepend(item);
-
-  closeModal('resolveModal');
-  renderAll();
+  closeModal('resolveModal'); renderAll();
 }
 
-// ─── NOTE MODAL ───────────────────────────────────────────
-function showNote(idx) {
-  const r = displayData.find(x => x._idx === idx);
-  document.getElementById('noteBody').textContent = r.note || '—';
+// ── NOTE ──
+function showNote(idx){
+  const r=displayData.find(x=>x._idx===idx);
+  document.getElementById('noteBody').textContent=r.note||'—';
   document.getElementById('noteModal').classList.add('open');
 }
-
-function notifySite(idx) {
-  const r = displayData.find(x => x._idx === idx);
-  alert(`แจ้งเตือน: ${r.siteId} · ${r.siteName}\nโทร: ${r.phone || r.contact || '—'}`);
+function notifySite(idx){
+  const r=displayData.find(x=>x._idx===idx);
+  alert(`🔔 แจ้งเตือน\n${r.siteId} · ${r.siteName}\n📍 ${r.province}\n📞 ${r.phone||r.contact||'—'}`);
 }
-
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-// Click outside modal to close
-document.addEventListener('click', e => {
-  ['resolveModal','noteModal'].forEach(id => {
-    const el = document.getElementById(id);
-    if (e.target === el) el.classList.remove('open');
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.addEventListener('click',e=>{
+  ['resolveModal','noteModal'].forEach(id=>{
+    if(e.target===document.getElementById(id))
+      document.getElementById(id).classList.remove('open');
   });
 });
 
-// ─── EXPORT ───────────────────────────────────────────────
-function exportCSV() {
-  const rows = getFiltered();
-  const headers = ['รหัสสถานี','ชื่อสถานี','จังหวัด','คงเหลือล่าสุด','ปิดวันล่าสุด',
-                   'ขาดการเชื่อมต่อ','ประเภท Error','หมายเหตุ','Status'];
-  const csvRows = rows.map(r => [
-    r.siteId, r.siteName, r.province,
-    formatTS(r.lastData), formatTS(r.closeday),
-    r.diffMin !== null ? formatDuration(r.diffMin) : '—',
-    [r.networkError?'Network':'', r.closedayError?'Closeday':''].filter(Boolean).join('+'),
-    (r.note || '').replace(/,/g,' '), r.status
-  ]);
-  const csv = [headers, ...csvRows].map(r => r.join(',')).join('\n');
-  const blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8'});
-  const a = document.createElement('a');
-  const dateStr = new Date().toISOString().slice(0,10);
-  a.href = URL.createObjectURL(blob);
-  a.download = `network_error_report_${dateStr}.csv`;
+// ── EXPORT ──
+function exportCSV(){
+  const rows=getFiltered();
+  const h=['รหัสสถานี','ชื่อสถานี','จังหวัด','คงเหลือล่าสุด','ปิดวันล่าสุด','ค้างมา (วัน)','หมายเหตุ','Status'];
+  const body=rows.map(r=>[
+    r.siteId, `"${r.siteName}"`, r.province,
+    fmtTS(r.lastData), fmtTS(r.closeday),
+    r.ageDays<999?Math.floor(r.ageDays):'—',
+    `"${(r.note||'').replace(/"/g,'""')}"`, r.status
+  ].join(','));
+  const csv=[h.join(','),...body].join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`network_error_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
 }
 
-// ─── SHOW DASHBOARD ───────────────────────────────────────
-function showDashboard() {
-  document.getElementById('uploadZone').classList.add('hidden');
-  document.getElementById('dashboard').style.display = 'block';
-  document.getElementById('dataTimestamp').textContent = new Date().toLocaleString('th-TH');
-  document.getElementById('fileInfo').textContent =
-    cfg.mode === 'file'
-      ? `📂 ${loadedFileName} · โหลดเมื่อ ${loadedFileTime}`
-      : `🔄 API Mode · ${cfg.api.url}`;
+
+// ── PAGE NAVIGATION ──
+let currentPage2 = 'dashboard';
+function showPage(page){
+  currentPage2 = page;
+  const dash = document.getElementById('dashboard');
+  const anal = document.getElementById('analysisPage');
+  const uz   = document.getElementById('uploadZone');
+  const nb1  = document.getElementById('navDashboard');
+  const nb2  = document.getElementById('navAnalysis');
+  if(page === 'analysis'){
+    if(dash) dash.style.display = 'none';
+    if(uz)   uz.style.display   = 'none';
+    if(anal) anal.style.display = 'block';
+    nb1.classList.remove('active');
+    nb2.classList.add('active');
+    renderAnalysis();
+  } else {
+    if(anal) anal.style.display = 'none';
+    if(uz && displayData.length===0) uz.style.display = 'block';
+    if(dash && displayData.length>0) dash.style.display = 'block';
+    nb1.classList.add('active');
+    nb2.classList.remove('active');
+  }
 }
+
+// ── ANALYSIS RENDER ──
+function renderAnalysis(){
+  if(!displayData.length) return;
+  const active = displayData.filter(r=>r.status!=='resolved');
+  const crisis = active.filter(r=>r.ageDays>1).sort((a,b)=>b.ageDays-a.ageDays);
+
+  // Stats
+  const avgDay = active.length ? (active.reduce((s,r)=>s+r.ageDays,0)/active.length).toFixed(1) : 0;
+  setEl('aTot',    active.length);
+  setEl('aCrisis', crisis.length);
+  setEl('aAvgDay', avgDay);
+
+  renderCauseChart(active);
+  renderTrendChart(active);
+  renderCrisisTable(crisis);
+  renderRootCause(active);
+}
+
+function extractCause(note){
+  const causes = [];
+  if(!note) return ['ไม่ระบุ'];
+  if(/อินเตอร์|internet/i.test(note))          causes.push('อินเทอร์เน็ต');
+  if(/คอมพิวเตอร์/i.test(note))                 causes.push('คอมพิวเตอร์');
+  if(/atg.*เสีย|เสีย.*atg/i.test(note))        causes.push('ATG เสีย');
+  if(/ping ไม่เจอ/i.test(note))                causes.push('Ping ATG ไม่เจอ');
+  if(/ปิดปรับปรุง/i.test(note))                causes.push('ปิดปรับปรุง');
+  if(/ช่างเข้า|เปิดงานช่าง/i.test(note))       causes.push('ส่งช่าง');
+  if(/ค่าเช่า/i.test(note))                    causes.push('ค้างค่าเช่า');
+  if(/time.zone/i.test(note))                  causes.push('Time-Zone');
+  if(/สถานีทดสอบ/i.test(note))                 causes.push('สถานีทดสอบ');
+  if(/bir box/i.test(note))                    causes.push('BIR BOX');
+  if(causes.length===0){
+    if(/ติดต่อ/.test(note)) causes.push('รอติดต่อกลับ');
+    else causes.push('ไม่ระบุ');
+  }
+  return causes;
+}
+
+function renderCauseChart(active){
+  const counts = {};
+  active.forEach(r=>{
+    extractCause(r.note).forEach(c=>{ counts[c]=(counts[c]||0)+1; });
+  });
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const max = sorted[0]?.[1]||1;
+  const colors = ['#ff3b5c','#f59e0b','#f97316','#3b82f6','#10b981','#a78bfa','#06b6d4','#ec4899','#84cc16','#f43f5e'];
+  const html2 = sorted.map(([cause,cnt],i)=>{
+    const pct = Math.round(cnt/max*100);
+    const col = colors[i%colors.length];
+    return `<div class="cause-row">
+      <div class="cause-label">${cause}</div>
+      <div class="cause-bar-wrap">
+        <div class="cause-bar" style="width:${pct}%;background:${col}">
+          <span class="cause-bar-label">${cnt} สถานี</span>
+        </div>
+      </div>
+      <div class="cause-count" style="color:${col}">${cnt}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('causeChart').innerHTML = html2 || '<div style="color:var(--text-muted);font-size:12px">ไม่มีข้อมูล</div>';
+}
+
+function renderTrendChart(active){
+  // Group by days ago bucket
+  const buckets = {};
+  active.forEach(r=>{
+    const d = Math.floor(r.ageDays);
+    buckets[d] = (buckets[d]||0)+1;
+  });
+  const maxDay = Math.max(...Object.keys(buckets).map(Number), 0);
+  const days = [];
+  for(let i=0;i<=Math.min(maxDay,14);i++) days.push(i);
+  const maxVal = Math.max(...days.map(d=>buckets[d]||0), 1);
+
+  let bars = '';
+  days.forEach(d=>{
+    const cnt = buckets[d]||0;
+    const h   = Math.round(cnt/maxVal*64);
+    const col = d===0?'today':'past';
+    const lbl = d===0?'วันนี้':`${d}วัน`;
+    bars += `<div class="trend-bar-wrap">
+      <div class="trend-val" style="color:${d===0?'var(--amber)':'var(--red)'}">${cnt||''}</div>
+      <div class="trend-bar ${col}" style="height:${Math.max(h,2)}px"></div>
+      <div class="trend-label">${lbl}</div>
+    </div>`;
+  });
+  // Also show sites >14 days
+  const longTail = active.filter(r=>r.ageDays>14);
+  let extra = '';
+  if(longTail.length){
+    extra = `<div style="margin-top:12px;padding:8px 10px;background:var(--crisis-dim);border:1px solid rgba(255,26,26,.3);border-radius:8px;font-size:11px;color:var(--crisis);">
+      🚨 ค้างนาน &gt;14 วัน: <strong>${longTail.length} สถานี</strong>
+      ${longTail.map(r=>`<span style="margin-left:8px;font-family:var(--mono)">${r.siteId}(${Math.floor(r.ageDays)}วัน)</span>`).join('')}
+    </div>`;
+  }
+  document.getElementById('trendChart').innerHTML =
+    `<div class="trend-row">${bars}</div>${extra}`;
+}
+
+function renderCrisisTable(crisis){
+  if(!crisis.length){
+    document.getElementById('crisisBody').innerHTML =
+      '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--green)">✅ ไม่มีสถานีวิกฤติ</td></tr>';
+    return;
+  }
+  document.getElementById('crisisBody').innerHTML = crisis.map(r=>{
+    const d = Math.floor(r.ageDays);
+    const badgeCls = d>=100?'c4':d>=7?'c3':d>=3?'c2':'c1';
+    const ultraCls = d>=100?'ultra':'';
+    const causes   = extractCause(r.note).join(', ');
+    // Get latest note line
+    const noteLine = r.note.split('\n').filter(l=>l.trim()).slice(0,1).join('').substring(0,80);
+    return `<tr class="${ultraCls}">
+      <td><span class="age-badge ${badgeCls}">${d} วัน</span></td>
+      <td><span style="font-family:var(--mono);color:var(--blue);font-size:11px">${r.siteId}</span></td>
+      <td style="font-size:12px;font-weight:500;max-width:200px">${r.siteName.substring(0,45)}${r.siteName.length>45?'...':''}</td>
+      <td style="font-size:11px;color:var(--text-muted)">${r.province||'—'}</td>
+      <td style="font-size:11px;color:var(--amber)">${causes}</td>
+      <td style="font-size:11px;color:var(--text-dim);max-width:220px;word-break:break-word">${noteLine||'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderRootCause(active){
+  const causes = {};
+  active.forEach(r=>{ extractCause(r.note).forEach(c=>{ causes[c]=(causes[c]||0)+1; }); });
+  const top = Object.entries(causes).sort((a,b)=>b[1]-a[1]).slice(0,4);
+  const rcMap = {
+    'อินเทอร์เน็ต': {icon:'📡', rc:'ISP/Router/SIM มีปัญหาหรือหลุดบ่อย', action:'ติดตั้ง SIM Backup หรือ Failover Router สำหรับสถานีที่เกิดซ้ำ'},
+    'คอมพิวเตอร์':  {icon:'💻', rc:'PC ค้าง / Windows crash / AMS service หยุดทำงาน', action:'ตั้ง Auto-restart AMS service + Remote restart ผ่าน AnyDesk'},
+    'ATG เสีย':     {icon:'⚙️', rc:'Hardware ATG ชำรุด ต้องเปลี่ยนอะไหล่', action:'สร้าง SLA ส่งช่างภายใน 24 ชม. เมื่อ ATG เสีย'},
+    'รอติดต่อกลับ': {icon:'📞', rc:'ทีมงานติดต่อสถานีแล้วแต่ยังไม่ได้รับการแก้ไข', action:'กำหนด SLA: ถ้าสถานีไม่ดำเนินการภายใน 4 ชม. ให้ Escalate ทันที'},
+    'ส่งช่าง':      {icon:'🔧', rc:'รอช่างเข้าพื้นที่ / ค้างอะไหล่', action:'Track Job Order ใน Dashboard เพิ่ม ETA ช่าง'},
+    'Ping ATG ไม่เจอ':{icon:'🔌',rc:'ATG หลุดจาก Network ภายในสถานี', action:'ตรวจสอบ IP/Switch/Cable ที่สถานี ทำ Network Diagram'},
+    'ค้างค่าเช่า':  {icon:'💰', rc:'ลูกค้าค้างชำระ ทำให้ไม่ยอมให้แก้ไข', action:'แจ้ง Account Manager ติดตามค่าเช่าควบคู่กับการแก้ไข'},
+    'BIR BOX':      {icon:'📦', rc:'กล่อง BIR BOX หลุดการเชื่อมต่อ', action:'แนะนำสถานีให้ปิด-เปิด BIR BOX เองได้ + คู่มือง่ายๆ'},
+  };
+  const cards = top.map(([cause, cnt])=>{
+    const info = rcMap[cause] || {icon:'❓', rc:'สาเหตุไม่ชัดเจน', action:'รวบรวมข้อมูลเพิ่มเติมจากหมายเหตุ'};
+    return `<div class="rc-card">
+      <div class="rc-title">${info.icon} ${cause} <span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);font-weight:400">(${cnt} สถานี)</span></div>
+      <div class="rc-body">🔍 <strong>Root Cause:</strong> ${info.rc}</div>
+      <div class="rc-action">✅ แนวทาง: ${info.action}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('rcGrid').innerHTML = cards || '<div style="color:var(--text-muted)">อัปโหลดไฟล์เพื่อวิเคราะห์</div>';
+}
+
+// ── SHOW ──
+function showDashboard(){
+  document.getElementById('uploadZone').classList.add('hidden');
+  document.getElementById('dashboard').style.display='block';
+  document.getElementById('dataTimestamp').textContent=new Date().toLocaleString('th-TH');
+  
+    cfg.mode==='file'?`📂 ${loadedFileName}`:`🔄 ${cfg.api?.url||'API'}`;
+}
+
+// ── AUTO LOAD ON STARTUP ──
+window.addEventListener('DOMContentLoaded', ()=>{
+  updateStorageBadge();
+  if(typeof DASHBOARD_CONFIG==='undefined'||DASHBOARD_CONFIG.mode==='file'){
+    tryAutoLoad();
+  }
+});
 </script>
 </body>
 </html>
