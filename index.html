@@ -15,7 +15,6 @@
   --orange:#f97316;--orange-dim:rgba(249,115,22,.13);
   --green:#10b981;--green-dim:rgba(16,185,129,.12);
   --blue:#3b82f6;--blue-dim:rgba(59,130,246,.12);
-  --purple:#a78bfa;--purple-dim:rgba(167,139,250,.12);
   --crisis:#ff1a1a;--crisis-dim:rgba(255,26,26,.18);
   --text:#e2e8f0;--text-muted:#64748b;--text-dim:#94a3b8;
   --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans Thai',sans-serif;
@@ -27,44 +26,36 @@ body::before{content:'';position:fixed;inset:0;
     linear-gradient(90deg,rgba(59,130,246,.03) 1px,transparent 1px);
   background-size:40px 40px;pointer-events:none;z-index:0;}
 
-/* ── HEADER ── */
+/* HEADER */
 header{position:relative;z-index:10;background:rgba(15,22,35,.97);
   border-bottom:1px solid var(--border2);padding:0 24px;
   display:flex;align-items:center;justify-content:space-between;
-  height:56px;backdrop-filter:blur(12px);
-  box-shadow:0 1px 0 var(--border2),0 4px 24px rgba(0,0,0,.4);}
-.logo{display:flex;align-items:center;gap:10px;}
-.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--red),#ff6b35);
-  border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;
-  box-shadow:0 0 20px var(--red-glow);}
-.logo-text{font-size:15px;font-weight:700;letter-spacing:.02em;color:var(--text);}
+  height:56px;backdrop-filter:blur(12px);}
+.logo-text{font-size:15px;font-weight:700;color:var(--text);}
 .logo-sub{font-size:11px;color:var(--text-muted);font-family:var(--mono);}
 .header-right{display:flex;align-items:center;gap:10px;}
-.mode-badge{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;
-  font-size:11px;font-family:var(--mono);font-weight:500;border:1px solid;}
-.mode-badge.file{background:var(--blue-dim);color:var(--blue);border-color:rgba(59,130,246,.3);}
-.mode-badge.api{background:var(--green-dim);color:var(--green);border-color:rgba(16,185,129,.3);}
-.live-dot{width:6px;height:6px;border-radius:50%;animation:pulse 1.5s infinite;}
-.file .live-dot{background:var(--blue);}
-.api  .live-dot{background:var(--green);}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.storage-badge{display:flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;
+  font-size:10px;font-family:var(--mono);font-weight:600;
+  background:var(--green-dim);color:var(--green);border:1px solid rgba(16,185,129,.3);}
+.storage-badge.warn{background:var(--amber-dim);color:var(--amber);border-color:rgba(245,158,11,.3);}
+.nav-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;
+  padding:7px 14px;font-size:12px;font-weight:600;color:var(--text-dim);cursor:pointer;
+  transition:all .2s;font-family:var(--sans);}
+.nav-btn:hover{border-color:var(--blue);color:var(--blue);}
+.nav-btn.active{background:var(--blue-dim);border-color:var(--blue);color:var(--blue);}
 .upload-btn{background:linear-gradient(135deg,var(--red),#e0295a);color:#fff;border:none;
   border-radius:8px;padding:7px 16px;font-size:13px;font-family:var(--sans);font-weight:700;
   cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;
   box-shadow:0 0 16px var(--red-glow);}
-.upload-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px var(--red-glow);}
-.refresh-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;
-  padding:7px 12px;font-size:13px;color:var(--blue);cursor:pointer;transition:all .2s;
-  font-family:var(--sans);}
-.refresh-btn:hover{border-color:var(--blue);}
+.upload-btn:hover{transform:translateY(-1px);}
 
-/* ── MAIN ── */
+/* MAIN */
 main{position:relative;z-index:1;padding:20px 24px;max-width:1500px;margin:0 auto;}
 
 /* UPLOAD ZONE */
 .upload-zone{background:var(--surface);border:2px dashed var(--border2);border-radius:16px;
-  padding:56px 24px;text-align:center;margin-bottom:20px;transition:all .2s;cursor:pointer;}
-.upload-zone:hover,.upload-zone.drag{border-color:var(--red);background:var(--red-dim);}
+  padding:56px 24px;text-align:center;cursor:pointer;transition:all .2s;}
+.upload-zone:hover{border-color:var(--red);background:var(--red-dim);}
 .upload-zone.hidden{display:none;}
 .upload-icon{font-size:52px;margin-bottom:14px;}
 .upload-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;}
@@ -75,32 +66,32 @@ main{position:relative;z-index:1;padding:20px 24px;max-width:1500px;margin:0 aut
 .date-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .date-label{font-size:13px;color:var(--text-muted);font-family:var(--mono);}
 .date-label span{color:var(--blue);font-weight:500;}
-.file-info{font-size:11px;color:var(--text-muted);font-family:var(--mono);
-  background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:3px 9px;margin-top:4px;}
 
 /* KPI */
 .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
 .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;
-  padding:14px 18px;position:relative;overflow:hidden;transition:all .2s;}
-.kpi-card:hover{transform:translateY(-2px);border-color:var(--border2);}
+  padding:14px 18px;position:relative;overflow:hidden;transition:all .2s;cursor:pointer;}
+.kpi-card:hover{transform:translateY(-2px);}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
-.kpi-card.red::before   {background:linear-gradient(90deg,var(--red),#ff6b35);}
-.kpi-card.amber::before {background:var(--amber);}
+.kpi-card.red::before{background:linear-gradient(90deg,var(--red),#ff6b35);}
+.kpi-card.amber::before{background:var(--amber);}
 .kpi-card.orange::before{background:var(--orange);}
-.kpi-card.crisis::before{background:linear-gradient(90deg,var(--crisis),var(--red));
-  box-shadow:0 0 8px var(--red-glow);}
-.kpi-card.blue::before  {background:var(--blue);}
+.kpi-card.green::before{background:var(--green);}
+.kpi-card.blue::before{background:var(--blue);}
+.kpi-card.crisis::before{background:linear-gradient(90deg,var(--crisis),var(--red));}
 .kpi-card.crisis{border-color:rgba(255,26,26,.3);background:linear-gradient(135deg,var(--surface),var(--crisis-dim));}
-.kpi-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--text-muted);margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.kpi-card.kpi-active{box-shadow:0 0 0 2px var(--blue);}
+.kpi-card.kpi-active.red{box-shadow:0 0 0 2px var(--red-glow);}
+.kpi-card.kpi-active.crisis{box-shadow:0 0 0 2px rgba(255,26,26,.5);}
+.kpi-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
 .kpi-value{font-size:34px;font-weight:700;font-family:var(--mono);line-height:1;margin-bottom:5px;}
-.kpi-card.red    .kpi-value{color:var(--red);}
-.kpi-card.amber  .kpi-value{color:var(--amber);}
+.kpi-card.red .kpi-value{color:var(--red);}
+.kpi-card.amber .kpi-value{color:var(--amber);}
 .kpi-card.orange .kpi-value{color:var(--orange);}
+.kpi-card.green .kpi-value{color:var(--green);}
+.kpi-card.blue .kpi-value{color:var(--blue);}
 .kpi-card.crisis .kpi-value{color:var(--crisis);text-shadow:0 0 12px var(--red-glow);}
-.kpi-card.blue   .kpi-value{color:var(--blue);}
 .kpi-sub{font-size:11px;color:var(--text-muted);}
-.kpi-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:26px;opacity:.12;}
 .crisis-pulse{animation:crisis-blink 1.2s infinite;}
 @keyframes crisis-blink{0%,100%{opacity:1}50%{opacity:.5}}
 
@@ -115,12 +106,11 @@ main{position:relative;z-index:1;padding:20px 24px;max-width:1500px;margin:0 aut
 .panel-actions{display:flex;gap:8px;align-items:center;}
 .search-box{background:var(--bg);border:1px solid var(--border2);border-radius:7px;
   padding:5px 10px;font-size:12px;color:var(--text);font-family:var(--sans);
-  outline:none;width:200px;transition:border-color .2s;}
-.search-box:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(59,130,246,.15);}
+  outline:none;width:200px;}
+.search-box:focus{border-color:var(--blue);}
 .search-box::placeholder{color:var(--text-muted);}
 .icon-btn{background:var(--surface2);border:1px solid var(--border);border-radius:7px;
-  padding:5px 12px;font-size:12px;color:var(--text-dim);cursor:pointer;
-  transition:all .15s;font-family:var(--sans);}
+  padding:5px 12px;font-size:12px;color:var(--text-dim);cursor:pointer;font-family:var(--sans);}
 .icon-btn:hover{border-color:var(--blue);color:var(--blue);}
 
 /* TABS */
@@ -128,11 +118,11 @@ main{position:relative;z-index:1;padding:20px 24px;max-width:1500px;margin:0 aut
 .tab{padding:10px 20px;font-size:12px;font-weight:500;cursor:pointer;
   border-bottom:2px solid transparent;color:var(--text-muted);transition:all .15s;
   display:flex;align-items:center;gap:6px;}
-.tab.t-red   {color:var(--red);   border-bottom-color:var(--red);   background:var(--red-dim);}
-.tab.t-amber {color:var(--amber); border-bottom-color:var(--amber); background:var(--amber-dim);}
-.tab.t-green {color:var(--green); border-bottom-color:var(--green); background:var(--green-dim);}
+.tab.t-red{color:var(--red);border-bottom-color:var(--red);background:var(--red-dim);}
+.tab.t-amber{color:var(--amber);border-bottom-color:var(--amber);background:var(--amber-dim);}
+.tab.t-green{color:var(--green);border-bottom-color:var(--green);background:var(--green-dim);}
 .tab-count{font-family:var(--mono);font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700;}
-.tab.t-red   .tab-count{background:var(--red-dim);  color:var(--red);}
+.tab.t-red .tab-count{background:var(--red-dim);color:var(--red);}
 .tab.t-amber .tab-count{background:var(--amber-dim);color:var(--amber);}
 .tab.t-green .tab-count{background:var(--green-dim);color:var(--green);}
 .tab:not(.t-red):not(.t-amber):not(.t-green) .tab-count{background:var(--surface2);color:var(--text-muted);}
@@ -142,54 +132,40 @@ main{position:relative;z-index:1;padding:20px 24px;max-width:1500px;margin:0 aut
 table{width:100%;border-collapse:collapse;font-size:12px;}
 thead th{background:var(--bg);padding:9px 12px;text-align:left;font-size:10px;font-weight:700;
   letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);
-  border-bottom:1px solid var(--border2);white-space:nowrap;}
+  border-bottom:1px solid var(--border2);white-space:nowrap;cursor:pointer;user-select:none;}
+thead th:hover{color:var(--text);}
+thead th.sort-asc::after{content:' ▲';color:var(--blue);}
+thead th.sort-desc::after{content:' ▼';color:var(--blue);}
 tbody tr{border-bottom:1px solid rgba(30,45,69,.5);transition:background .1s;}
 tbody tr:hover{background:rgba(59,130,246,.04);}
 tbody tr.crisis-row{background:rgba(255,26,26,.05);}
 tbody tr.crisis-row:hover{background:rgba(255,26,26,.09);}
 tbody td{padding:9px 12px;vertical-align:top;}
-tbody td.single{vertical-align:middle;white-space:nowrap;}
-
-/* CELLS */
-.site-id{font-family:var(--mono);font-size:11px;color:var(--blue);font-weight:600;white-space:nowrap;}
-.site-name{font-weight:600;font-size:12px;color:var(--text);white-space:nowrap;
-  max-width:220px;overflow:hidden;text-overflow:ellipsis;display:block;}
-.province-tag{font-size:10px;color:var(--text-muted);margin-top:2px;white-space:nowrap;}
+tbody td.mid{vertical-align:middle;white-space:nowrap;}
+.site-id{font-family:var(--mono);font-size:11px;color:var(--blue);font-weight:600;}
+.site-name{font-weight:600;font-size:12px;color:var(--text);white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis;display:block;}
 .timestamp{font-family:var(--mono);font-size:11px;color:var(--text-muted);white-space:nowrap;}
-
-/* DURATION / AGE */
-.age-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;
-  font-family:var(--mono);font-size:11px;font-weight:700;white-space:nowrap;}
-.age-chip.today  {background:var(--amber-dim); color:var(--amber); border:1px solid rgba(245,158,11,.3);}
-.age-chip.days13 {background:var(--orange-dim);color:var(--orange);border:1px solid rgba(249,115,22,.3);}
-.age-chip.crisis {background:var(--crisis-dim);color:var(--crisis);border:1px solid rgba(255,26,26,.4);
-  animation:crisis-blink 1.4s infinite;box-shadow:0 0 8px rgba(255,26,26,.2);}
-
-/* NOTE */
-.note-wrap{font-size:11px;color:var(--text-dim);line-height:1.5;max-width:220px;
-  white-space:normal;word-break:break-word;cursor:pointer;}
-.note-wrap:hover{color:var(--text);}
-
-/* STATUS */
-.status-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;
-  font-size:10px;font-weight:700;letter-spacing:.04em;white-space:nowrap;}
-.status-chip.open    {background:var(--red-dim);  color:var(--red);  border:1px solid rgba(255,59,92,.25);}
+.age-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-family:var(--mono);font-size:11px;font-weight:700;white-space:nowrap;}
+.age-chip.today{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,.3);}
+.age-chip.days13{background:var(--orange-dim);color:var(--orange);border:1px solid rgba(249,115,22,.3);}
+.age-chip.crisis{background:var(--crisis-dim);color:var(--crisis);border:1px solid rgba(255,26,26,.4);animation:crisis-blink 1.4s infinite;}
+.status-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;white-space:nowrap;}
+.status-chip.open{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,59,92,.25);}
 .status-chip.progress{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,.25);}
 .status-chip.resolved{background:var(--green-dim);color:var(--green);border:1px solid rgba(16,185,129,.25);}
-
-/* ACTIONS */
-.action-group{display:flex;gap:4px;flex-wrap:nowrap;}
-.act-btn{padding:4px 8px;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;
-  border:1px solid;transition:all .15s;font-family:var(--sans);white-space:nowrap;}
+.note-wrap{font-size:11px;color:var(--text-dim);line-height:1.5;max-width:220px;white-space:normal;word-break:break-word;cursor:pointer;}
+.note-wrap:hover{color:var(--text);}
+.action-group{display:flex;gap:4px;}
+.act-btn{padding:4px 8px;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;border:1px solid;transition:all .15s;font-family:var(--sans);white-space:nowrap;}
 .act-btn.resolve{border-color:rgba(16,185,129,.3);color:var(--green);background:var(--green-dim);}
 .act-btn.resolve:hover{background:rgba(16,185,129,.22);}
-.act-btn.notify {border-color:rgba(245,158,11,.3); color:var(--amber);background:var(--amber-dim);}
-.act-btn.notify:hover {background:rgba(245,158,11,.22);}
+.act-btn.notify{border-color:rgba(245,158,11,.3);color:var(--amber);background:var(--amber-dim);}
+.act-btn.notify:hover{background:rgba(245,158,11,.22);}
+.empty-state{text-align:center;padding:48px 24px;color:var(--text-muted);}
 
 /* FOOTER */
 .table-footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;
-  align-items:center;justify-content:space-between;font-size:11px;
-  color:var(--text-muted);font-family:var(--mono);}
+  align-items:center;justify-content:space-between;font-size:11px;color:var(--text-muted);font-family:var(--mono);}
 .pagination{display:flex;gap:4px;}
 .page-btn{width:26px;height:26px;display:flex;align-items:center;justify-content:center;
   border-radius:5px;font-size:11px;cursor:pointer;border:1px solid var(--border);
@@ -197,213 +173,115 @@ tbody td.single{vertical-align:middle;white-space:nowrap;}
 .page-btn.active{background:var(--red);color:#fff;border-color:var(--red);font-weight:700;}
 .page-btn:hover:not(.active){border-color:var(--blue);color:var(--blue);}
 
-/* EMPTY */
-.empty-state{text-align:center;padding:48px 24px;color:var(--text-muted);}
-.empty-icon{font-size:36px;margin-bottom:8px;}
-
 /* SIDE */
 .side-col{display:flex;flex-direction:column;gap:14px;}
 .mini-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
-.mini-header{padding:11px 16px;border-bottom:1px solid var(--border);font-size:10px;
-  font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);
-  background:var(--surface2);display:flex;align-items:center;gap:6px;}
-
-/* SUMMARY BARS */
+.mini-header{padding:11px 16px;border-bottom:1px solid var(--border);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);background:var(--surface2);display:flex;align-items:center;gap:6px;}
 .summary-list{padding:12px 16px;display:flex;flex-direction:column;gap:10px;}
 .sum-row{display:flex;align-items:center;gap:10px;}
 .sum-label{font-size:11px;color:var(--text-dim);flex:1;white-space:nowrap;}
 .sum-bar-wrap{flex:2;height:5px;background:var(--bg);border-radius:3px;overflow:hidden;border:1px solid var(--border);}
 .sum-bar{height:100%;border-radius:3px;transition:width .7s ease;}
 .sum-val{font-family:var(--mono);font-size:11px;font-weight:700;width:24px;text-align:right;}
-
-/* DAILY BREAKDOWN */
 .daily-list{padding:12px 16px;display:flex;flex-direction:column;gap:8px;}
-.daily-row{display:flex;align-items:center;justify-content:space-between;
-  padding:8px 10px;border-radius:8px;border:1px solid var(--border);}
-.daily-row.today  {border-color:rgba(245,158,11,.3); background:var(--amber-dim);}
-.daily-row.days13 {border-color:rgba(249,115,22,.3); background:var(--orange-dim);}
-.daily-row.crisis {border-color:rgba(255,26,26,.4);  background:var(--crisis-dim);}
+.daily-row{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:8px;border:1px solid var(--border);}
+.daily-row.today{border-color:rgba(245,158,11,.3);background:var(--amber-dim);}
+.daily-row.days13{border-color:rgba(249,115,22,.3);background:var(--orange-dim);}
+.daily-row.crisis{border-color:rgba(255,26,26,.4);background:var(--crisis-dim);}
 .daily-label{font-size:11px;font-weight:600;}
-.daily-row.today  .daily-label{color:var(--amber);}
+.daily-row.today .daily-label{color:var(--amber);}
 .daily-row.days13 .daily-label{color:var(--orange);}
 .daily-row.crisis .daily-label{color:var(--crisis);}
 .daily-count{font-family:var(--mono);font-size:16px;font-weight:700;}
-.daily-row.today  .daily-count{color:var(--amber);}
+.daily-row.today .daily-count{color:var(--amber);}
 .daily-row.days13 .daily-count{color:var(--orange);}
 .daily-row.crisis .daily-count{color:var(--crisis);}
 .daily-sub{font-size:10px;color:var(--text-muted);}
-
-/* TIMELINE */
-.timeline{padding:12px 16px;display:flex;flex-direction:column;gap:0;max-height:240px;overflow-y:auto;}
+.timeline{padding:12px 16px;display:flex;flex-direction:column;gap:0;max-height:200px;overflow-y:auto;}
 .tl-item{display:flex;gap:10px;padding-bottom:14px;position:relative;}
-.tl-item:not(:last-child)::after{content:'';position:absolute;left:7px;top:16px;bottom:0;
-  width:1px;background:var(--border);}
-.tl-dot{width:15px;height:15px;border-radius:50%;flex-shrink:0;margin-top:2px;
-  display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;}
-.tl-dot.red  {background:var(--red-dim);  border:2px solid var(--red);  color:var(--red);}
+.tl-item:not(:last-child)::after{content:'';position:absolute;left:7px;top:16px;bottom:0;width:1px;background:var(--border);}
+.tl-dot{width:15px;height:15px;border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;}
 .tl-dot.green{background:var(--green-dim);border:2px solid var(--green);color:var(--green);}
 .tl-content{flex:1;}
 .tl-title{font-size:12px;font-weight:600;color:var(--text);}
-.tl-site {font-size:11px;font-family:var(--mono);color:var(--text-muted);}
-.tl-time {font-size:10px;color:var(--text-muted);margin-top:2px;}
-
-/* NOTIFY */
+.tl-site{font-size:11px;font-family:var(--mono);color:var(--text-muted);}
+.tl-time{font-size:10px;color:var(--text-muted);margin-top:2px;}
 .notify-form{padding:12px 16px;display:flex;flex-direction:column;gap:8px;}
-.notify-option{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;
-  background:var(--bg);border:1px solid var(--border);cursor:pointer;transition:all .15s;}
+.notify-option{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--border);cursor:pointer;transition:all .15s;}
 .notify-option:hover{border-color:var(--blue);}
-.notify-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;
-  justify-content:center;font-size:15px;}
-.notify-icon.line {background:rgba(16,185,129,.15);}
-.notify-icon.email{background:var(--blue-dim);}
-.notify-info{flex:1;}
+.notify-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;}
 .notify-name{font-size:12px;font-weight:500;color:var(--text);}
 .notify-desc{font-size:10px;color:var(--text-muted);}
-.send-btn{background:linear-gradient(135deg,var(--red),#e0295a);color:#fff;border:none;
-  border-radius:8px;padding:9px;font-size:12px;font-weight:700;cursor:pointer;
-  font-family:var(--sans);transition:all .2s;text-align:center;
-  box-shadow:0 0 12px var(--red-glow);}
-.send-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px var(--red-glow);}
+.send-btn{background:linear-gradient(135deg,var(--red),#e0295a);color:#fff;border:none;border-radius:8px;padding:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);transition:all .2s;text-align:center;}
+.send-btn:hover{transform:translateY(-1px);}
 
-/* MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);
-  z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
-.modal-overlay.open{display:flex;}
-.modal{background:var(--surface2);border:1px solid var(--border2);border-radius:14px;
-  padding:24px;width:420px;box-shadow:0 20px 60px rgba(0,0,0,.6);}
-.modal h3{font-size:15px;font-weight:700;margin-bottom:4px;color:var(--text);}
-.modal-site{font-size:12px;font-family:var(--mono);color:var(--blue);margin-bottom:3px;}
-.modal-detail{font-size:11px;color:var(--text-muted);margin-bottom:16px;}
-.modal textarea{width:100%;background:var(--bg);border:1px solid var(--border2);
-  border-radius:8px;padding:10px 12px;color:var(--text);font-family:var(--sans);
-  font-size:13px;resize:none;outline:none;transition:border-color .2s;}
-.modal textarea:focus{border-color:var(--blue);}
-.modal-actions{display:flex;gap:8px;margin-top:12px;}
-.modal-cancel{flex:1;background:transparent;border:1px solid var(--border);border-radius:8px;
-  padding:9px;font-size:13px;color:var(--text-muted);cursor:pointer;font-family:var(--sans);}
-.modal-confirm{flex:2;background:linear-gradient(135deg,var(--green),#059669);border:none;
-  border-radius:8px;padding:9px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;
-  font-family:var(--sans);transition:all .2s;}
-.modal-confirm:hover{transform:translateY(-1px);}
-
-/* NOTE MODAL */
-.note-modal{background:var(--surface2);border:1px solid var(--border2);border-radius:14px;
-  padding:22px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.6);}
-.note-modal h3{font-size:14px;font-weight:700;margin-bottom:10px;}
-.note-body{font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;
-  background:var(--bg);border-radius:8px;padding:12px;border:1px solid var(--border);}
-.note-close{margin-top:14px;width:100%;background:var(--surface3);border:1px solid var(--border);
-  border-radius:8px;padding:8px;font-size:13px;cursor:pointer;font-family:var(--sans);color:var(--text-dim);}
-
-/* SORTABLE HEADERS */
-thead th{cursor:pointer;user-select:none;position:relative;}
-thead th:hover{color:var(--text);background:var(--surface2);}
-thead th.sort-asc::after {content:'▲';position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--blue);}
-thead th.sort-desc::after{content:'▼';position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--blue);}
-thead th{padding-right:20px;}
-
-
-/* KPI CLICKABLE */
-.kpi-card{cursor:pointer;}
-.kpi-card.kpi-active{border-color:var(--blue);box-shadow:0 0 0 2px rgba(59,130,246,.3),0 4px 20px rgba(0,0,0,.3);}
-.kpi-card.kpi-active.red   {border-color:var(--red);   box-shadow:0 0 0 2px var(--red-glow),0 4px 20px rgba(0,0,0,.3);}
-.kpi-card.kpi-active.amber {border-color:var(--amber);  box-shadow:0 0 0 2px rgba(245,158,11,.35);}
-.kpi-card.kpi-active.orange{border-color:var(--orange); box-shadow:0 0 0 2px rgba(249,115,22,.35);}
-.kpi-card.kpi-active.crisis{border-color:var(--crisis); box-shadow:0 0 0 2px rgba(255,26,26,.5);}
-.kpi-card.kpi-active.green {border-color:var(--green);  box-shadow:0 0 0 2px rgba(16,185,129,.35);}
-.kpi-card.kpi-active.blue  {border-color:var(--blue);   box-shadow:0 0 0 2px rgba(59,130,246,.35);}
-
-
-/* NAV BUTTONS */
-.nav-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;
-  padding:7px 14px;font-size:12px;font-weight:600;color:var(--text-dim);cursor:pointer;
-  transition:all .2s;font-family:var(--sans);}
-.nav-btn:hover{border-color:var(--blue);color:var(--blue);}
-.nav-btn.active{background:var(--blue-dim);border-color:var(--blue);color:var(--blue);}
-
-/* ANALYSIS PAGE */
+/* ANALYSIS */
 #analysisPage{display:none;}
 .analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.analysis-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
 .a-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
-.a-header{padding:12px 18px;border-bottom:1px solid var(--border);background:var(--surface2);
-  font-size:12px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;}
+.a-header{padding:12px 18px;border-bottom:1px solid var(--border);background:var(--surface2);font-size:12px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;}
 .a-body{padding:16px 18px;}
-
-/* CAUSE BAR CHART */
 .cause-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .cause-label{font-size:12px;color:var(--text-dim);width:140px;flex-shrink:0;}
-.cause-bar-wrap{flex:1;height:20px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--border);position:relative;}
+.cause-bar-wrap{flex:1;height:20px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--border);}
 .cause-bar{height:100%;border-radius:4px;transition:width .8s ease;display:flex;align-items:center;padding-left:6px;}
-.cause-bar-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.9);font-family:var(--mono);}
+.cause-bar-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.9);}
 .cause-count{font-family:var(--mono);font-size:11px;font-weight:700;width:28px;text-align:right;}
-
-/* CRISIS TABLE */
 .crisis-table{width:100%;border-collapse:collapse;font-size:11px;}
-.crisis-table th{background:var(--bg);padding:7px 10px;text-align:left;font-size:10px;font-weight:700;
-  letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border2);}
+.crisis-table th{background:var(--bg);padding:7px 10px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border2);}
 .crisis-table td{padding:8px 10px;border-bottom:1px solid rgba(30,45,69,.4);vertical-align:top;}
 .crisis-table tr:hover td{background:rgba(59,130,246,.04);}
-.crisis-table tr.ultra td{background:rgba(255,26,26,.06);}
-
-/* AGE BADGE */
 .age-badge{display:inline-block;padding:2px 7px;border-radius:5px;font-family:var(--mono);font-size:10px;font-weight:700;}
 .age-badge.c1{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,.3);}
 .age-badge.c2{background:var(--orange-dim);color:var(--orange);border:1px solid rgba(249,115,22,.3);}
 .age-badge.c3{background:var(--crisis-dim);color:var(--crisis);border:1px solid rgba(255,26,26,.4);}
 .age-badge.c4{background:rgba(180,0,0,.2);color:#ff6666;border:1px solid rgba(255,0,0,.5);animation:crisis-blink 1s infinite;}
-
-/* ROOT CAUSE CARDS */
 .rc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .rc-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
-.rc-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.rc-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px;}
 .rc-body{font-size:11px;color:var(--text-dim);line-height:1.6;}
 .rc-action{margin-top:8px;font-size:11px;color:var(--green);font-weight:600;}
-
-/* TREND BARS */
 .trend-row{display:flex;align-items:flex-end;gap:6px;height:80px;margin-bottom:8px;}
 .trend-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
-.trend-bar{width:100%;border-radius:4px 4px 0 0;transition:height .6s ease;min-height:2px;}
-.trend-bar.today{background:var(--amber);}
-.trend-bar.past{background:var(--red);}
+.trend-bar{width:100%;border-radius:4px 4px 0 0;min-height:2px;}
+.trend-bar.today-bar{background:var(--amber);}
+.trend-bar.past-bar{background:var(--red);}
 .trend-label{font-size:9px;color:var(--text-muted);text-align:center;font-family:var(--mono);}
 .trend-val{font-size:10px;font-weight:700;font-family:var(--mono);}
-
-/* STAT BOXES */
 .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
 .stat-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;text-align:center;}
 .stat-val{font-size:22px;font-weight:700;font-family:var(--mono);}
 .stat-lbl{font-size:10px;color:var(--text-muted);margin-top:2px;}
 
-
-/* STORAGE INDICATOR */
-.storage-badge{display:flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;
-  font-size:10px;font-family:var(--mono);font-weight:600;
-  background:var(--green-dim);color:var(--green);border:1px solid rgba(16,185,129,.3);}
-.storage-badge.warn{background:var(--amber-dim);color:var(--amber);border-color:rgba(245,158,11,.3);}
-
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface2);border:1px solid var(--border2);border-radius:14px;padding:24px;width:420px;box-shadow:0 20px 60px rgba(0,0,0,.6);}
+.modal h3{font-size:15px;font-weight:700;margin-bottom:4px;color:var(--text);}
+.modal-site{font-size:12px;font-family:var(--mono);color:var(--blue);margin-bottom:3px;}
+.modal-detail{font-size:11px;color:var(--text-muted);margin-bottom:16px;}
+.modal textarea{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-family:var(--sans);font-size:13px;resize:none;outline:none;}
+.modal textarea:focus{border-color:var(--blue);}
+.modal-actions{display:flex;gap:8px;margin-top:12px;}
+.modal-cancel{flex:1;background:transparent;border:1px solid var(--border);border-radius:8px;padding:9px;font-size:13px;color:var(--text-muted);cursor:pointer;font-family:var(--sans);}
+.modal-confirm{flex:2;background:linear-gradient(135deg,var(--green),#059669);border:none;border-radius:8px;padding:9px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--sans);}
+.note-modal{background:var(--surface2);border:1px solid var(--border2);border-radius:14px;padding:22px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.6);}
+.note-modal h3{font-size:14px;font-weight:700;margin-bottom:10px;}
+.note-body{font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;background:var(--bg);border-radius:8px;padding:12px;border:1px solid var(--border);}
+.note-close{margin-top:14px;width:100%;background:var(--surface3);border:1px solid var(--border);border-radius:8px;padding:8px;font-size:13px;cursor:pointer;font-family:var(--sans);color:var(--text-dim);}
 </style>
 </head>
 <body>
-
 <header>
-  <div class="logo">
-    
-    <div>
-      <div class="logo-text">Network Error Dashboard</div>
-      <div class="logo-sub">Created by Pattana Chancheam</div>
-    </div>
+  <div>
+    <div class="logo-text">Network Error Dashboard</div>
+    <div class="logo-sub">Created by Pattana Chancheam</div>
   </div>
   <div class="header-right">
-    <div class="storage-badge" id="storageBadge" title="สถานะ localStorage">💾 —</div>
-    <div class="mode-badge file" id="modeBadge">
-      <div class="live-dot"></div>
-      <span id="modeText">FILE MODE</span>
-    </div>
-    <button class="refresh-btn" id="refreshBtn" onclick="handleRefresh()" style="display:none">🔄 Refresh</button>
-    <button class="nav-btn" id="navDashboard" onclick="showPage('dashboard')">📊 Dashboard</button>
-    <button class="nav-btn active" id="navAnalysis" onclick="showPage('analysis')" style="display:none">🔍 Analysis</button>
-    <button class="upload-btn" id="uploadBtn" onclick="document.getElementById('fileInput').click()">⬆ Upload Excel</button>
+    <div class="storage-badge" id="storageBadge">💾 —</div>
+    <button class="nav-btn active" id="navDashboard" onclick="showPage('dashboard')">📊 Dashboard</button>
+    <button class="nav-btn" id="navAnalysis" onclick="showPage('analysis')" style="display:none">🔍 Analysis</button>
+    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">⬆ Upload Excel</button>
     <input id="fileInput" type="file" accept=".xlsx,.xls" style="display:none" onchange="handleFileUpload(event)">
   </div>
 </header>
@@ -417,210 +295,95 @@ thead th{padding-right:20px;}
     onclick="document.getElementById('fileInput').click()">
     <div class="upload-icon">📂</div>
     <div class="upload-title">วาง หรือ คลิกเลือกไฟล์ Excel</div>
-    <div class="upload-sub">รองรับ <span>atg_site.xlsx</span> — ลากแล้ววางได้เลย</div>
+    <div class="upload-sub">รองรับ <span>atg_site_user.xlsx</span> — ลากแล้ววางได้เลย</div>
   </div>
 
-  <div id="dashboard" style="display:none">
-
-    <!-- DATE BAR -->
+  <!-- DASHBOARD PAGE -->
+  <div id="dashboardPage" style="display:none">
     <div class="date-bar">
       <div>
         <div class="date-label">โหลดข้อมูลเมื่อ <span id="dataTimestamp">—</span></div>
-        
       </div>
     </div>
-
-    <!-- KPI: dynamic per tab -->
     <div class="kpi-grid" id="kpiGrid"></div>
-
-    <!-- CONTENT -->
     <div class="content-grid">
-
-      <!-- TABLE PANEL -->
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title" id="panelTitle">รายการ Network Error</div>
           <div class="panel-actions">
             <input class="search-box" placeholder="🔍 รหัส / ชื่อ / จังหวัด..." oninput="onSearch(this.value)">
-            <button class="icon-btn" onclick="exportCSV()">⬇ Export CSV</button>
+            <button class="icon-btn" onclick="exportCSV()">⬇ Export</button>
           </div>
         </div>
-
         <div class="tab-nav">
-          <div class="tab t-red" onclick="switchTab(this,'network')">
-            📡 Network Error <span class="tab-count" id="tcNetwork">0</span>
-          </div>
-          <div class="tab" onclick="switchTab(this,'closeday')">
-            📋 Closeday Error <span class="tab-count" id="tcCloseday">0</span>
-          </div>
-          <div class="tab" onclick="switchTab(this,'resolved')">
-            ✅ Resolved <span class="tab-count" id="tcResolved">0</span>
-          </div>
+          <div class="tab t-red" onclick="switchTab(this,'network')">📡 Network Error <span class="tab-count" id="tcNetwork">0</span></div>
+          <div class="tab" onclick="switchTab(this,'closeday')">📋 Closeday Error <span class="tab-count" id="tcCloseday">0</span></div>
+          <div class="tab" onclick="switchTab(this,'resolved')">✅ Resolved <span class="tab-count" id="tcResolved">0</span></div>
         </div>
-
-        <div class="table-wrap">
-          <table id="mainTable">
-            <thead id="tableHead"></thead>
-            <tbody id="tableBody"></tbody>
-          </table>
-        </div>
+        <div class="table-wrap"><table><thead id="tableHead"></thead><tbody id="tableBody"></tbody></table></div>
         <div class="table-footer">
           <span id="rowCount">—</span>
           <div class="pagination" id="pagination"></div>
         </div>
       </div>
-
-      <!-- SIDE -->
       <div class="side-col">
-
-        <!-- DAILY BREAKDOWN -->
         <div class="mini-panel">
           <div class="mini-header">📅 ค้างกี่วัน</div>
           <div class="daily-list">
-            <div class="daily-row today">
-              <div>
-                <div class="daily-label">🟡 วันนี้</div>
-                <div class="daily-sub">เกิดวันนี้</div>
-              </div>
-              <div class="daily-count" id="dToday">0</div>
-            </div>
-            <div class="daily-row days13">
-              <div>
-                <div class="daily-label">🟠 1–3 วัน</div>
-                <div class="daily-sub">ค้างมา 1 ถึง 3 วัน</div>
-              </div>
-              <div class="daily-count" id="dDays13">0</div>
-            </div>
-            <div class="daily-row crisis">
-              <div>
-                <div class="daily-label">🚨 วิกฤติ &gt;3 วัน</div>
-                <div class="daily-sub">ค้างเกิน 3 วัน</div>
-              </div>
-              <div class="daily-count" id="dCrisis">0</div>
-            </div>
+            <div class="daily-row today"><div><div class="daily-label">🟡 วันนี้</div><div class="daily-sub">เกิดวันนี้</div></div><div class="daily-count" id="dToday">0</div></div>
+            <div class="daily-row days13"><div><div class="daily-label">🟠 1–3 วัน</div><div class="daily-sub">ค้างมา 1–3 วัน</div></div><div class="daily-count" id="dDays13">0</div></div>
+            <div class="daily-row crisis"><div><div class="daily-label">🚨 วิกฤติ &gt;3 วัน</div><div class="daily-sub">ค้างเกิน 3 วัน</div></div><div class="daily-count" id="dCrisis">0</div></div>
           </div>
         </div>
-
-        <!-- SUMMARY BARS -->
         <div class="mini-panel">
           <div class="mini-header">📊 สรุปภาพรวม</div>
           <div class="summary-list">
-            <div class="sum-row">
-              <div class="sum-label">Network Error</div>
-              <div class="sum-bar-wrap"><div class="sum-bar" id="barNetwork" style="background:var(--red)"></div></div>
-              <div class="sum-val" style="color:var(--red)" id="sNetwork">0</div>
-            </div>
-            <div class="sum-row">
-              <div class="sum-label">Closeday Error</div>
-              <div class="sum-bar-wrap"><div class="sum-bar" id="barCloseday" style="background:var(--amber)"></div></div>
-              <div class="sum-val" style="color:var(--amber)" id="sCloseday">0</div>
-            </div>
-            <div class="sum-row">
-              <div class="sum-label">Resolved</div>
-              <div class="sum-bar-wrap"><div class="sum-bar" id="barResolved" style="background:var(--green)"></div></div>
-              <div class="sum-val" style="color:var(--green)" id="sResolved">0</div>
-            </div>
+            <div class="sum-row"><div class="sum-label">Network Error</div><div class="sum-bar-wrap"><div class="sum-bar" id="barNetwork" style="background:var(--red)"></div></div><div class="sum-val" style="color:var(--red)" id="sNetwork">0</div></div>
+            <div class="sum-row"><div class="sum-label">Closeday Error</div><div class="sum-bar-wrap"><div class="sum-bar" id="barCloseday" style="background:var(--amber)"></div></div><div class="sum-val" style="color:var(--amber)" id="sCloseday">0</div></div>
+            <div class="sum-row"><div class="sum-label">Resolved</div><div class="sum-bar-wrap"><div class="sum-bar" id="barResolved" style="background:var(--green)"></div></div><div class="sum-val" style="color:var(--green)" id="sResolved">0</div></div>
           </div>
         </div>
-
-        <!-- TIMELINE -->
         <div class="mini-panel">
           <div class="mini-header">🕐 กิจกรรมล่าสุด</div>
-          <div class="timeline" id="timeline">
-            <div class="empty-state" style="padding:16px">
-              <div style="font-size:20px">📋</div>
-              <div style="font-size:11px;margin-top:4px">ยังไม่มีกิจกรรม</div>
-            </div>
-          </div>
+          <div class="timeline" id="timeline"><div class="empty-state" style="padding:16px"><div style="font-size:20px">📋</div><div style="font-size:11px;margin-top:4px">ยังไม่มีกิจกรรม</div></div></div>
         </div>
-
-        <!-- NOTIFY -->
         <div class="mini-panel">
-          <div class="mini-header">🔔 แจ้งเตือน / Export</div>
+          <div class="mini-header">🔔 Export / แจ้งเตือน</div>
           <div class="notify-form">
-            <div class="notify-option">
-              <div class="notify-icon line">💬</div>
-              <div class="notify-info">
-                <div class="notify-name">Line Notify</div>
-                <div class="notify-desc">ส่งรายการ Error ทั้งหมด</div>
-              </div>
-            </div>
-            <div class="notify-option">
-              <div class="notify-icon email">✉️</div>
-              <div class="notify-info">
-                <div class="notify-name">Email</div>
-                <div class="notify-desc">สรุปรายงานประจำวัน</div>
-              </div>
-            </div>
+            <div class="notify-option"><div class="notify-icon" style="background:var(--green-dim)">💬</div><div><div class="notify-name">Line Notify</div><div class="notify-desc">ส่งรายการ Error</div></div></div>
+            <div class="notify-option"><div class="notify-icon" style="background:var(--blue-dim)">✉️</div><div><div class="notify-name">Email</div><div class="notify-desc">สรุปรายงานประจำวัน</div></div></div>
             <button class="send-btn" onclick="exportCSV()">📤 Export รายงาน CSV</button>
           </div>
         </div>
-
       </div>
     </div>
   </div>
+
+  <!-- ANALYSIS PAGE -->
+  <div id="analysisPage" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div style="font-size:13px;font-weight:600;color:var(--text)">📊 วิเคราะห์ข้อมูล Network Error</div>
+      <div style="display:flex;gap:8px;">
+        <button class="icon-btn" onclick="clearStorageConfirm()" style="color:var(--red);border-color:rgba(255,59,92,.3)">🗑 ล้างข้อมูล</button>
+        <button class="icon-btn" onclick="exportHistory()">📥 Export ประวัติ</button>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-val" style="color:var(--red)" id="aTot">—</div><div class="stat-lbl">สถานีทั้งหมด</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:var(--crisis)" id="aCrisis">—</div><div class="stat-lbl">วิกฤติ &gt;1 วัน</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:var(--amber)" id="aAvgDay">—</div><div class="stat-lbl">ค้างเฉลี่ย (วัน)</div></div>
+    </div>
+    <div class="analysis-grid">
+      <div class="a-panel"><div class="a-header">🔧 สาเหตุ Network Error</div><div class="a-body" id="causeChart"></div></div>
+      <div class="a-panel"><div class="a-header">📅 สถานีค้างแต่ละวัน</div><div class="a-body" id="trendChart"></div></div>
+    </div>
+    <div class="a-panel" style="margin-bottom:16px;">
+      <div class="a-header">🚨 รายการวิกฤติ — ยังไม่ได้แก้ไข</div>
+      <div style="overflow-x:auto;"><table class="crisis-table"><thead><tr><th>ค้างมา</th><th>รหัสสถานี</th><th>ชื่อสถานี</th><th>จังหวัด</th><th>สาเหตุ</th><th>หมายเหตุ</th></tr></thead><tbody id="crisisBody"></tbody></table></div>
+    </div>
+    <div class="a-panel"><div class="a-header">💡 Root Cause & คำแนะนำ</div><div class="a-body"><div class="rc-grid" id="rcGrid"></div></div></div>
+  </div>
 </main>
-
-
-<!-- ANALYSIS PAGE -->
-<div id="analysisPage" style="display:none;">
-<div style="position:relative;z-index:1;padding:20px 24px;max-width:1500px;margin:0 auto;">
-
-  <!-- STAT SUMMARY ROW -->
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-    <div style="font-size:13px;font-weight:600;color:var(--text)">📊 วิเคราะห์ข้อมูล Network Error</div>
-    <div style="display:flex;gap:8px;">
-      <button class="icon-btn" onclick="clearStorageConfirm()" style="color:var(--red);border-color:rgba(255,59,92,.3)">🗑 ล้างข้อมูลที่บันทึก</button>
-      <button class="icon-btn" onclick="exportHistory()">📥 Export ประวัติ Resolve</button>
-    </div>
-  </div>
-  <div class="stat-row" id="aStatRow">
-    <div class="stat-box"><div class="stat-val" style="color:var(--red)" id="aTot">—</div><div class="stat-lbl">สถานีทั้งหมด</div></div>
-    <div class="stat-box"><div class="stat-val" style="color:var(--crisis)" id="aCrisis">—</div><div class="stat-lbl">วิกฤติ &gt;1 วัน</div></div>
-    <div class="stat-box"><div class="stat-val" style="color:var(--amber)" id="aAvgDay">—</div><div class="stat-lbl">ค้างเฉลี่ย (วัน)</div></div>
-  </div>
-
-  <!-- ROW 1: Cause + Crisis list -->
-  <div class="analysis-grid">
-
-    <!-- CAUSE CHART -->
-    <div class="a-panel">
-      <div class="a-header">🔧 สาเหตุ Network Error (จากหมายเหตุ)</div>
-      <div class="a-body" id="causeChart"></div>
-    </div>
-
-    <!-- DAILY TREND -->
-    <div class="a-panel">
-      <div class="a-header">📅 สถานีค้างแต่ละวัน (ย้อนหลัง)</div>
-      <div class="a-body" id="trendChart"></div>
-    </div>
-
-  </div>
-
-  <!-- ROW 2: Crisis table full width -->
-  <div class="a-panel" style="margin-bottom:16px;">
-    <div class="a-header">🚨 รายการวิกฤติ — ยังไม่ได้แก้ไข (เรียงตามวันที่ค้างมากสุด)</div>
-    <div style="overflow-x:auto;">
-      <table class="crisis-table" id="crisisTable">
-        <thead><tr>
-          <th>ค้างมา</th><th>รหัสสถานี</th><th>ชื่อสถานี</th>
-          <th>จังหวัด</th><th>สาเหตุ</th><th>หมายเหตุล่าสุด</th>
-        </tr></thead>
-        <tbody id="crisisBody"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ROW 3: Root cause recommendations -->
-  <div class="a-panel">
-    <div class="a-header">💡 Root Cause & คำแนะนำแก้ไขที่ยั่งยืน</div>
-    <div class="a-body">
-      <div class="rc-grid" id="rcGrid"></div>
-    </div>
-  </div>
-
-</div>
-</div>
 
 <!-- RESOLVE MODAL -->
 <div class="modal-overlay" id="resolveModal">
@@ -628,10 +391,10 @@ thead th{padding-right:20px;}
     <h3>✅ Mark as Resolved</h3>
     <div class="modal-site" id="modalSite"></div>
     <div class="modal-detail" id="modalDetail"></div>
-    <textarea id="resolveNote" rows="4" placeholder="บันทึกวิธีแก้ไข / หมายเหตุเพิ่มเติม..."></textarea>
+    <textarea id="resolveNote" rows="4" placeholder="บันทึกวิธีแก้ไข..."></textarea>
     <div class="modal-actions">
       <button class="modal-cancel" onclick="closeModal('resolveModal')">ยกเลิก</button>
-      <button class="modal-confirm" onclick="confirmResolve()">✓ ยืนยัน Resolved</button>
+      <button class="modal-confirm" onclick="confirmResolve()">✓ ยืนยัน</button>
     </div>
   </div>
 </div>
@@ -646,844 +409,423 @@ thead th{padding-right:20px;}
 </div>
 
 <script>
+// ══ EMBEDDED DATA (injected by auto_update.py) ══
+const EMBEDDED_DATA = {"updated_at": "2026-05-26 13:30:32", "source_file": "atg_site_user.xlsx", "total": 36, "data": [{"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "0000F001", "\u0e0a\u0e37\u0e48\u0e2d": "Flowco Learning Center (Veeder Root)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 06:12", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-04-23 10:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e2a\u0e16\u0e32\u0e19\u0e35\u0e17\u0e14\u0e2a\u0e2d\u0e1a\"", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e01\u0e23\u0e38\u0e07\u0e40\u0e17\u0e1e\u0e21\u0e2b\u0e32\u0e19\u0e04\u0e23", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e1e\u0e23\u0e1e\u0e08\u0e19\u0e4c 085-911-7650", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "-"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "0000F006", "\u0e0a\u0e37\u0e48\u0e2d": "Flowco Learning Center (OKET+ATGGO)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 06:15", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 02:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e2a\u0e16\u0e32\u0e19\u0e35\u0e17\u0e14\u0e2a\u0e2d\u0e1a\"", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e01\u0e23\u0e38\u0e07\u0e40\u0e17\u0e1e\u0e21\u0e2b\u0e32\u0e19\u0e04\u0e23", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e1e\u0e23\u0e1e\u0e08\u0e19\u0e4c 085-911-7650", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "-"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10000925", "\u0e0a\u0e37\u0e48\u0e2d": "PBL 106901 - BCP \u0e19\u0e23\u0e32\u0e1e\u0e23\u0e23\u0e13 (\u0e2a\u0e38\u0e23\u0e32\u0e29\u0e0e\u0e23\u0e4c\u0e18\u0e32\u0e19\u0e35) \"\u0e1b\u0e34\u0e14\u0e1b\u0e23\u0e31\u0e1a\u0e1b\u0e23\u0e38\u0e07\"", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2024-03-05 08:34", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2024-03-04 20:30", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e1b\u0e34\u0e14\u0e1b\u0e23\u0e31\u0e1a\u0e1b\u0e23\u0e38\u0e07\"  5/3/24  11.27  \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e04\u0e38\u0e13\u0e01\u0e23\u0e13\u0e4c\u0e20\u0e32 (\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07) 065-949-9289 \u0e41\u0e08\u0e49\u0e07\u0e27\u0e48\u0e32\u0e17\u0e32\u0e07\u0e2a\u0e16\u0e32\u0e19\u0e35\u0e21\u0e35\u0e01\u0e32\u0e23\u0e1b\u0e34\u0e14\u0e1b\u0e23\u0e31\u0e1a\u0e1b\u0e23\u0e38\u0e07\u0e40\u0e1b\u0e47\u0e19\u0e23\u0e30\u0e22\u0e30\u0e40\u0e27\u0e25\u0e323 \u0e40\u0e14\u0e37\u0e2d\u0e19 \u0e04\u0e23\u0e36\u0e48\u0e07\u0e04\u0e48\u0e30 // \u0e0a\u0e34\u0e14\u0e0a\u0e19\u0e01 \u0e0a\u0e48\u0e32\u0e07\u0e40\u0e02\u0e49\u0e32\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\u0e1e\u0e1a\u0e27\u0e48\u0e32\u0e01\u0e25\u0e48\u0e2d\u0e07 BIR BOX \u0e44\u0e21\u0e48\u0e21\u0e35", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e2a\u0e38\u0e23\u0e32\u0e29\u0e0f\u0e4c\u0e18\u0e32\u0e19\u0e35", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e01\u0e23\u0e13\u0e4c\u0e20\u0e32 (\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07) 065-949-9289", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "BSRC \u0e04\u0e38\u0e13\u0e04\u0e11\u0e32 081-103-0689, \u0e04\u0e38\u0e13\u0e08\u0e15\u0e38\u0e1e\u0e07\u0e28\u0e4c 065-949-9362"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10001650", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e2a\u0e15\u0e32\u0e23\u0e4c \u0e40\u0e2d\u0e47\u0e19\u0e40\u0e19\u0e2d\u0e23\u0e4c\u0e22\u0e35\u0e48 (\u0e01\u0e34\u0e48\u0e07\u0e41\u0e01\u0e49\u0e27)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-11 09:07", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-11 00:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e23\u0e2d\u0e2a\u0e16\u0e32\u0e19\u0e35\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\" 11/5/26 \u0e2a\u0e16\u0e32\u0e19\u0e35\u0e43\u0e0a\u0e49\u0e07\u0e32\u0e19\u0e40\u0e04\u0e23\u0e37\u0e48\u0e2d\u0e07 PC \u0e2d\u0e22\u0e39\u0e48 \u0e23\u0e2d Restart PC /\u0e0a\u0e34\u0e14\u0e0a\u0e19\u0e01", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e2a\u0e21\u0e38\u0e17\u0e23\u0e1b\u0e23\u0e32\u0e01\u0e32\u0e23", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e1e\u0e23\u0e2a\u0e27\u0e23\u0e23\u0e04\u0e4c 0992237743/ 027502681", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": ""}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10001897", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e1e\u0e35\u0e42\u0e2d.\u0e2d\u0e2d\u0e22\u0e25\u0e4c \u0e08\u0e33\u0e01\u0e31\u0e14 \u0e2a\u0e32\u0e02\u0e32 26 (\u0e1e\u0e34\u0e21\u0e32\u0e22)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 09:01", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 00:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e43\u0e2b\u0e21\u0e48\" 26/5/26 \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e04\u0e38\u0e13\u0e40\u0e2d\u0e4b 088-548-1234 (\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e2a\u0e16\u0e32\u0e19\u0e35\u0e44\u0e21\u0e48\u0e44\u0e14\u0e49 \u0e40\u0e19\u0e37\u0e48\u0e2d\u0e07\u0e08\u0e32\u0e01\u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e23\u0e31\u0e1a\u0e42\u0e17\u0e23\u0e28\u0e31\u0e1e\u0e17\u0e4c) /\u0e27\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c \n\"\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e43\u0e2b\u0e21\u0e48\" 25/5/26 \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e04\u0e38\u0e13\u0e21\u0e34\u0e48\u0e07\u0e02\u0e27\u0e31\u0e0d (\u0e1c\u0e08\u0e01) 096-587-7379/ 082-365-1234/ \u0e04\u0e38\u0e13\u0e40\u0e2d\u0e4b 088-548-1234 (\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e2a\u0e16\u0e32\u0e19\u0e35\u0e44\u0e21\u0e48\u0e44\u0e14\u0e49 \u0e40\u0e19\u0e37\u0e48\u0e2d\u0e07\u0e08\u0e32\u0e01\u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e23\u0e31\u0e1a\u0e42\u0e17\u0e23\u0e28\u0e31\u0e1e\u0e17\u0e4c) /\u0e27\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e19\u0e04\u0e23\u0e23\u0e32\u0e0a\u0e2a\u0e35\u0e21\u0e32", "\u0e42\u0e17\u0e23": "Alarm \u0e43\u0e2b\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d (1.) \u0e40\u0e2e\u0e35\u0e22\u0e22\u0e49\u0e07 081-670-1234, (2.) \u0e04\u0e38\u0e13\u0e40\u0e2d\u0e4b 088-548-1234", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "Alarm \u0e43\u0e2b\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d (3.) \u0e04\u0e38\u0e13\u0e40\u0e01\u0e4b(\u0e1c\u0e08\u0e01.\u0e40\u0e02\u0e15) 085-012-9503"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10002340", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e1a\u0e39\u0e23\u0e1e\u0e32\u0e1b\u0e34\u0e42\u0e15\u0e23\u0e40\u0e25\u0e35\u0e22\u0e21 (1995) \u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e43\u0e2b\u0e0d\u0e48", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 10:14", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 05:02", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e23\u0e30\u0e22\u0e2d\u0e07", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e2d\u0e2d\u0e22  \u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07\u0e2a\u0e16\u0e32\u0e19\u0e35  091-8262939", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "092-251-6603"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10002540", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e1e\u0e34\u0e1e\u0e31\u0e12\u0e19\u0e4c\u0e1b\u0e34\u0e42\u0e15\u0e23\u0e40\u0e25\u0e35\u0e22\u0e21", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-20 14:43", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-19 21:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e23\u0e2d\u0e0a\u0e48\u0e32\u0e07\u0e40\u0e02\u0e49\u0e32 \"  22/5/26  \u0e2d\u0e49\u0e32\u0e07\u0e2d\u0e34\u0e07 2605D1783 ping \u0e44\u0e21\u0e48\u0e40\u0e08\u0e2d ATG  ws\n\"\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e43\u0e2b\u0e21\u0e48\u0e2d\u0e35\u0e01\u0e04\u0e23\u0e31\u0e49\u0e07\" 20/5/26 \u0e04\u0e38\u0e13\u0e1e\u0e25\u0e2a\u0e34\u0e19\u0e18\u0e38\u0e4c 080-011-6780 \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e44\u0e21\u0e48\u0e44\u0e14\u0e49\u0e04\u0e48\u0e30/\u0e0a\u0e34\u0e14\u0e0a\u0e19\u0e01", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e1a\u0e36\u0e07\u0e01\u0e32\u0e2c", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e1e\u0e25\u0e2a\u0e34\u0e19\u0e18\u0e38\u0e4c 080-011-6780 \u0e42\u0e17\u0e23\u0e40\u0e09\u0e1e\u0e32\u0e30 \u0e19\u0e49\u0e33\u0e40\u0e02\u0e49\u0e32\u0e16\u0e31\u0e07 , network", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "\u0e04\u0e38\u0e13\u0e1e\u0e25\u0e2a\u0e34\u0e19\u0e18\u0e38\u0e4c 080-011-6780"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10003317", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e2a\u0e38\u0e17\u0e18\u0e34\u0e14\u0e32 (2536) (\u0e1a\u0e08\u0e01)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-18 23:18", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-18 21:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e04\u0e2d\u0e21\u0e1e\u0e34\u0e27\u0e40\u0e15\u0e2d\u0e23\u0e4c\" 25/5/26 \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e04\u0e38\u0e13\u0e27\u0e34\u0e0a\u0e38\u0e14\u0e32 086-869-5698 \u0e41\u0e08\u0e49\u0e07\u0e27\u0e48\u0e32\u0e04\u0e2d\u0e21\u0e1e\u0e34\u0e27\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e21\u0e35\u0e1b\u0e31\u0e0d\u0e2b\u0e32 \u0e2d\u0e22\u0e39\u0e48\u0e23\u0e30\u0e2b\u0e27\u0e48\u0e32\u0e07\u0e41\u0e01\u0e49\u0e44\u0e02 /\u0e27\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c \n\"internet \u0e40\u0e2a\u0e35\u0e22\"22/5/26 \u0e04\u0e38\u0e13\u0e2a\u0e38\u0e1e\u0e31\u0e15\u0e23\u0e32 (\u0e1c\u0e08\u0e01.) 081-663-2777   ws\n\"\u0e23\u0e2d\u0e2a\u0e16\u0e32\u0e19\u0e35\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\"20/5/26 \u0e04\u0e38\u0e13\u0e2a\u0e38\u0e1e\u0e31\u0e15\u0e23\u0e32 (\u0e1c\u0e08\u0e01.) 081-663-2777 \u0e41\u0e08\u0e49\u0e07\u0e27\u0e48\u0e32\u0e08\u0e30\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\u0e04\u0e2d\u0e21\u0e1e\u0e34\u0e27\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e41\u0e25\u0e30\u0e2a\u0e31\u0e0d\u0e0d\u0e32\u0e13\u0e2d\u0e34\u0e19\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e40\u0e19\u0e47\u0e15\u0e43\u0e2b\u0e49\u0e04\u0e48\u0e30/\u0e0a\u0e34\u0e14\u0e0a\u0e19\u0e01", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e1b\u0e23\u0e32\u0e08\u0e35\u0e19\u0e1a\u0e38\u0e23\u0e35", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e27\u0e34\u0e0a\u0e38\u0e14\u0e32 086-869-5698", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": ""}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10003823", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e18\u0e07\u0e0a\u0e31\u0e22\u0e1b\u0e34\u0e42\u0e15\u0e23\u0e40\u0e25\u0e35\u0e22\u0e21 (\u0e2b\u0e08\u0e01.)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 01:36", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 07:31", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e40\u0e1a\u0e19\u0e0b\u0e4c 092-659-8888", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": ""}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10007993", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e21\u0e37\u0e2d\u0e17\u0e2d\u0e07 \u0e1e\u0e23\u0e47\u0e2d\u0e1e\u0e40\u0e1e\u0e2d\u0e23\u0e4c\u0e15\u0e35\u0e49", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 09:48", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 22:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e40\u0e1e\u0e0a\u0e23\u0e1a\u0e38\u0e23\u0e35", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e1b\u0e2d 081-763-5840", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": ""}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10008010", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e40\u0e23\u0e37\u0e2d\u0e07\u0e0a\u0e31\u0e22\u0e1a\u0e23\u0e34\u0e01\u0e32\u0e23 (2011)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 10:03", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 06:01", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e21\u0e2b\u0e32\u0e2a\u0e32\u0e23\u0e04\u0e32\u0e21", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e18\u0e19\u0e34\u0e28 081-871-1707", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": ""}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10008724", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e2b\u0e08\u0e01.\u0e25\u0e32\u0e19\u0e17\u0e2d\u0e07\u0e04\u0e33\u0e2d\u0e32\u0e2e\u0e27\u0e19", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-24 07:41", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-23 23:21", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e2d\u0e34\u0e19\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e40\u0e40\u0e19\u0e47\u0e15\" 25/5/26 \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e04\u0e38\u0e13\u0e41\u0e1b\u0e4b\u0e21 088-572-2889 \u0e41\u0e08\u0e49\u0e07\u0e27\u0e48\u0e32\u0e04\u0e2d\u0e21\u0e1e\u0e34\u0e27\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e21\u0e35\u0e1b\u0e31\u0e0d\u0e2b\u0e32 \u0e2d\u0e22\u0e39\u0e48\u0e23\u0e30\u0e2b\u0e27\u0e48\u0e32\u0e07\u0e41\u0e01\u0e49\u0e44\u0e02 /\u0e27\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e21\u0e38\u0e01\u0e14\u0e32\u0e2b\u0e32\u0e23", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e1e\u0e25\u0e2d\u0e22\u0e44\u0e1e\u0e25\u0e34\u0e19 \u0e44\u0e21\u0e48\u0e2a\u0e30\u0e14\u0e27\u0e01\u0e43\u0e2b\u0e49\u0e42\u0e17\u0e23\u0e2a\u0e48\u0e07\u0e02\u0e49\u0e2d\u0e04\u0e27\u0e32\u0e21\u0e41\u0e08\u0e49\u0e07 \u0e42\u0e17\u0e23\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e19\u0e49\u0e33\u0e40\u0e02\u0e49\u0e32\u0e16\u0e31\u0e07 088-572-2889", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "\u0e04\u0e38\u0e13\u0e27\u0e34\u0e20\u0e32 097-364-5663"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10009081", "\u0e0a\u0e37\u0e48\u0e2d": "\u0e1a\u0e23\u0e34\u0e29\u0e31\u0e17 \u0e2a\u0e38\u0e27\u0e34\u0e19\u0e17\u0e27\u0e07\u0e28\u0e4c\u0e1e\u0e25\u0e31\u0e07\u0e07\u0e32\u0e19 \u0e08\u0e33\u0e01\u0e31\u0e14", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 10:11", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 23:30", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e09\u0e30\u0e40\u0e0a\u0e34\u0e07\u0e40\u0e17\u0e23\u0e32", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e0a\u0e25\u0e34\u0e15 066-153-5429", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": ""}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10009469", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e1a\u0e23\u0e34\u0e29\u0e31\u0e17 \u0e1e\u0e31\u0e12\u0e19\u0e0a\u0e31\u0e22\u0e22\u0e19\u0e15\u0e4c \u0e08\u0e33\u0e01\u0e31\u0e14 \u0e2a\u0e32\u0e02\u0e32 2", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-12 18:32", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-12 00:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"ATG \u0e40\u0e2a\u0e35\u0e22 \" 19/5/26   \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e04\u0e38\u0e13\u0e2d\u0e38\u0e49\u0e21 091-869-7679 / \u0e0a\u0e34\u0e14\u0e0a\u0e19\u0e01", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e2d\u0e38\u0e14\u0e23\u0e18\u0e32\u0e19\u0e35", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e2d\u0e38\u0e49\u0e21 091-869-7679", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "-"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10009560", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e01\u0e38\u0e14\u0e0a\u0e38\u0e21\u0e2d\u0e2d\u0e22\u0e25\u0e4c (\u0e01\u0e38\u0e14\u0e0a\u0e38\u0e21)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 18:13", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 06:03", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e43\u0e2b\u0e21\u0e48\" 26/5/26 \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d \u0e04\u0e38\u0e13\u0e19\u0e01/\u0e04\u0e38\u0e13\u0e1e\u0e34\u0e21 088-590-4329 (\u0e40\u0e1a\u0e2d\u0e23\u0e4c\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19) (\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e2a\u0e16\u0e32\u0e19\u0e35\u0e44\u0e21\u0e48\u0e44\u0e14\u0e49 \u0e40\u0e19\u0e37\u0e48\u0e2d\u0e07\u0e08\u0e32\u0e01\u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e23\u0e31\u0e1a\u0e42\u0e17\u0e23\u0e28\u0e31\u0e1e\u0e17\u0e4c) /\u0e27\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e22\u0e42\u0e2a\u0e18\u0e23", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e27\u0e35\u0e23\u0e30\u0e28\u0e31\u0e01\u0e14\u0e34\u0e4c 081-879-1123/045-789283", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "-"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10010114", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e2a\u0e2b\u0e44\u0e1e\u0e28\u0e32\u0e25\u0e2a\u0e38\u0e23\u0e34\u0e19\u0e17\u0e23\u0e4c (\u0e0a\u0e38\u0e21\u0e1e\u0e25\u0e1a\u0e38\u0e23\u0e35)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 22:15", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 06:32", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e23\u0e2d\u0e2a\u0e16\u0e32\u0e19\u0e35\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\" 26/5/26 \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d \u0e04\u0e38\u0e13\u0e01\u0e49\u0e2d\u0e07 (\u0e1c\u0e08\u0e01.) 093-327-8798 \u0e41\u0e08\u0e49\u0e07\u0e27\u0e48\u0e32\u0e08\u0e30\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\u0e04\u0e2d\u0e21\u0e1e\u0e34\u0e27\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e41\u0e25\u0e30\u0e2a\u0e31\u0e0d\u0e0d\u0e32\u0e13\u0e2d\u0e34\u0e19\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e40\u0e19\u0e47\u0e15\u0e43\u0e2b\u0e49 /\u0e27\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e2a\u0e38\u0e23\u0e34\u0e19\u0e17\u0e23\u0e4c", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e1e\u0e34\u0e40\u0e0a\u0e29\u0e10\u0e4c 085-652-5441, 044-596-225", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": ""}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10010200", "\u0e0a\u0e37\u0e48\u0e2d": "\u0e2a\u0e16\u0e32\u0e19\u0e35\u0e1a\u0e23\u0e34\u0e01\u0e32\u0e23\u0e19\u0e49\u0e33\u0e21\u0e31\u0e19\u0e40\u0e0a\u0e37\u0e49\u0e2d\u0e44\u0e1f\u0e25\u0e32\u0e27 \u0e2a\u0e32\u0e02\u0e32 Homsouk Oudomxay", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 09:59", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 21:20", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e41\u0e08\u0e49\u0e07\u0e1c\u0e39\u0e49\u0e41\u0e17\u0e19\u0e02\u0e32\u0e22\" 25/5/26 \u0e15\u0e34\u0e15\u0e14\u0e48\u0e2d\u0e04\u0e38\u0e13\u0e0a\u0e34\u0e19\u0e27\u0e34\u0e27\u0e23\u0e23\u0e18\u0e19\u0e4c (\u0e1c\u0e39\u0e49\u0e41\u0e17\u0e19\u0e02\u0e32\u0e22) \u0e2a\u0e48\u0e07 Line \u0e41\u0e08\u0e49\u0e07\u0e23\u0e31\u0e1a\u0e17\u0e23\u0e32\u0e1a \u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 AMS \u0e44\u0e21\u0e48\u0e2d\u0e31\u0e1e\u0e40\u0e14\u0e17 (Remote \u0e44\u0e21\u0e48\u0e44\u0e14\u0e49)/ \u0e27\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e44\u0e21\u0e48\u0e23\u0e30\u0e1a\u0e38", "\u0e42\u0e17\u0e23": "8.56202E+12", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "\u0e04\u0e38\u0e13\u0e0a\u0e34\u0e19\u0e27\u0e34\u0e27\u0e23\u0e23\u0e18\u0e19\u0e4c \u0e40\u0e25\u0e02\u0e27\u0e23\u0e23\u0e18\u0e19\u0e01\u0e38\u0e25 082-790-3192"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10010294", "\u0e0a\u0e37\u0e48\u0e2d": "FSM Easyfill 3", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 09:13", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-02-07 02:05", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"Time-Zone\"  \u0e0a\u0e49\u0e32\u0e01\u0e27\u0e48\u0e32\u0e40\u0e27\u0e25\u0e32\u0e1b\u0e23\u0e30\u0e40\u0e17\u0e28\u0e44\u0e17\u0e22", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e44\u0e21\u0e48\u0e23\u0e30\u0e1a\u0e38", "\u0e42\u0e17\u0e23": "(960) 3331457", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": ""}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10011386", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e17\u0e39\u0e40\u0e01\u0e47\u0e15\u0e40\u0e15\u0e2d\u0e23\u0e4c \u0e2d\u0e2d\u0e22\u0e25\u0e4c (2017)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 08:37", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 05:03", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e23\u0e32\u0e0a\u0e1a\u0e38\u0e23\u0e35", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e18\u0e35\u0e23\u0e30  089-684-9079", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": ""}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10011508", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e40\u0e25\u0e34\u0e28\u0e2a\u0e27\u0e31\u0e2a\u0e14\u0e34\u0e4c \u0e40\u0e2d\u0e47\u0e19\u0e40\u0e19\u0e2d\u0e08\u0e35", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-24 00:20", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-23 18:04", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e43\u0e2b\u0e21\u0e48\" 25/5/26 \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e04\u0e38\u0e13\u0e2a\u0e38\u0e01\u0e31\u0e0d\u0e0d\u0e32 062-935-3092 (\u0e4cNetwork Error) (\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e2a\u0e16\u0e32\u0e19\u0e35\u0e44\u0e21\u0e48\u0e44\u0e14\u0e49 \u0e40\u0e19\u0e37\u0e48\u0e2d\u0e07\u0e08\u0e32\u0e01\u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e23\u0e31\u0e1a\u0e42\u0e17\u0e23\u0e28\u0e31\u0e1e\u0e17\u0e4c) /\u0e27\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e19\u0e04\u0e23\u0e23\u0e32\u0e0a\u0e2a\u0e35\u0e21\u0e32", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e10\u0e34\u0e15\u0e34\u0e27\u0e23\u0e23\u0e13 081-790-7799", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "\u0e04\u0e38\u0e13\u0e19\u0e32\u0e22 (\u0e1c\u0e08\u0e01.) 065-629-5903"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10011525", "\u0e0a\u0e37\u0e48\u0e2d": "CHEVRON \u0e44\u0e2e\u0e40\u0e17\u0e47\u0e01\u0e0b\u0e4c \u0e40\u0e1e\u0e0a\u0e23\u0e1e\u0e23\u0e30\u0e40\u0e17\u0e1e", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 03:26", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 21:45", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e01\u0e23\u0e38\u0e07\u0e40\u0e17\u0e1e\u0e21\u0e2b\u0e32\u0e19\u0e04\u0e23", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e1b\u0e34\u0e48\u0e19 062-623-5936,\u0e04\u0e38\u0e13\u0e1c\u0e32 069-232-2424, \u0e04\u0e38\u0e13\u0e40\u0e2b\u0e21\u0e35\u0e22\u0e27 097-994-5661", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "\u0e04\u0e38\u0e13\u0e01\u0e34\u0e15\u0e15\u0e34\u0e28\u0e23 065-003-3104 (\u0e01\u0e31\u0e1b\u0e15\u0e31\u0e19)"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10011570", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e41\u0e01\u0e49\u0e27\u0e21\u0e13\u0e35\u0e01\u0e32\u0e0d\u0e08\u0e19\u0e4c \u0e1b\u0e34\u0e42\u0e15\u0e23\u0e40\u0e25\u0e35\u0e22\u0e21", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-22 10:40", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-21 00:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e23\u0e2d\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\" 22/5/26 \u0e04\u0e38\u0e13\u0e15\u0e49\u0e19 (\u0e1c\u0e39\u0e49\u0e08\u0e31\u0e14\u0e01\u0e32\u0e23) 064-428-2565 \u0e41\u0e08\u0e49\u0e07\u0e27\u0e48\u0e32\u0e08\u0e30\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\u0e04\u0e2d\u0e21\u0e1e\u0e34\u0e27\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e41\u0e25\u0e30\u0e2a\u0e31\u0e0d\u0e0d\u0e32\u0e13\u0e2d\u0e34\u0e19\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e40\u0e19\u0e47\u0e15\u0e43\u0e2b\u0e49 /\u0e27\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e01\u0e32\u0e0d\u0e08\u0e19\u0e1a\u0e38\u0e23\u0e35", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e15\u0e49\u0e19 (\u0e1c\u0e39\u0e49\u0e08\u0e31\u0e14\u0e01\u0e32\u0e23) 064-428-2565", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "-"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10011817", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e18\u0e19\u0e34\u0e14\u0e32\u0e2a\u0e30\u0e1e\u0e32\u0e19\u0e02\u0e32\u0e27", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 01:46", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 07:01", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e2d\u0e14\u0e34\u0e28\u0e31\u0e01\u0e14\u0e34\u0e4c (\u0e1c\u0e08\u0e01) 089-718-7007 ; \u0e04\u0e38\u0e13\u0e28\u0e38\u0e20\u0e42\u0e0a\u0e04(\u0e1c\u0e08\u0e01.\u0e40\u0e02\u0e15) 090-5046995", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "\u0e04\u0e38\u0e13\u0e1a\u0e38\u0e13\u0e22\u0e40\u0e01\u0e35\u0e22\u0e23\u0e15\u0e34  (\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07\u0e2a\u0e16\u0e32\u0e19\u0e35)  092-659-8888"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10012277", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e2a\u0e22\u0e32\u0e21\u0e2d\u0e42\u0e22\u0e18\u0e22\u0e32\u0e1b\u0e34\u0e42\u0e15\u0e23\u0e40\u0e25\u0e35\u0e22\u0e21", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-04 15:40", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-04 05:32", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e41\u0e08\u0e49\u0e07\u0e0a\u0e48\u0e32\u0e07\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\" 7/5/26 \u0e40\u0e1b\u0e34\u0e14\u0e07\u0e32\u0e19\u0e0a\u0e48\u0e32\u0e07\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a \u0e2d\u0e49\u0e32\u0e07\u0e2d\u0e34\u0e07 JOB- 2605D0597/ \u0e0a\u0e34\u0e14\u0e0a\u0e19\u0e01 \"\u0e04\u0e49\u0e32\u0e07\u0e2d\u0e30\u0e44\u0e2b\u0e25\u0e48\"\n\"\u0e23\u0e2d\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\" 5/5/26  \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e39\u0e23\u0e13\u0e4c 085-6008271 \u0e41\u0e08\u0e49\u0e07\u0e27\u0e48\u0e32\u0e08\u0e30\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\u0e04\u0e2d\u0e21\u0e1e\u0e34\u0e27\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e41\u0e25\u0e30\u0e2a\u0e31\u0e0d\u0e0d\u0e32\u0e13\u0e2d\u0e34\u0e19\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e40\u0e19\u0e47\u0e15\u0e43\u0e2b\u0e49/ \u0e0a\u0e34\u0e14\u0e0a\u0e19\u0e01", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e1e\u0e23\u0e30\u0e19\u0e04\u0e23\u0e28\u0e23\u0e35\u0e2d\u0e22\u0e38\u0e18\u0e22\u0e32", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e39\u0e23\u0e13\u0e4c 085-6008271", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "-"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10012533", "\u0e0a\u0e37\u0e48\u0e2d": "\u0e28\u0e39\u0e19\u0e22\u0e4c\u0e01\u0e23\u0e30\u0e08\u0e32\u0e22\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e42\u0e25\u0e15\u0e31\u0e2a (\u0e02\u0e2d\u0e19\u0e41\u0e01\u0e48\u0e19)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 10:02", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 00:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e02\u0e2d\u0e19\u0e41\u0e01\u0e48\u0e19", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e27\u0e34\u0e27\u0e31\u0e12\u0e19\u0e4c 093-450-8794", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "\u0e04\u0e38\u0e13\u0e19\u0e49\u0e33 062-876-6242 /\u0e04\u0e38\u0e13\u0e08\u0e15\u0e38\u0e23\u0e1e\u0e23 \u0e40\u0e1a\u0e2d\u0e23\u0e4c\u0e2a\u0e48\u0e27\u0e19\u0e01\u0e25\u0e32\u0e07 084-874-5726"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10013081", "\u0e0a\u0e37\u0e48\u0e2d": "\u0e1a\u0e23\u0e34\u0e29\u0e31\u0e17 \u0e22\u0e2d\u0e14\u0e40\u0e2b\u0e19\u0e37\u0e2d\u0e1b\u0e34\u0e42\u0e15\u0e23\u0e40\u0e25\u0e35\u0e22\u0e21 \u0e08\u0e33\u0e01\u0e31\u0e14 \u0e2a\u0e32\u0e02\u0e32 0006 (MA_ATG)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 11:07", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 05:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e43\u0e2b\u0e21\u0e48\" 25/5/26 \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e04\u0e38\u0e13\u0e27\u0e23\u0e34\u0e29\u0e10\u0e32 061-9236915/ \u0e01\u0e19\u0e01\u0e27\u0e23\u0e23\u0e13 094-7286348 (\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e2a\u0e16\u0e32\u0e19\u0e35\u0e44\u0e21\u0e48\u0e44\u0e14\u0e49 \u0e40\u0e19\u0e37\u0e48\u0e2d\u0e07\u0e08\u0e32\u0e01\u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e23\u0e31\u0e1a\u0e42\u0e17\u0e23\u0e28\u0e31\u0e1e\u0e17\u0e4c) /\u0e27\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e1e\u0e34\u0e29\u0e13\u0e38\u0e42\u0e25\u0e01", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e27\u0e23\u0e34\u0e29\u0e10\u0e32 061-9236915/ \u0e01\u0e19\u0e01\u0e27\u0e23\u0e23\u0e13 094-7286348", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "-"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10013483", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e40\u0e25\u0e34\u0e28\u0e1b\u0e23\u0e30\u0e40\u0e2a\u0e23\u0e34\u0e10 \u0e2d\u0e2d\u0e22\u0e25\u0e4c \u0e1a\u0e08\u0e01.", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 19:41", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-24 05:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e2d\u0e34\u0e19\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e40\u0e40\u0e19\u0e47\u0e15\" 26/5/26 \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d \u0e04\u0e38\u0e13\u0e18\u0e35\u0e23\u0e1e\u0e07\u0e28\u0e4c (\u0e1c\u0e08\u0e01) 087-058-5146 \u0e41\u0e08\u0e49\u0e07\u0e27\u0e48\u0e32\u0e2a\u0e31\u0e0d\u0e0d\u0e32\u0e13\u0e2d\u0e34\u0e19\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e21\u0e35\u0e1b\u0e31\u0e0d\u0e2b\u0e32 \u0e2d\u0e22\u0e39\u0e48\u0e23\u0e30\u0e2b\u0e27\u0e48\u0e32\u0e07\u0e41\u0e01\u0e49\u0e44\u0e02 /\u0e27\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e0a\u0e25\u0e1a\u0e38\u0e23\u0e35", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e42\u0e01\u0e28\u0e25 081- 931-8979 (\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07),\u0e04\u0e38\u0e13\u0e18\u0e35\u0e23\u0e1e\u0e07\u0e28\u0e4c 087-058-5146 (\u0e1c\u0e08\u0e01)", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "-"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10013564", "\u0e0a\u0e37\u0e48\u0e2d": "\u0e1a\u0e23\u0e34\u0e29\u0e31\u0e17 \u0e1e\u0e35 \u0e2d\u0e32\u0e23\u0e4c \u0e08\u0e35 \u0e1e\u0e23\u0e47\u0e2d\u0e1e\u0e40\u0e1e\u0e2d\u0e23\u0e4c\u0e15\u0e35\u0e49\u0e2a\u0e4c \u0e08\u0e33\u0e01\u0e31\u0e14 (Inventory Only)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2025-09-17 17:42", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e41\u0e08\u0e49\u0e07\u0e1c\u0e39\u0e49\u0e41\u0e17\u0e19\u0e02\u0e32\u0e22\" 10/10/25 \u0e43\u0e2b\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32\u0e2d\u0e35\u0e01\u0e04\u0e23\u0e31\u0e49\u0e07 \u0e2a\u0e25\u0e34\u0e25\u0e17\u0e34\u0e1e \u0e15\u0e23\u0e35\u0e22\u0e30\u0e1b\u0e23\u0e30\u0e40\u0e2a\u0e23\u0e34\u0e10\"    \n\"\u0e41\u0e08\u0e49\u0e07\u0e1c\u0e39\u0e40\u0e49\u0e41\u0e17\u0e19\u0e02\u0e32\u0e22\" 25/9/25 \u0e43\u0e2b\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32\u0e2d\u0e35\u0e01\u0e04\u0e23\u0e31\u0e49\u0e07 \u0e2a\u0e25\u0e34\u0e25\u0e17\u0e34\u0e1e \u0e15\u0e23\u0e35\u0e22\u0e30\u0e1b\u0e23\u0e30\u0e40\u0e2a\u0e23\u0e34\u0e10\"    \n\"\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e43\u0e2b\u0e21\u0e48\u0e2d\u0e35\u0e01\u0e04\u0e23\u0e31\u0e49\u0e07\" 24/9/25    \u0e04\u0e38\u0e13\u0e2a\u0e38 062-597-1875  \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e44\u0e21\u0e48\u0e44\u0e14\u0e49 \u0e40\u0e19\u0e37\u0e48\u0e2d\u0e07\u0e08\u0e32\u0e01\u0e44\u0e21\u0e48\u0e23\u0e31\u0e1a\u0e2a\u0e32\u0e22\u0e04\u0e48\u0e30/\u0e0a\u0e34\u0e14\u0e0a\u0e19\u0e01 \u0e41\u0e08\u0e49\u0e07\u0e1c\u0e39\u0e49\u0e41\u0e17\u0e19\u0e02\u0e32\u0e22\u0e43\u0e2b\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32\u0e2d\u0e35\u0e01\u0e04\u0e23\u0e31\u0e49\u0e07 \u0e2a\u0e25\u0e34\u0e25\u0e17\u0e34\u0e1e \u0e15\u0e23\u0e35\u0e22\u0e30\u0e1b\u0e23\u0e30\u0e40\u0e2a\u0e23\u0e34\u0e10", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e1b\u0e17\u0e38\u0e21\u0e18\u0e32\u0e19\u0e35", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e2a\u0e38 062-597-1875", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "\u0e01\u0e23\u0e13\u0e35\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e09\u0e38\u0e01\u0e40\u0e09\u0e34\u0e19 \u0e04\u0e38\u0e13\u0e21\u0e31\u0e25\u0e25\u0e34\u0e01\u0e32 02-501-2175 \u0e15\u0e48\u0e2d 693"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10013603", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e20\u0e39\u0e06\u0e31\u0e07 \u0e1e\u0e23\u0e35\u0e40\u0e21\u0e35\u0e48\u0e22\u0e21 \u0e08\u0e33\u0e01\u0e31\u0e14", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 06:05", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 05:03", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e2d\u0e34\u0e19\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e40\u0e40\u0e19\u0e47\u0e15\" 25/5/26 \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e04\u0e38\u0e13\u0e0a\u0e31\u0e22\u0e27\u0e34\u0e0a 081-818-7509 \u0e41\u0e08\u0e49\u0e07\u0e27\u0e48\u0e32\u0e2a\u0e31\u0e0d\u0e0d\u0e32\u0e13\u0e2d\u0e34\u0e19\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e21\u0e35\u0e1b\u0e31\u0e0d\u0e2b\u0e32 \u0e2d\u0e22\u0e39\u0e48\u0e23\u0e30\u0e2b\u0e27\u0e48\u0e32\u0e07\u0e41\u0e01\u0e49\u0e44\u0e02 /\u0e27\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e01\u0e23\u0e38\u0e07\u0e40\u0e17\u0e1e\u0e21\u0e2b\u0e32\u0e19\u0e04\u0e23", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e0a\u0e31\u0e22\u0e27\u0e34\u0e0a 081-818-7509", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "-"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10013944", "\u0e0a\u0e37\u0e48\u0e2d": "PTT LAO Kasi Station (\u0e01\u0e32\u0e2a\u0e35)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 18:59", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-24 20:30", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e41\u0e08\u0e49\u0e07\u0e1c\u0e39\u0e49\u0e41\u0e17\u0e19\u0e02\u0e32\u0e22\" 26/5/26 \u0e15\u0e34\u0e15\u0e14\u0e48\u0e2d\u0e04\u0e38\u0e13\u0e0a\u0e34\u0e19\u0e27\u0e34\u0e27\u0e23\u0e23\u0e18\u0e19\u0e4c (\u0e1c\u0e39\u0e49\u0e41\u0e17\u0e19\u0e02\u0e32\u0e22) \u0e2a\u0e48\u0e07 Line \u0e41\u0e08\u0e49\u0e07\u0e23\u0e31\u0e1a\u0e17\u0e23\u0e32\u0e1a \u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 AMS \u0e44\u0e21\u0e48\u0e2d\u0e31\u0e1e\u0e40\u0e14\u0e17 (Remote \u0e44\u0e21\u0e48\u0e44\u0e14\u0e49) /\u0e27\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e44\u0e21\u0e48\u0e23\u0e30\u0e1a\u0e38", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e0a\u0e34\u0e19\u0e27\u0e34\u0e27\u0e23\u0e23\u0e18\u0e19\u0e4c 089-129-8288", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "-"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10014190", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e40\u0e04\u0e08\u0e35 \u0e2a\u0e40\u0e15\u0e0a\u0e31\u0e48\u0e19 (\u0e1a\u0e08)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2025-09-19 12:01", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2025-09-18 22:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e04\u0e2d\u0e21\u0e1e\u0e34\u0e27\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e40\u0e2a\u0e35\u0e22\" 11/3/26  \u0e43\u0e2b\u0e49\u0e0a\u0e48\u0e32\u0e07\u0e40\u0e02\u0e15\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32\u0e40\u0e23\u0e37\u0e48\u0e2d\u0e07\u0e04\u0e49\u0e32\u0e07\u0e04\u0e48\u0e32\u0e40\u0e0a\u0e48\u0e32  \u0e41\u0e25\u0e30 \u0e04\u0e2d\u0e21\u0e1e\u0e34\u0e27\u0e40\u0e15\u0e2d\u0e23\u0e4c \u0e17\u0e35\u0e48\u0e15\u0e49\u0e2d\u0e07\u0e43\u0e0a\u0e49    van146    WS\n\"\u0e04\u0e2d\u0e21\u0e1e\u0e34\u0e27\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e40\u0e2a\u0e35\u0e22\" 10/10/25 \u0e2d\u0e49\u0e32\u0e07\u0e2d\u0e34\u0e07 JOB 2509D2821 /\u0e0a\u0e34\u0e14\u0e0a\u0e19\u0e01  \n\"\u0e41\u0e08\u0e49\u0e07\u0e0a\u0e48\u0e32\u0e07\u0e40\u0e02\u0e49\u0e32\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\" 30/9/25 \u0e40\u0e1b\u0e34\u0e14\u0e07\u0e32\u0e19\u0e41\u0e08\u0e49\u0e07\u0e0a\u0e48\u0e32\u0e07\u0e40\u0e02\u0e49\u0e32\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a 30/9/25   JOB 2509D2821 /\u0e0a\u0e34\u0e14\u0e0a\u0e19\u0e01", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e23\u0e32\u0e0a\u0e1a\u0e38\u0e23\u0e35", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e21\u0e07\u0e04\u0e25 \u0e17\u0e2d\u0e07\u0e14\u0e35\u0e2a\u0e38\u0e02\u0e44\u0e2a\u0e22 (\u0e41\u0e0a\u0e21\u0e1b\u0e4c) 061-568-4391", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "090-798-8997 \u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10014194", "\u0e0a\u0e37\u0e48\u0e2d": "\u0e1a\u0e23\u0e34\u0e29\u0e31\u0e17 \u0e59 \u0e01\u0e34\u0e42\u0e25 \u0e1b\u0e34\u0e42\u0e15\u0e23\u0e40\u0e25\u0e35\u0e22\u0e21 \u0e08\u0e33\u0e01\u0e31\u0e14 (BIR BOX)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-21 14:42", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-06 22:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e23\u0e2d\u0e2a\u0e16\u0e32\u0e19\u0e35\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\" 22/5/26 \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e04\u0e38\u0e13\u0e0a\u0e38\u0e15\u0e34\u0e01\u0e32\u0e0d\u0e08\u0e19\u0e4c 065-950-8039 \u0e41\u0e19\u0e30\u0e19\u0e33\u0e1b\u0e34\u0e14-\u0e40\u0e1b\u0e34\u0e14 BIR BOX \u0e2a\u0e16\u0e32\u0e19\u0e35\u0e41\u0e08\u0e49\u0e07\u0e08\u0e30\u0e43\u0e2b\u0e49\u0e17\u0e35\u0e48\u0e2a\u0e16\u0e32\u0e19\u0e35\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\u0e43\u0e2b\u0e49 /\u0e27\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e0a\u0e25\u0e1a\u0e38\u0e23\u0e35", "\u0e42\u0e17\u0e23": "1. \u0e04\u0e38\u0e13\u0e0a\u0e32\u0e0d\u0e13\u0e23\u0e07\u0e04\u0e4c 081-866-5586, 2. \u0e04\u0e38\u0e13\u0e0a\u0e38\u0e15\u0e34\u0e01\u0e32\u0e0d\u0e08\u0e19\u0e4c 065-950-8039", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": ""}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10014198", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e40\u0e1e\u0e0a\u0e23\u0e2d\u0e33\u0e19\u0e27\u0e22 (\u0e1b\u0e23\u0e30\u0e40\u0e27\u0e28)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 08:28", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 22:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e01\u0e23\u0e38\u0e07\u0e40\u0e17\u0e1e\u0e21\u0e2b\u0e32\u0e19\u0e04\u0e23", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e17\u0e34\u0e1e\u0e27\u0e23\u0e23\u0e13 063-619-9997, 084-084-6122", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "-"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10014363", "\u0e0a\u0e37\u0e48\u0e2d": "PTT \u0e40\u0e15\u0e48\u0e32\u0e20\u0e39\u0e40\u0e02\u0e32\u0e17\u0e2d\u0e07", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-23 18:36", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-19 20:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e2d\u0e34\u0e19\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e40\u0e40\u0e19\u0e47\u0e15\" 25/5/26 \u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e04\u0e38\u0e13\u0e19\u0e34\u0e18\u0e34\u0e28 \u0e41\u0e01\u0e49\u0e27\u0e28\u0e23\u0e35\u0e07\u0e32\u0e21 087-800-4999 \u0e41\u0e08\u0e49\u0e07\u0e27\u0e48\u0e32\u0e2a\u0e31\u0e0d\u0e0d\u0e32\u0e13\u0e2d\u0e34\u0e19\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e21\u0e35\u0e1b\u0e31\u0e0d\u0e2b\u0e32 \u0e2d\u0e22\u0e39\u0e48\u0e23\u0e30\u0e2b\u0e27\u0e48\u0e32\u0e07\u0e41\u0e01\u0e49\u0e44\u0e02 /\u0e27\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e01\u0e32\u0e0d\u0e08\u0e19\u0e1a\u0e38\u0e23\u0e35", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e19\u0e34\u0e18\u0e34\u0e28 \u0e41\u0e01\u0e49\u0e27\u0e28\u0e23\u0e35\u0e07\u0e32\u0e21 087-800-4999", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "-"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10014390", "\u0e0a\u0e37\u0e48\u0e2d": "\u0e1a\u0e23\u0e34\u0e29\u0e31\u0e17 \u0e19\u0e49\u0e33\u0e15\u0e32\u0e25\u0e21\u0e34\u0e15\u0e23\u0e1c\u0e25 \u0e08\u0e33\u0e01\u0e31\u0e14 (\u0e2a\u0e32\u0e02\u0e32\u0e17\u0e35\u0e48 00005) \u0e40\u0e01\u0e29\u0e15\u0e23\u0e2a\u0e21\u0e1a\u0e39\u0e23\u0e13\u0e4c", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-26 10:15", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-05-25 00:05", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e43\u0e2b\u0e21\u0e48\u0e2d\u0e35\u0e01\u0e04\u0e23\u0e31\u0e49\u0e07\"  20/5/26 \u0e04\u0e38\u0e13\u0e0a\u0e31\u0e22\u0e27\u0e38\u0e12\u0e34 094-542-8829 \u0e44\u0e21\u0e48\u0e23\u0e31\u0e1a\u0e2a\u0e32\u0e22/\u0e0a\u0e34\u0e14\u0e0a\u0e19\u0e01", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e0a\u0e31\u0e22\u0e20\u0e39\u0e21\u0e34", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e0a\u0e31\u0e22\u0e27\u0e38\u0e12\u0e34 094-542-8829", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "\u0e04\u0e38\u0e13\u0e0a\u0e31\u0e22\u0e27\u0e38\u0e12\u0e34 094-542-8829, IT \u0e04\u0e38\u0e13\u0e23\u0e4a\u0e2d\u0e01 098-957-9495 \u0e01\u0e23\u0e13\u0e35\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e34\u0e07\u0e04\u0e4c"}, {"\u0e23\u0e2b\u0e31\u0e2a\u0e2a\u0e16\u0e32\u0e19\u0e35": "10014790", "\u0e0a\u0e37\u0e48\u0e2d": "SINOPEC STATION (T2) (Inventory Only)", "\u0e04\u0e07\u0e40\u0e2b\u0e25\u0e37\u0e2d\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-04-29 13:05", "\u0e1b\u0e34\u0e14\u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14": "2026-04-28 22:00", "\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38": "\"\u0e41\u0e08\u0e49\u0e07\u0e1c\u0e39\u0e49\u0e41\u0e17\u0e19\u0e02\u0e32\u0e22\" 06/05/26 \u0e04\u0e38\u0e13\u0e0a\u0e34\u0e19\u0e27\u0e34\u0e27\u0e23\u0e23\u0e18\u0e19\u0e4c \u0e43\u0e2b\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32 \u0e1b\u0e34\u0e14-\u0e40\u0e1b\u0e34\u0e14 \u0e01\u0e25\u0e48\u0e2d\u0e07 BIR BOX", "\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14": "\u0e44\u0e21\u0e48\u0e23\u0e30\u0e1a\u0e38", "\u0e42\u0e17\u0e23": "\u0e04\u0e38\u0e13\u0e41\u0e2d\u0e23\u0e4c  020 98813014/ \u0e04\u0e38\u0e13\u0e40\u0e08\u0e34\u0e19\u0e40\u0e08\u0e34\u0e19 020 53639992", "\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d": "\u0e04\u0e38\u0e13\u0e41\u0e2d\u0e23\u0e4c 020 98813014/ \u0e04\u0e38\u0e13\u0e40\u0e08\u0e34\u0e19\u0e40\u0e08\u0e34\u0e19 020 53639992"}]}; // auto_update.py will replace this line
 
-// ══════════════════════════════════════════════════════════
-//  STORAGE MODULE — localStorage persistence
-// ══════════════════════════════════════════════════════════
-const SK_EXCEL    = 'ned_excel_data';
-const SK_EXCEL_TS = 'ned_excel_ts';
-const SK_EXCEL_FN = 'ned_excel_fname';
+// ══ STORAGE ══
 const SK_RESOLVED = 'ned_resolved';
 const SK_HISTORY  = 'ned_history';
+function lsSave(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
+function lsLoad(k,d=null){try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):d;}catch(e){return d;}}
+function lsClear(k){try{localStorage.removeItem(k);}catch(e){}}
 
-function lsSave(key, val){
-  try{ localStorage.setItem(key, JSON.stringify(val)); return true; }
-  catch(e){ console.warn('localStorage save failed:', e); return false; }
+function saveResolved(siteId,note,siteName){
+  const db=lsLoad(SK_RESOLVED,{});
+  db[siteId]={ts:new Date().toISOString(),note:note||'',siteName:siteName||''};
+  lsSave(SK_RESOLVED,db);
+  const hist=lsLoad(SK_HISTORY,[]);
+  hist.unshift({siteId,siteName:siteName||'',note:note||'',ts:new Date().toISOString()});
+  if(hist.length>200)hist.splice(200);
+  lsSave(SK_HISTORY,hist);
 }
-function lsLoad(key, def=null){
-  try{ const v=localStorage.getItem(key); return v!==null?JSON.parse(v):def; }
-  catch(e){ return def; }
-}
-function lsClear(key){ try{ localStorage.removeItem(key); }catch(e){} }
-
-function saveResolved(siteId, note, siteName){
-  const db = lsLoad(SK_RESOLVED, {});
-  db[siteId] = { ts: new Date().toISOString(), note: note||'', siteName: siteName||'' };
-  lsSave(SK_RESOLVED, db);
-  const hist = lsLoad(SK_HISTORY, []);
-  hist.unshift({ siteId, siteName: siteName||'', note: note||'', ts: new Date().toISOString(), type:'resolved' });
-  if(hist.length > 200) hist.splice(200);
-  lsSave(SK_HISTORY, hist);
-}
-
-function saveExcel(rows, filename){
-  try{
-    lsSave(SK_EXCEL, rows);
-    lsSave(SK_EXCEL_TS, new Date().toISOString());
-    lsSave(SK_EXCEL_FN, filename||'');
-    updateStorageBadge();
-  }catch(e){ console.warn('Excel save failed (too large?):', e); }
-}
-
-function loadSavedExcel(){
-  return {
-    rows: lsLoad(SK_EXCEL, null),
-    ts:   lsLoad(SK_EXCEL_TS, null),
-    fn:   lsLoad(SK_EXCEL_FN, '')
-  };
-}
-
 function updateStorageBadge(){
-  const el = document.getElementById('storageBadge');
-  if(!el) return;
-  const ts  = lsLoad(SK_EXCEL_TS);
-  const res = Object.keys(lsLoad(SK_RESOLVED,{})).length;
-  if(ts){
-    const d = new Date(ts);
-    const label = d.toLocaleDateString('th-TH',{day:'2-digit',month:'2-digit'})
-      + ' ' + d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
-    el.className = 'storage-badge';
-    el.innerHTML = `💾 ${label} · ✅${res}`;
-  } else {
-    el.className = 'storage-badge warn';
-    el.innerHTML = '💾 ยังไม่มีข้อมูล';
-  }
+  const el=document.getElementById('storageBadge');
+  if(!el)return;
+  const res=Object.keys(lsLoad(SK_RESOLVED,{})).length;
+  el.className='storage-badge';
+  el.innerHTML=`💾 ✅${res} Resolved`;
 }
-
 function restoreResolvedState(){
-  const db = lsLoad(SK_RESOLVED, {});
+  const db=lsLoad(SK_RESOLVED,{});
   resolvedIds.clear();
   displayData.forEach(r=>{
-    if(db[r.siteId]){
-      resolvedIds.add(r._idx);
-      r.status = 'resolved';
-      r.resolveNote = db[r.siteId].note || '';
-    }
+    if(db[r.siteId]){resolvedIds.add(r._idx);r.status='resolved';r.resolveNote=db[r.siteId].note||'';}
   });
 }
-
 function restoreTimeline(){
-  const hist = lsLoad(SK_HISTORY, []);
-  const tl   = document.getElementById('timeline');
-  if(!tl || !hist.length) return;
-  tl.innerHTML = '';
+  const hist=lsLoad(SK_HISTORY,[]);
+  const tl=document.getElementById('timeline');
+  if(!tl||!hist.length)return;
+  tl.innerHTML='';
   hist.slice(0,12).forEach(h=>{
-    const d       = new Date(h.ts);
-    const timeStr = d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
-    const dateStr = d.toLocaleDateString('th-TH',{day:'2-digit',month:'2-digit'});
-    const item    = document.createElement('div');
-    item.className = 'tl-item';
-    item.innerHTML = `<div class="tl-dot green">✓</div>
-      <div class="tl-content">
-        <div class="tl-title">Resolved แล้ว</div>
-        <div class="tl-site">${h.siteId} · ${(h.siteName||'').substring(0,28)}</div>
-        <div class="tl-time">${dateStr} ${timeStr} น.</div>
-      </div>`;
+    const d=new Date(h.ts);
+    const ts=d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+    const ds=d.toLocaleDateString('th-TH',{day:'2-digit',month:'2-digit'});
+    const item=document.createElement('div');item.className='tl-item';
+    item.innerHTML=`<div class="tl-dot green">✓</div><div class="tl-content"><div class="tl-title">Resolved แล้ว</div><div class="tl-site">${h.siteId} · ${(h.siteName||'').substring(0,28)}</div><div class="tl-time">${ds} ${ts} น.</div></div>`;
     tl.appendChild(item);
   });
 }
-
 function clearStorageConfirm(){
-  if(!confirm('ต้องการล้างข้อมูลที่บันทึกทั้งหมดไหม?\n(Excel + Resolved + ประวัติ)')) return;
-  [SK_EXCEL,SK_EXCEL_TS,SK_EXCEL_FN,SK_RESOLVED,SK_HISTORY].forEach(lsClear);
+  if(!confirm('ต้องการล้างข้อมูล Resolved + ประวัติทั้งหมดไหม?'))return;
+  [SK_RESOLVED,SK_HISTORY].forEach(lsClear);
   updateStorageBadge();
   alert('ล้างข้อมูลแล้วครับ');
 }
-
 function exportHistory(){
-  const hist = lsLoad(SK_HISTORY, []);
-  if(!hist.length){ alert('ยังไม่มีประวัติ Resolve'); return; }
-  const headers = ['วันที่','รหัสสถานี','ชื่อสถานี','หมายเหตุการแก้ไข'];
-  const rows = hist.map(h=>[
-    new Date(h.ts).toLocaleString('th-TH'),
-    h.siteId,
-    '"'+(h.siteName||'').replace(/"/g,'""')+'"',
-    '"'+(h.note||'').replace(/"/g,'""')+'"'
-  ].join(','));
-  const csv = [headers.join(','),...rows].join('\n');
-  const a   = document.createElement('a');
-  a.href    = URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
-  a.download= 'resolve_history_'+new Date().toISOString().slice(0,10)+'.csv';
+  const hist=lsLoad(SK_HISTORY,[]);
+  if(!hist.length){alert('ยังไม่มีประวัติ Resolve');return;}
+  const h=['วันที่','รหัสสถานี','ชื่อสถานี','หมายเหตุ'];
+  const rows=hist.map(h=>[new Date(h.ts).toLocaleString('th-TH'),h.siteId,'"'+(h.siteName||'')+'"','"'+(h.note||'')+'"'].join(','));
+  const csv=[h.join(','),...rows].join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download='resolve_history_'+new Date().toISOString().slice(0,10)+'.csv';
   a.click();
 }
 
-function tryAutoLoad(){
-  const {rows,ts,fn} = loadSavedExcel();
-  if(!rows||!rows.length){ updateStorageBadge(); return; }
-  const d     = new Date(ts);
-  const label = d.toLocaleDateString('th-TH')+' '+d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
-  const ok    = confirm(
-    '💾 พบข้อมูลที่บันทึกไว้\n\n'+
-    'ไฟล์: '+fn+'\n'+
-    'บันทึกเมื่อ: '+label+'\n'+
-    'จำนวน '+rows.length+' สถานี\n\n'+
-    'ต้องการโหลดข้อมูลนี้ไหม?\n(กด Cancel เพื่อ Upload ไฟล์ใหม่)'
-  );
-  if(!ok){ updateStorageBadge(); return; }
-  loadedFileName = fn;
-  allData = rows;
-  resolvedIds.clear();
-  processData();
-  restoreResolvedState();
-  renderAll();
-  showDashboard();
-  restoreTimeline();
+// ══ STATE ══
+let allData=[],displayData=[],resolvedIds=new Set();
+let resolveTarget=null,currentTab='network',currentPage=1,searchQuery='',kpiFilter=null;
+let sortCol=null,sortDir=1;
+let currentPage2='dashboard';
+
+// ══ PARSE ══
+function parseDate(s){
+  if(!s)return null;
+  if(s instanceof Date)return isNaN(s)?null:s;
+  const m=String(s).match(/(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}))?/);
+  if(!m)return null;
+  return new Date(+m[1],+m[2]-1,+m[3],+(m[4]||0),+(m[5]||0));
 }
-// ══════════════════════════════════════════════════════════
+function today0(){const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
+function daysDiff(d){return(today0()-new Date(d.getFullYear(),d.getMonth(),d.getDate()))/86400000;}
+function fmtTS(d){if(!d)return'—';return`${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())} ${z(d.getHours())}:${z(d.getMinutes())}`;}
+function z(n){return String(n).padStart(2,'0');}
+function fmtAge(days){if(days<1)return'วันนี้';if(days<2)return'1 วัน';return`${Math.floor(days)} วัน`;}
 
-// ── EMBEDDED DATA (injected by auto_update.py) ──
-const EMBEDDED_DATA = {"updated_at": "2026-05-26 11:52:34", "source_file": "atg_site_user.xlsx", "total": 36, "data": [{"รหัสสถานี": "0000F001", "ชื่อ": "Flowco Learning Center (Veeder Root)", "คงเหลือล่าสุด": "2026-05-25 06:12", "ปิดวันล่าสุด": "2026-04-23 10:00", "หมายเหตุ": "\"สถานีทดสอบ\"", "จังหวัด": "กรุงเทพมหานคร", "โทร": "คุณพรพจน์ 085-911-7650", "ชื่อผู้ติดต่อ": "-"}, {"รหัสสถานี": "0000F006", "ชื่อ": "Flowco Learning Center (OKET+ATGGO)", "คงเหลือล่าสุด": "2026-05-25 06:15", "ปิดวันล่าสุด": "2026-05-25 02:00", "หมายเหตุ": "\"สถานีทดสอบ\"", "จังหวัด": "กรุงเทพมหานคร", "โทร": "คุณพรพจน์ 085-911-7650", "ชื่อผู้ติดต่อ": "-"}, {"รหัสสถานี": "10000925", "ชื่อ": "PBL 106901 - BCP นราพรรณ (สุราษฎร์ธานี) \"ปิดปรับปรุง\"", "คงเหลือล่าสุด": "2024-03-05 08:34", "ปิดวันล่าสุด": "2024-03-04 20:30", "หมายเหตุ": "\"ปิดปรับปรุง\"  5/3/24  11.27  ติดต่อคุณกรณ์ภา (เจ้าของ) 065-949-9289 แจ้งว่าทางสถานีมีการปิดปรับปรุงเป็นระยะเวลา3 เดือน ครึ่งค่ะ // ชิดชนก ช่างเข้าตรวจสอบพบว่ากล่อง BIR BOX ไม่มี", "จังหวัด": "สุราษฏ์ธานี", "โทร": "คุณกรณ์ภา (เจ้าของ) 065-949-9289", "ชื่อผู้ติดต่อ": "BSRC คุณคฑา 081-103-0689, คุณจตุพงศ์ 065-949-9362"}, {"รหัสสถานี": "10001650", "ชื่อ": "PTT สตาร์ เอ็นเนอร์ยี่ (กิ่งแก้ว)", "คงเหลือล่าสุด": "2026-05-11 09:07", "ปิดวันล่าสุด": "2026-05-11 00:00", "หมายเหตุ": "\"รอสถานีตรวจสอบ\" 11/5/26 สถานีใช้งานเครื่อง PC อยู่ รอ Restart PC /ชิดชนก", "จังหวัด": "สมุทรปราการ", "โทร": "คุณพรสวรรค์ 0992237743/ 027502681", "ชื่อผู้ติดต่อ": ""}, {"รหัสสถานี": "10001897", "ชื่อ": "PTT พีโอ.ออยล์ จำกัด สาขา 26 (พิมาย)", "คงเหลือล่าสุด": "2026-05-25 09:01", "ปิดวันล่าสุด": "2026-05-25 00:00", "หมายเหตุ": "\"ติดต่อใหม่\" 26/5/26 ติดต่อคุณเอ๋ 088-548-1234 (ติดต่อสถานีไม่ได้ เนื่องจากยังไม่รับโทรศัพท์) /วาทิตย์ 
-\"ติดต่อใหม่\" 25/5/26 ติดต่อคุณมิ่งขวัญ (ผจก) 096-587-7379/ 082-365-1234/ คุณเอ๋ 088-548-1234 (ติดต่อสถานีไม่ได้ เนื่องจากยังไม่รับโทรศัพท์) /วาทิตย์", "จังหวัด": "นครราชสีมา", "โทร": "Alarm ให้ติดต่อ (1.) เฮียย้ง 081-670-1234, (2.) คุณเอ๋ 088-548-1234", "ชื่อผู้ติดต่อ": "Alarm ให้ติดต่อ (3.) คุณเก๋(ผจก.เขต) 085-012-9503"}, {"รหัสสถานี": "10002340", "ชื่อ": "PTT บูรพาปิโตรเลียม (1995) สำนักงานใหญ่", "คงเหลือล่าสุด": "2026-05-26 10:14", "ปิดวันล่าสุด": "2026-05-26 05:02", "หมายเหตุ": "", "จังหวัด": "ระยอง", "โทร": "คุณออย  เจ้าของสถานี  091-8262939", "ชื่อผู้ติดต่อ": "092-251-6603"}, {"รหัสสถานี": "10002540", "ชื่อ": "PTT พิพัฒน์ปิโตรเลียม", "คงเหลือล่าสุด": "2026-05-20 14:43", "ปิดวันล่าสุด": "2026-05-19 21:00", "หมายเหตุ": "\"รอช่างเข้า \"  22/5/26  อ้างอิง 2605D1783 ping ไม่เจอ ATG  ws
-\"ติดต่อใหม่อีกครั้ง\" 20/5/26 คุณพลสินธุ์ 080-011-6780 ติดต่อไม่ได้ค่ะ/ชิดชนก", "จังหวัด": "บึงกาฬ", "โทร": "คุณพลสินธุ์ 080-011-6780 โทรเฉพาะ น้ำเข้าถัง , network", "ชื่อผู้ติดต่อ": "คุณพลสินธุ์ 080-011-6780"}, {"รหัสสถานี": "10003317", "ชื่อ": "PTT สุทธิดา (2536) (บจก)", "คงเหลือล่าสุด": "2026-05-18 23:18", "ปิดวันล่าสุด": "2026-05-18 21:00", "หมายเหตุ": "\"คอมพิวเตอร์\" 25/5/26 ติดต่อคุณวิชุดา 086-869-5698 แจ้งว่าคอมพิวเตอร์มีปัญหา อยู่ระหว่างแก้ไข /วาทิตย์ 
-\"internet เสีย\"22/5/26 คุณสุพัตรา (ผจก.) 081-663-2777   ws
-\"รอสถานีตรวจสอบ\"20/5/26 คุณสุพัตรา (ผจก.) 081-663-2777 แจ้งว่าจะตรวจสอบคอมพิวเตอร์และสัญญาณอินเตอร์เน็ตให้ค่ะ/ชิดชนก", "จังหวัด": "ปราจีนบุรี", "โทร": "คุณวิชุดา 086-869-5698", "ชื่อผู้ติดต่อ": ""}, {"รหัสสถานี": "10003823", "ชื่อ": "PTT ธงชัยปิโตรเลียม (หจก.)", "คงเหลือล่าสุด": "2026-05-26 01:36", "ปิดวันล่าสุด": "2026-05-25 07:31", "หมายเหตุ": "", "จังหวัด": "ศรีสะเกษ", "โทร": "คุณเบนซ์ 092-659-8888", "ชื่อผู้ติดต่อ": ""}, {"รหัสสถานี": "10007993", "ชื่อ": "PTT มือทอง พร็อพเพอร์ตี้", "คงเหลือล่าสุด": "2026-05-26 09:48", "ปิดวันล่าสุด": "2026-05-25 22:00", "หมายเหตุ": "", "จังหวัด": "เพชรบุรี", "โทร": "คุณปอ 081-763-5840", "ชื่อผู้ติดต่อ": ""}, {"รหัสสถานี": "10008010", "ชื่อ": "PTT เรืองชัยบริการ (2011)", "คงเหลือล่าสุด": "2026-05-26 10:03", "ปิดวันล่าสุด": "2026-05-26 06:01", "หมายเหตุ": "", "จังหวัด": "มหาสารคาม", "โทร": "คุณธนิศ 081-871-1707", "ชื่อผู้ติดต่อ": ""}, {"รหัสสถานี": "10008724", "ชื่อ": "PTT หจก.ลานทองคำอาฮวน", "คงเหลือล่าสุด": "2026-05-24 07:41", "ปิดวันล่าสุด": "2026-05-23 23:21", "หมายเหตุ": "\"อินเตอร์เเน็ต\" 25/5/26 ติดต่อคุณแป๋ม 088-572-2889 แจ้งว่าคอมพิวเตอร์มีปัญหา อยู่ระหว่างแก้ไข /วาทิตย์", "จังหวัด": "มุกดาหาร", "โทร": "คุณพลอยไพลิน ไม่สะดวกให้โทรส่งข้อความแจ้ง โทรเฉพาะน้ำเข้าถัง 088-572-2889", "ชื่อผู้ติดต่อ": "คุณวิภา 097-364-5663"}, {"รหัสสถานี": "10009081", "ชื่อ": "บริษัท สุวินทวงศ์พลังงาน จำกัด", "คงเหลือล่าสุด": "2026-05-26 10:11", "ปิดวันล่าสุด": "2026-05-25 23:30", "หมายเหตุ": "", "จังหวัด": "ฉะเชิงเทรา", "โทร": "คุณชลิต 066-153-5429", "ชื่อผู้ติดต่อ": ""}, {"รหัสสถานี": "10009469", "ชื่อ": "PTT บริษัท พัฒนชัยยนต์ จำกัด สาขา 2", "คงเหลือล่าสุด": "2026-05-12 18:32", "ปิดวันล่าสุด": "2026-05-12 00:00", "หมายเหตุ": "\"ATG เสีย \" 19/5/26   ติดต่อคุณอุ้ม 091-869-7679 / ชิดชนก", "จังหวัด": "อุดรธานี", "โทร": "คุณอุ้ม 091-869-7679", "ชื่อผู้ติดต่อ": "-"}, {"รหัสสถานี": "10009560", "ชื่อ": "PTT กุดชุมออยล์ (กุดชุม)", "คงเหลือล่าสุด": "2026-05-25 18:13", "ปิดวันล่าสุด": "2026-05-25 06:03", "หมายเหตุ": "\"ติดต่อใหม่\" 26/5/26 ติดต่อ คุณนก/คุณพิม 088-590-4329 (เบอร์สำนักงาน) (ติดต่อสถานีไม่ได้ เนื่องจากยังไม่รับโทรศัพท์) /วาทิตย์", "จังหวัด": "ยโสธร", "โทร": "คุณวีระศักดิ์ 081-879-1123/045-789283", "ชื่อผู้ติดต่อ": "-"}, {"รหัสสถานี": "10010114", "ชื่อ": "PTT สหไพศาลสุรินทร์ (ชุมพลบุรี)", "คงเหลือล่าสุด": "2026-05-25 22:15", "ปิดวันล่าสุด": "2026-05-25 06:32", "หมายเหตุ": "\"รอสถานีตรวจสอบ\" 26/5/26 ติดต่อ คุณก้อง (ผจก.) 093-327-8798 แจ้งว่าจะตรวจสอบคอมพิวเตอร์และสัญญาณอินเตอร์เน็ตให้ /วาทิตย์", "จังหวัด": "สุรินทร์", "โทร": "คุณพิเชษฐ์ 085-652-5441, 044-596-225", "ชื่อผู้ติดต่อ": ""}, {"รหัสสถานี": "10010200", "ชื่อ": "สถานีบริการน้ำมันเชื้อไฟลาว สาขา Homsouk Oudomxay", "คงเหลือล่าสุด": "2026-05-26 09:59", "ปิดวันล่าสุด": "2026-05-25 21:20", "หมายเหตุ": "\"แจ้งผู้แทนขาย\" 25/5/26 ติตด่อคุณชินวิวรรธน์ (ผู้แทนขาย) ส่ง Line แจ้งรับทราบ ข้อมูล AMS ไม่อัพเดท (Remote ไม่ได้)/ วาทิตย์", "จังหวัด": "ไม่ระบุ", "โทร": "8.56202E+12", "ชื่อผู้ติดต่อ": "คุณชินวิวรรธน์ เลขวรรธนกุล 082-790-3192"}, {"รหัสสถานี": "10010294", "ชื่อ": "FSM Easyfill 3", "คงเหลือล่าสุด": "2026-05-26 09:13", "ปิดวันล่าสุด": "2026-02-07 02:05", "หมายเหตุ": "\"Time-Zone\"  ช้ากว่าเวลาประเทศไทย", "จังหวัด": "ไม่ระบุ", "โทร": "(960) 3331457", "ชื่อผู้ติดต่อ": ""}, {"รหัสสถานี": "10011386", "ชื่อ": "PTT ทูเก็ตเตอร์ ออยล์ (2017)", "คงเหลือล่าสุด": "2026-05-26 08:37", "ปิดวันล่าสุด": "2026-05-26 05:03", "หมายเหตุ": "", "จังหวัด": "ราชบุรี", "โทร": "คุณธีระ  089-684-9079", "ชื่อผู้ติดต่อ": ""}, {"รหัสสถานี": "10011508", "ชื่อ": "PTT เลิศสวัสดิ์ เอ็นเนอจี", "คงเหลือล่าสุด": "2026-05-24 00:20", "ปิดวันล่าสุด": "2026-05-23 18:04", "หมายเหตุ": "\"ติดต่อใหม่\" 25/5/26 ติดต่อคุณสุกัญญา 062-935-3092 (์Network Error) (ติดต่อสถานีไม่ได้ เนื่องจากยังไม่รับโทรศัพท์) /วาทิตย์", "จังหวัด": "นครราชสีมา", "โทร": "คุณฐิติวรรณ 081-790-7799", "ชื่อผู้ติดต่อ": "คุณนาย (ผจก.) 065-629-5903"}, {"รหัสสถานี": "10011525", "ชื่อ": "CHEVRON ไฮเท็กซ์ เพชรพระเทพ", "คงเหลือล่าสุด": "2026-05-26 03:26", "ปิดวันล่าสุด": "2026-05-25 21:45", "หมายเหตุ": "", "จังหวัด": "กรุงเทพมหานคร", "โทร": "คุณปิ่น 062-623-5936,คุณผา 069-232-2424, คุณเหมียว 097-994-5661", "ชื่อผู้ติดต่อ": "คุณกิตติศร 065-003-3104 (กัปตัน)"}, {"รหัสสถานี": "10011570", "ชื่อ": "PTT แก้วมณีกาญจน์ ปิโตรเลียม", "คงเหลือล่าสุด": "2026-05-22 10:40", "ปิดวันล่าสุด": "2026-05-21 00:00", "หมายเหตุ": "\"รอลูกค้าตรวจสอบ\" 22/5/26 คุณต้น (ผู้จัดการ) 064-428-2565 แจ้งว่าจะตรวจสอบคอมพิวเตอร์และสัญญาณอินเตอร์เน็ตให้ /วาทิตย์", "จังหวัด": "กาญจนบุรี", "โทร": "คุณต้น (ผู้จัดการ) 064-428-2565", "ชื่อผู้ติดต่อ": "-"}, {"รหัสสถานี": "10011817", "ชื่อ": "PTT ธนิดาสะพานขาว", "คงเหลือล่าสุด": "2026-05-26 01:46", "ปิดวันล่าสุด": "2026-05-25 07:01", "หมายเหตุ": "", "จังหวัด": "ศรีสะเกษ", "โทร": "คุณอดิศักดิ์ (ผจก) 089-718-7007 ; คุณศุภโชค(ผจก.เขต) 090-5046995", "ชื่อผู้ติดต่อ": "คุณบุณยเกียรติ  (เจ้าของสถานี)  092-659-8888"}, {"รหัสสถานี": "10012277", "ชื่อ": "PTT สยามอโยธยาปิโตรเลียม", "คงเหลือล่าสุด": "2026-05-04 15:40", "ปิดวันล่าสุด": "2026-05-04 05:32", "หมายเหตุ": "\"แจ้งช่างตรวจสอบ\" 7/5/26 เปิดงานช่างตรวจสอบ อ้างอิง JOB- 2605D0597/ ชิดชนก \"ค้างอะไหล่\"
-\"รอลูกค้าตรวจสอบ\" 5/5/26  ติดต่อคุณสมบูรณ์ 085-6008271 แจ้งว่าจะตรวจสอบคอมพิวเตอร์และสัญญาณอินเตอร์เน็ตให้/ ชิดชนก", "จังหวัด": "พระนครศรีอยุธยา", "โทร": "คุณสมบูรณ์ 085-6008271", "ชื่อผู้ติดต่อ": "-"}, {"รหัสสถานี": "10012533", "ชื่อ": "ศูนย์กระจายสินค้าโลตัส (ขอนแก่น)", "คงเหลือล่าสุด": "2026-05-26 10:02", "ปิดวันล่าสุด": "2026-05-26 00:00", "หมายเหตุ": "", "จังหวัด": "ขอนแก่น", "โทร": "คุณวิวัฒน์ 093-450-8794", "ชื่อผู้ติดต่อ": "คุณน้ำ 062-876-6242 /คุณจตุรพร เบอร์ส่วนกลาง 084-874-5726"}, {"รหัสสถานี": "10013081", "ชื่อ": "บริษัท ยอดเหนือปิโตรเลียม จำกัด สาขา 0006 (MA_ATG)", "คงเหลือล่าสุด": "2026-05-25 11:07", "ปิดวันล่าสุด": "2026-05-25 05:00", "หมายเหตุ": "\"ติดต่อใหม่\" 25/5/26 ติดต่อคุณวริษฐา 061-9236915/ กนกวรรณ 094-7286348 (ติดต่อสถานีไม่ได้ เนื่องจากยังไม่รับโทรศัพท์) /วาทิตย์", "จังหวัด": "พิษณุโลก", "โทร": "คุณวริษฐา 061-9236915/ กนกวรรณ 094-7286348", "ชื่อผู้ติดต่อ": "-"}, {"รหัสสถานี": "10013483", "ชื่อ": "PTT เลิศประเสริฐ ออยล์ บจก.", "คงเหลือล่าสุด": "2026-05-25 19:41", "ปิดวันล่าสุด": "2026-05-24 05:00", "หมายเหตุ": "\"อินเตอร์เเน็ต\" 26/5/26 ติดต่อ คุณธีรพงศ์ (ผจก) 087-058-5146 แจ้งว่าสัญญาณอินเตอร์มีปัญหา อยู่ระหว่างแก้ไข /วาทิตย์", "จังหวัด": "ชลบุรี", "โทร": "คุณโกศล 081- 931-8979 (เจ้าของ),คุณธีรพงศ์ 087-058-5146 (ผจก)", "ชื่อผู้ติดต่อ": "-"}, {"รหัสสถานี": "10013564", "ชื่อ": "บริษัท พี อาร์ จี พร็อพเพอร์ตี้ส์ จำกัด (Inventory Only)", "คงเหลือล่าสุด": "2025-09-17 17:42", "ปิดวันล่าสุด": "", "หมายเหตุ": "\"แจ้งผู้แทนขาย\" 10/10/25 ให้ติดต่อลูกค้าอีกครั้ง สลิลทิพ ตรียะประเสริฐ\"    
-\"แจ้งผูเ้แทนขาย\" 25/9/25 ให้ติดต่อลูกค้าอีกครั้ง สลิลทิพ ตรียะประเสริฐ\"    
-\"ติดต่อใหม่อีกครั้ง\" 24/9/25    คุณสุ 062-597-1875  ติดต่อไม่ได้ เนื่องจากไม่รับสายค่ะ/ชิดชนก แจ้งผู้แทนขายให้ติดต่อลูกค้าอีกครั้ง สลิลทิพ ตรียะประเสริฐ", "จังหวัด": "ปทุมธานี", "โทร": "คุณสุ 062-597-1875", "ชื่อผู้ติดต่อ": "กรณีติดต่อฉุกเฉิน คุณมัลลิกา 02-501-2175 ต่อ 693"}, {"รหัสสถานี": "10013603", "ชื่อ": "PTT ภูฆัง พรีเมี่ยม จำกัด", "คงเหลือล่าสุด": "2026-05-25 06:05", "ปิดวันล่าสุด": "2026-05-25 05:03", "หมายเหตุ": "\"อินเตอร์เเน็ต\" 25/5/26 ติดต่อคุณชัยวิช 081-818-7509 แจ้งว่าสัญญาณอินเตอร์มีปัญหา อยู่ระหว่างแก้ไข /วาทิตย์", "จังหวัด": "กรุงเทพมหานคร", "โทร": "คุณชัยวิช 081-818-7509", "ชื่อผู้ติดต่อ": "-"}, {"รหัสสถานี": "10013944", "ชื่อ": "PTT LAO Kasi Station (กาสี)", "คงเหลือล่าสุด": "2026-05-25 18:59", "ปิดวันล่าสุด": "2026-05-24 20:30", "หมายเหตุ": "\"แจ้งผู้แทนขาย\" 26/5/26 ติตด่อคุณชินวิวรรธน์ (ผู้แทนขาย) ส่ง Line แจ้งรับทราบ ข้อมูล AMS ไม่อัพเดท (Remote ไม่ได้) /วาทิตย์", "จังหวัด": "ไม่ระบุ", "โทร": "คุณชินวิวรรธน์ 089-129-8288", "ชื่อผู้ติดต่อ": "-"}, {"รหัสสถานี": "10014190", "ชื่อ": "PTT เคจี สเตชั่น (บจ)", "คงเหลือล่าสุด": "2025-09-19 12:01", "ปิดวันล่าสุด": "2025-09-18 22:00", "หมายเหตุ": "\"คอมพิวเตอร์เสีย\" 11/3/26  ให้ช่างเขตติดต่อลูกค้าเรื่องค้างค่าเช่า  และ คอมพิวเตอร์ ที่ต้องใช้    van146    WS
-\"คอมพิวเตอร์เสีย\" 10/10/25 อ้างอิง JOB 2509D2821 /ชิดชนก  
-\"แจ้งช่างเข้าตรวจสอบ\" 30/9/25 เปิดงานแจ้งช่างเข้าตรวจสอบ 30/9/25   JOB 2509D2821 /ชิดชนก", "จังหวัด": "ราชบุรี", "โทร": "คุณมงคล ทองดีสุขไสย (แชมป์) 061-568-4391", "ชื่อผู้ติดต่อ": "090-798-8997 เจ้าของ"}, {"รหัสสถานี": "10014194", "ชื่อ": "บริษัท ๙ กิโล ปิโตรเลียม จำกัด (BIR BOX)", "คงเหลือล่าสุด": "2026-05-21 14:42", "ปิดวันล่าสุด": "2026-05-06 22:00", "หมายเหตุ": "\"รอสถานีตรวจสอบ\" 22/5/26 ติดต่อคุณชุติกาญจน์ 065-950-8039 แนะนำปิด-เปิด BIR BOX สถานีแจ้งจะให้ที่สถานีตรวจสอบให้ /วาทิตย์", "จังหวัด": "ชลบุรี", "โทร": "1. คุณชาญณรงค์ 081-866-5586, 2. คุณชุติกาญจน์ 065-950-8039", "ชื่อผู้ติดต่อ": ""}, {"รหัสสถานี": "10014198", "ชื่อ": "PTT เพชรอำนวย (ประเวศ)", "คงเหลือล่าสุด": "2026-05-26 08:28", "ปิดวันล่าสุด": "2026-05-25 22:00", "หมายเหตุ": "", "จังหวัด": "กรุงเทพมหานคร", "โทร": "คุณทิพวรรณ 063-619-9997, 084-084-6122", "ชื่อผู้ติดต่อ": "-"}, {"รหัสสถานี": "10014363", "ชื่อ": "PTT เต่าภูเขาทอง", "คงเหลือล่าสุด": "2026-05-23 18:36", "ปิดวันล่าสุด": "2026-05-19 20:00", "หมายเหตุ": "\"อินเตอร์เเน็ต\" 25/5/26 ติดต่อคุณนิธิศ แก้วศรีงาม 087-800-4999 แจ้งว่าสัญญาณอินเตอร์มีปัญหา อยู่ระหว่างแก้ไข /วาทิตย์", "จังหวัด": "กาญจนบุรี", "โทร": "คุณนิธิศ แก้วศรีงาม 087-800-4999", "ชื่อผู้ติดต่อ": "-"}, {"รหัสสถานี": "10014390", "ชื่อ": "บริษัท น้ำตาลมิตรผล จำกัด (สาขาที่ 00005) เกษตรสมบูรณ์", "คงเหลือล่าสุด": "2026-05-26 10:15", "ปิดวันล่าสุด": "2026-05-25 00:05", "หมายเหตุ": "\"ติดต่อใหม่อีกครั้ง\"  20/5/26 คุณชัยวุฒิ 094-542-8829 ไม่รับสาย/ชิดชนก", "จังหวัด": "ชัยภูมิ", "โทร": "คุณชัยวุฒิ 094-542-8829", "ชื่อผู้ติดต่อ": "คุณชัยวุฒิ 094-542-8829, IT คุณร๊อก 098-957-9495 กรณีต้องการลิงค์"}, {"รหัสสถานี": "10014790", "ชื่อ": "SINOPEC STATION (T2) (Inventory Only)", "คงเหลือล่าสุด": "2026-04-29 13:05", "ปิดวันล่าสุด": "2026-04-28 22:00", "หมายเหตุ": "\"แจ้งผู้แทนขาย\" 06/05/26 คุณชินวิวรรธน์ ให้ติดต่อลูกค้า ปิด-เปิด กล่อง BIR BOX", "จังหวัด": "ไม่ระบุ", "โทร": "คุณแอร์  020 98813014/ คุณเจินเจิน 020 53639992", "ชื่อผู้ติดต่อ": "คุณแอร์ 020 98813014/ คุณเจินเจิน 020 53639992"}]}; // auto_update.py will replace this line
-// ── CONFIG ──
-const cfg = {
-  mode: 'embedded',
-  networkErrorMinutes: 30,
-  closedayFilterToday: true,
-  rowsPerPage: 10,
-  title: 'Network Error Dashboard'
-};
+// ══ PROCESS ══
+function processData(){
+  const tod=today0();
+  displayData=allData.map((row,idx)=>{
+    const siteId=String(row['รหัสสถานี']||row['Station ID']||'');
+    const siteName=row['ชื่อ']||row['Name']||'';
+    const province=String(row['จังหวัด']||row['Province']||'').trim();
+    const lastData=parseDate(row['คงเหลือล่าสุด']||row['Last Inventory']);
+    const closeday=parseDate(row['ปิดวันล่าสุด']||row['Last Closed Day']);
+    const note=row['หมายเหตุ']||row['Remark']||'';
+    const phone=row['โทร']||'';
+    const contact=row['ชื่อผู้ติดต่อ']||'';
+    const ageDays=lastData?daysDiff(lastData):999;
+    const ageLabel=ageDays<1?'today':ageDays<=3?'days13':'crisis';
+    let closedayError=true;
+    if(closeday){
+      const cd=new Date(closeday.getFullYear(),closeday.getMonth(),closeday.getDate());
+      if(cd>=tod)closedayError=false;
+    }
+    return{_idx:idx,siteId,siteName,province,note,phone,contact,
+           lastData,closeday,ageDays,ageLabel,networkError:true,closedayError,
+           status:resolvedIds.has(idx)?'resolved':'open',resolveNote:''};
+  });
+}
 
-// ── STATE ──
-let allData=[], displayData=[], resolvedIds=new Set();
+// ══ FILTER ══
+function getFiltered(){
+  return displayData.filter(r=>{
+    if(currentTab==='resolved')return r.status==='resolved';
+    if(currentTab==='network')return r.status!=='resolved';
+    if(currentTab==='closeday')return r.status!=='resolved'&&r.closedayError;
+    return true;
+  }).filter(r=>{
+    if(kpiFilter){
+      const sub=kpiFilter.split('-')[1];
+      if(sub==='today')return r.ageLabel==='today';
+      if(sub==='13')return r.ageLabel==='days13';
+      if(sub==='crisis')return r.ageLabel==='crisis';
+    }
+    if(!searchQuery)return true;
+    const q=searchQuery;
+    return r.siteId.toLowerCase().includes(q)||r.siteName.toLowerCase().includes(q)||r.province.toLowerCase().includes(q);
+  });
+}
 
-let sortCol=null, sortDir=1;
-let kpiFilter = null; // active KPI filter key
- // sortDir: 1=asc, -1=desc
+// ══ RENDER ══
+function renderAll(){updateKPI();renderTable();updateBars();}
 
-let resolveTarget=null, currentTab='network';
-let currentPage=1, searchQuery='';
-let loadedFileName='';
+function setEl(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
 
-// ── INIT ──
-// API mode init
-if(typeof cfg!=='undefined' && cfg.mode==='api'){
-  window.addEventListener('DOMContentLoaded', ()=>{
-  if(true){
-    const b=document.getElementById('modeBadge');
-    b.className='mode-badge api';
-    document.getElementById('modeText').textContent='API · LIVE';
-    document.getElementById('uploadBtn').style.display='none';
-    document.getElementById('refreshBtn').style.display='flex';
-    document.getElementById('uploadZone').style.display='none';
-    fetchFromAPI();
-    if(cfg.api?.intervalSeconds>0)
-      setInterval(fetchFromAPI, cfg.api.intervalSeconds*1000);
+function updateKPI(){
+  const active=displayData.filter(r=>r.status!=='resolved');
+  const tot=active.length,tod=active.filter(r=>r.ageLabel==='today').length;
+  const d13=active.filter(r=>r.ageLabel==='days13').length,cris=active.filter(r=>r.ageLabel==='crisis').length;
+  const res=displayData.filter(r=>r.status==='resolved').length;
+  const cls=active.filter(r=>r.closedayError).length;
+  setEl('tcNetwork',tot);setEl('tcCloseday',cls);setEl('tcResolved',res);
+  setEl('dToday',tod);setEl('dDays13',d13);setEl('dCrisis',cris);
+  setEl('sNetwork',tot);setEl('sCloseday',cls);setEl('sResolved',res);
+  const grid=document.getElementById('kpiGrid');
+  if(currentTab==='network'){
+    grid.innerHTML=kpiCard('red','📡 Network Error ทั้งหมด',tot,'สถานีทั้งหมด','network-all')
+      +kpiCard('amber','⚡ วันนี้',tod,'เกิดขึ้นวันนี้','network-today')
+      +kpiCard('orange','⏳ 1–3 วัน',d13,'ค้างมา 1–3 วัน','network-13')
+      +kpiCard('crisis','🚨 วิกฤติ >3 วัน',cris,'ต้องแก้ไขด่วน!','network-crisis')
+      +kpiCard('blue','✅ Resolved',res,'แก้ไขแล้ว','resolved-all');
+  }else if(currentTab==='closeday'){
+    grid.innerHTML=kpiCard('amber','📋 Closeday Error',cls,'ไม่มีข้อมูล ic05','closeday-all')
+      +kpiCard('crisis','🚨 วิกฤติ',active.filter(r=>r.closedayError&&r.ageLabel==='crisis').length,'ค้างเกิน 3 วัน','closeday-crisis')
+      +kpiCard('orange','⏳ 1–3 วัน',active.filter(r=>r.closedayError&&r.ageLabel==='days13').length,'ค้าง 1–3 วัน','closeday-13')
+      +kpiCard('amber','⚡ วันนี้',active.filter(r=>r.closedayError&&r.ageLabel==='today').length,'เกิดวันนี้','closeday-today')
+      +kpiCard('blue','✅ Resolved',res,'แก้ไขแล้ว','resolved-all');
+  }else{
+    grid.innerHTML=kpiCard('green','✅ Resolved ทั้งหมด',res,'แก้ไขแล้ว','resolved-all')
+      +kpiCard('red','🔴 Network Error',tot,'ยังค้างอยู่','network-all')
+      +kpiCard('amber','📋 Closeday Error',cls,'ยังค้างอยู่','closeday-all')
+      +kpiCard('crisis','🚨 วิกฤติ',cris,'ค้างเกิน 3 วัน',null)
+      +kpiCard('blue','⚡ วันนี้',tod,'เกิดวันนี้','network-today');
   }
-});
-
-// ── FILE ──
-function handleDrop(e){
-  e.preventDefault();
-  document.getElementById('uploadZone').classList.remove('drag');
-  const f=e.dataTransfer.files[0]; if(f) processFile(f);
+  document.querySelectorAll('#kpiGrid .kpi-card[data-filter]').forEach(el=>{
+    if(el.dataset.filter===kpiFilter)el.classList.add('kpi-active');
+  });
 }
-function handleFileUpload(e){ const f=e.target.files[0]; if(f) processFile(f); }
 
+function kpiCard(color,label,value,sub,filterKey){
+  const click=filterKey?`data-filter="${filterKey}" onclick="kpiClick('${filterKey}')"`:'' ;
+  return`<div class="kpi-card ${color}" ${click}><div class="kpi-label">${label}</div><div class="kpi-value">${value}</div><div class="kpi-sub">${sub}</div></div>`;
+}
+
+function updateBars(){
+  const n=parseInt(document.getElementById('sNetwork').textContent)||0;
+  const c=parseInt(document.getElementById('sCloseday').textContent)||0;
+  const r=parseInt(document.getElementById('sResolved').textContent)||0;
+  const mx=Math.max(n,c,r,1);
+  document.getElementById('barNetwork').style.width=(n/mx*100)+'%';
+  document.getElementById('barCloseday').style.width=(c/mx*100)+'%';
+  document.getElementById('barResolved').style.width=(r/mx*100)+'%';
+}
+
+function renderTable(){
+  const rows=getFiltered();
+  const isResolved=currentTab==='resolved',isCloseday=currentTab==='closeday';
+  const cols=[
+    {key:'siteId',label:'รหัสสถานี'},{key:'siteName',label:'ชื่อสถานี'},{key:'province',label:'จังหวัด'},
+    {key:'ts',label:isCloseday?'ปิดวันล่าสุด':'คงเหลือล่าสุด'},
+    ...(!isResolved?[{key:'ageDays',label:'ค้างมา'}]:[]),
+    {key:'note',label:'หมายเหตุ',nosort:true},
+    {key:'status',label:'Status'},{key:'_action',label:'Action',nosort:true}
+  ];
+  document.getElementById('tableHead').innerHTML='<tr>'+cols.map(c=>{
+    if(c.nosort)return`<th>${c.label}</th>`;
+    const cls2=sortCol===c.key?(sortDir===1?'sort-asc':'sort-desc'):'';
+    return`<th class="${cls2}" onclick="applySort('${c.key}')">${c.label}</th>`;
+  }).join('')+'</tr>';
+  document.getElementById('panelTitle').textContent=currentTab==='network'?'รายการ Network Error':currentTab==='closeday'?'รายการ Closeday Error':'รายการ Resolved';
+
+  rows.sort((a,b)=>{
+    if(!sortCol&&currentTab!=='resolved'){const o={crisis:0,days13:1,today:2};return(o[a.ageLabel]??3)-(o[b.ageLabel]??3);}
+    if(!sortCol)return 0;
+    if(sortCol==='ts'){const av=isCloseday?(a.closeday||new Date(0)):(a.lastData||new Date(0));const bv=isCloseday?(b.closeday||new Date(0)):(b.lastData||new Date(0));return sortDir*(av-bv);}
+    const av=a[sortCol]??'',bv=b[sortCol]??'';
+    if(typeof av==='number')return sortDir*(av-bv);
+    return sortDir*String(av).localeCompare(String(bv),'th');
+  });
+
+  const ROWS=10,pageRows=rows.slice((currentPage-1)*ROWS,currentPage*ROWS);
+  const slabel={open:'รอดำเนินการ',progress:'กำลังแก้ไข',resolved:'Resolved'};
+  const sdot={open:'🔴',progress:'🟡',resolved:'🟢'};
+  if(!pageRows.length){
+    document.getElementById('tableBody').innerHTML=`<tr><td colspan="${cols.length}"><div class="empty-state"><div style="font-size:36px">✅</div><div>ไม่มีรายการ</div></div></td></tr>`;
+    document.getElementById('rowCount').textContent='ไม่มีรายการ';
+    document.getElementById('pagination').innerHTML='';return;
+  }
+  document.getElementById('tableBody').innerHTML=pageRows.map(r=>{
+    const isCrisis=r.ageLabel==='crisis'&&!isResolved;
+    const durHtml=!isResolved?`<span class="age-chip ${r.ageLabel}">${r.ageLabel==='crisis'?'🚨':r.ageLabel==='days13'?'⚠':'⚡'} ${fmtAge(r.ageDays)}</span>`:'';
+    const tsCell=isCloseday?fmtTS(r.closeday):fmtTS(r.lastData);
+    const noteHtml=r.note?`<span class="note-wrap" onclick="showNote(${r._idx})">${r.note}</span>`:'<span style="color:var(--text-muted);font-size:11px">—</span>';
+    const actions=r.status!=='resolved'
+      ?`<div class="action-group"><button class="act-btn resolve" onclick="openResolveModal(${r._idx})">✓ Resolve</button><button class="act-btn notify" onclick="notifySite(${r._idx})">🔔</button></div>`
+      :`<span style="color:var(--green);font-size:11px;font-weight:600">✅ เสร็จแล้ว</span>`;
+    return`<tr class="${isCrisis?'crisis-row':''}">
+      <td class="mid"><span class="site-id">${r.siteId}</span></td>
+      <td class="mid"><span class="site-name" title="${r.siteName}">${r.siteName}</span></td>
+      <td class="mid"><span style="font-size:11px;color:var(--text-muted)">${r.province||'—'}</span></td>
+      <td class="mid"><span class="timestamp">${tsCell}</span></td>
+      ${!isResolved?`<td class="mid">${durHtml}</td>`:''}
+      <td>${noteHtml}</td>
+      <td class="mid"><span class="status-chip ${r.status}">${sdot[r.status]} ${slabel[r.status]}</span></td>
+      <td class="mid">${actions}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('rowCount').textContent=`แสดง ${pageRows.length} จาก ${rows.length} รายการ`;
+  renderPagination(rows.length);
+}
+
+function renderPagination(total){
+  const pages=Math.ceil(total/10),el=document.getElementById('pagination');
+  if(pages<=1){el.innerHTML='';return;}
+  let h='';
+  const s=Math.max(1,currentPage-2),e=Math.min(pages,currentPage+2);
+  if(s>1)h+=`<button class="page-btn" onclick="goPage(1)">1</button>`;
+  if(s>2)h+=`<span style="padding:0 4px;color:var(--text-muted)">…</span>`;
+  for(let i=s;i<=e;i++)h+=`<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  if(e<pages-1)h+=`<span style="padding:0 4px;color:var(--text-muted)">…</span>`;
+  if(e<pages)h+=`<button class="page-btn" onclick="goPage(${pages})">${pages}</button>`;
+  if(currentPage<pages)h+=`<button class="page-btn" onclick="goPage(${currentPage+1})">›</button>`;
+  el.innerHTML=h;
+}
+
+// ══ CONTROLS ══
+function switchTab(el,tab){document.querySelectorAll('.tab').forEach(t=>t.className='tab');currentTab=tab;currentPage=1;kpiFilter=null;if(tab==='network')el.classList.add('t-red');if(tab==='closeday')el.classList.add('t-amber');if(tab==='resolved')el.classList.add('t-green');renderAll();}
+function onSearch(q){searchQuery=q.toLowerCase();currentPage=1;renderTable();}
+function goPage(p){currentPage=p;renderTable();}
+function applySort(col){if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=1;}currentPage=1;renderTable();}
+function kpiClick(filterKey){if(kpiFilter===filterKey){kpiFilter=null;}else{kpiFilter=filterKey;}currentPage=1;renderAll();}
+
+// ══ RESOLVE ══
+function openResolveModal(idx){
+  resolveTarget=idx;
+  const r=displayData.find(x=>x._idx===idx);
+  document.getElementById('modalSite').textContent=`${r.siteId} · ${r.siteName}`;
+  document.getElementById('modalDetail').textContent=`${r.province||''} | ค้างมา: ${fmtAge(r.ageDays)}`;
+  document.getElementById('resolveNote').value='';
+  document.getElementById('resolveModal').classList.add('open');
+}
+function confirmResolve(){
+  if(resolveTarget===null)return;
+  const note=document.getElementById('resolveNote').value;
+  const r=displayData.find(x=>x._idx===resolveTarget);
+  resolvedIds.add(resolveTarget);r.status='resolved';r.resolveNote=note;
+  saveResolved(r.siteId,note,r.siteName);
+  const tl=document.getElementById('timeline');
+  const emp=tl.querySelector('.empty-state');if(emp)tl.innerHTML='';
+  const now=new Date(),item=document.createElement('div');item.className='tl-item';
+  item.innerHTML=`<div class="tl-dot green">✓</div><div class="tl-content"><div class="tl-title">Resolved แล้ว</div><div class="tl-site">${r.siteId} · ${r.siteName}</div><div class="tl-time">${z(now.getHours())}:${z(now.getMinutes())} น.</div></div>`;
+  tl.prepend(item);
+  closeModal('resolveModal');renderAll();
+}
+function showNote(idx){const r=displayData.find(x=>x._idx===idx);document.getElementById('noteBody').textContent=r.note||'—';document.getElementById('noteModal').classList.add('open');}
+function notifySite(idx){const r=displayData.find(x=>x._idx===idx);alert(`🔔 แจ้งเตือน\n${r.siteId} · ${r.siteName}\n📍 ${r.province}\n📞 ${r.phone||r.contact||'—'}`);}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.addEventListener('click',e=>{['resolveModal','noteModal'].forEach(id=>{if(e.target===document.getElementById(id))document.getElementById(id).classList.remove('open');});});
+
+// ══ FILE UPLOAD ══
+function handleDrop(e){e.preventDefault();document.getElementById('uploadZone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)processFile(f);}
+function handleFileUpload(e){const f=e.target.files[0];if(f)processFile(f);}
 function processFile(file){
-  loadedFileName=file.name;
   const reader=new FileReader();
   reader.onload=e=>{
     try{
       const wb=XLSX.read(e.target.result,{type:'array',cellDates:true});
       const ws=wb.Sheets[wb.SheetNames[0]];
       const rows=XLSX.utils.sheet_to_json(ws,{raw:false,dateNF:'yyyy-mm-dd hh:mm'});
-      allData=rows;
-      saveExcel(rows, file.name);  // 💾 save to localStorage
-      resolvedIds.clear();
-      processData();
-      restoreResolvedState();      // 💾 restore previous resolved
-      renderAll();
-      showDashboard();
-    }catch(err){ alert('ไม่สามารถอ่านไฟล์: '+err.message); }
+      allData=rows;resolvedIds.clear();processData();restoreResolvedState();renderAll();showDashboard();restoreTimeline();
+    }catch(err){alert('ไม่สามารถอ่านไฟล์: '+err.message);}
   };
   reader.readAsArrayBuffer(file);
 }
 
-// ── API ──
-async function fetchFromAPI(){
-  try{
-    const r=await fetch(cfg.api.url,{headers:cfg.api.headers||{}});
-    allData=await r.json();
-    processData(); showDashboard();
-  }catch(e){ console.error('API Error:',e); }
-}
-function handleRefresh(){ fetchFromAPI(); }
-
-// ── PARSE ──
-function parseDate(s){
-  if(!s) return null;
-  if(s instanceof Date) return isNaN(s)?null:s;
-  const m=String(s).match(/(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}))?/);
-  if(!m) return null;
-  return new Date(+m[1],+m[2]-1,+m[3],+(m[4]||0),+(m[5]||0));
-}
-function today0(){ const d=new Date(); return new Date(d.getFullYear(),d.getMonth(),d.getDate()); }
-function daysDiff(d){ return (today0()-new Date(d.getFullYear(),d.getMonth(),d.getDate()))/(86400000); }
-function fmtTS(d){ if(!d) return '—'; return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())} ${z(d.getHours())}:${z(d.getMinutes())}`; }
-function z(n){ return String(n).padStart(2,'0'); }
-function fmtAge(days){
-  if(days<1) return 'วันนี้';
-  if(days<2) return '1 วัน';
-  return `${Math.floor(days)} วัน`;
-}
-
-// ── PROCESS ──
-function processData(){
-  const now=new Date(), tod=today0();
-  displayData=allData.map((row,idx)=>{
-    const siteId  = String(row['รหัสสถานี']||row['Station ID']||row['site_id']||'');
-    const siteName= row['ชื่อ']||row['Name']||row['name']||'';
-    const province= String(row['จังหวัด']||row['Province']||'').trim().replace(/\s+/g,'');
-    const lastData= parseDate(row['คงเหลือล่าสุด']||row['Last Inventory']||row['last_update']);
-    const closeday= parseDate(row['ปิดวันล่าสุด']||row['Last Closed Day']||row['closeday']);
-    const note    = row['หมายเหตุ']||row['Remark']||row['note']||'';
-    const phone   = row['โทร']||row['Phone']||'';
-    const contact = row['ชื่อผู้ติดต่อ']||row['Contact']||'';
-
-    // Age in days from lastData
-    const ageDays = lastData ? daysDiff(lastData) : 999;
-    const ageLabel= ageDays<1?'today': ageDays<=3?'days13':'crisis';
-
-    // Closeday: in file = has error; exclude if closeday = today
-    let closedayError=true;
-    if(closeday){
-      const cdDate=new Date(closeday.getFullYear(),closeday.getMonth(),closeday.getDate());
-      if(cdDate>=tod) closedayError=false;
-    }
-
-    return {_idx:idx, siteId, siteName, province, note, phone, contact,
-            lastData, closeday, ageDays, ageLabel,
-            networkError:true,  // all rows = network error
-            closedayError,
-            status: resolvedIds.has(idx)?'resolved':'open',
-            resolveNote:''};
-  });
-
-  renderAll();
-}
-
-// ── FILTER ──
-function getFiltered(){
-  return displayData.filter(r=>{
-    // Tab filter
-    if(currentTab==='resolved') { if(r.status!=='resolved') return false; }
-    else if(currentTab==='network')  { if(r.status==='resolved'||!r.networkError) return false; }
-    else if(currentTab==='closeday') { if(r.status==='resolved'||!r.closedayError) return false; }
-    // KPI sub-filter
-    if(kpiFilter){
-      const [tabK, subK] = kpiFilter.split('-');
-      if(subK==='today')  return r.ageLabel==='today';
-      if(subK==='13')     return r.ageLabel==='days13';
-      if(subK==='crisis') return r.ageLabel==='crisis';
-      // 'all' = no sub-filter beyond tab
-    }
-    // Search
-    if(searchQuery){
-      const q=searchQuery;
-      return r.siteId.toLowerCase().includes(q)||
-             r.siteName.toLowerCase().includes(q)||
-             r.province.toLowerCase().includes(q);
-    }
-    return true;
-  });
-}
-
-// ── RENDER ALL ──
-function renderAll(){ updateKPI(); renderTable(); updateBars(); }
-
-function updateKPI(){
-  const active = displayData.filter(r=>r.status!=='resolved');
-  const tot    = active.length;
-  const tod    = active.filter(r=>r.ageLabel==='today').length;
-  const d13    = active.filter(r=>r.ageLabel==='days13').length;
-  const cris   = active.filter(r=>r.ageLabel==='crisis').length;
-  const res    = displayData.filter(r=>r.status==='resolved').length;
-  const cls    = active.filter(r=>r.closedayError).length;
-
-  // Tab counts
-  setEl('tcNetwork',  tot);
-  setEl('tcCloseday', cls);
-  setEl('tcResolved', res);
-  setEl('dToday',  tod);
-  setEl('dDays13', d13);
-  setEl('dCrisis', cris);
-  setEl('sNetwork',  tot);
-  setEl('sCloseday', cls);
-  setEl('sResolved', res);
-
-  // KPI cards — depends on active tab
-  const grid = document.getElementById('kpiGrid');
-  if(currentTab === 'network'){
-    grid.innerHTML = kpiCard('red',   '📡 Network Error ทั้งหมด', tot,  'สถานีทั้งหมดที่ error',  'network-all')
-      + kpiCard('amber',  '⚡ วันนี้',          tod,  'เกิดขึ้นวันนี้',           'network-today')
-      + kpiCard('orange', '⏳ 1–3 วัน',         d13,  'ค้างมา 1–3 วัน',           'network-13')
-      + kpiCard('crisis', '🚨 วิกฤติ >3 วัน',   cris, 'ต้องแก้ไขด่วน!',          'network-crisis')
-      + kpiCard('blue',   '✅ Resolved',         res,  'แก้ไขแล้วในเซสชันนี้',    'resolved-all');
-  } else if(currentTab === 'closeday'){
-    grid.innerHTML = kpiCard('amber', '📋 Closeday Error ทั้งหมด', cls, 'ไม่มีข้อมูล ic05 ปิดวัน', 'closeday-all')
-      + kpiCard('red',    '🚨 วิกฤติ >3 วัน', active.filter(r=>r.closedayError&&r.ageLabel==='crisis').length, 'ค้างเกิน 3 วัน', 'closeday-crisis')
-      + kpiCard('orange', '⏳ 1–3 วัน', active.filter(r=>r.closedayError&&r.ageLabel==='days13').length, 'ค้างมา 1–3 วัน', 'closeday-13')
-      + kpiCard('green',  '⚡ วันนี้', active.filter(r=>r.closedayError&&r.ageLabel==='today').length, 'เกิดขึ้นวันนี้', 'closeday-today')
-      + kpiCard('blue',   '✅ Resolved', res, 'แก้ไขแล้วในเซสชันนี้', 'resolved-all');
-  } else {
-    // resolved tab
-    const rToday = displayData.filter(r=>r.status==='resolved'&&r.ageLabel==='today').length;
-    const rCris  = displayData.filter(r=>r.status==='resolved'&&r.ageLabel==='crisis').length;
-    grid.innerHTML = kpiCard('green',  '✅ Resolved ทั้งหมด',    res,    'แก้ไขแล้วทั้งหมด',      'resolved-all')
-      + kpiCard('blue',   '✅ วันนี้',            rToday, 'Resolved วันนี้',       'resolved-today')
-      + kpiCard('red',    '🔴 Network Error',     tot,    'ยังค้างอยู่',           'network-all')
-      + kpiCard('amber',  '📋 Closeday Error',    cls,    'ยังค้างอยู่',           'closeday-all')
-      + kpiCard('crisis', '🚨 วิกฤติ >3 วัน',    rCris,  'ที่แก้ไขแล้ว',         null);
-  }
-  // restore active state
-  document.querySelectorAll('#kpiGrid .kpi-card[data-filter]').forEach(el=>{
-    if(el.dataset.filter === kpiFilter) el.classList.add('kpi-active');
-  });
-}
-
-function kpiCard(color, label, value, sub, filterKey){
-  const clickable = filterKey ? `data-filter="${filterKey}" onclick="kpiClick('${filterKey}')"` : '';
-  return `<div class="kpi-card ${color}" ${clickable}>
-    <div class="kpi-label">${label}</div>
-    <div class="kpi-value">${value}</div>
-    <div class="kpi-sub">${sub}</div>
-  </div>`;
-}
-function setEl(id,v){ const el=document.getElementById(id); if(el) el.textContent=v; }
-
-function updateBars(){
-  const net =parseInt(document.getElementById('sNetwork').textContent)||0;
-  const cls =parseInt(document.getElementById('sCloseday').textContent)||0;
-  const res =parseInt(document.getElementById('sResolved').textContent)||0;
-  const mx  =Math.max(net,cls,res,1);
-  document.getElementById('barNetwork').style.width =(net/mx*100)+'%';
-  document.getElementById('barCloseday').style.width=(cls/mx*100)+'%';
-  document.getElementById('barResolved').style.width=(res/mx*100)+'%';
-}
-
-// ── TABLE ──
-function renderTable(){
-  const rows=getFiltered();
-  // Sort
-  rows.sort((a,b)=>{
-    // default: crisis first if no explicit sort
-    if(!sortCol && currentTab!=='resolved'){
-      const order={crisis:0,days13:1,today:2};
-      return (order[a.ageLabel]??3)-(order[b.ageLabel]??3);
-    }
-    if(!sortCol) return 0;
-    let av, bv;
-    if(sortCol==='ts'){
-      av = currentTab==='closeday' ? (a.closeday||new Date(0)) : (a.lastData||new Date(0));
-      bv = currentTab==='closeday' ? (b.closeday||new Date(0)) : (b.lastData||new Date(0));
-      return sortDir*(av-bv);
-    }
-    av = a[sortCol]??''; bv = b[sortCol]??'';
-    if(typeof av==='number') return sortDir*(av-bv);
-    return sortDir*String(av).localeCompare(String(bv),'th');
-  });
-
-  // Render head based on tab
-  const isResolved = currentTab==='resolved';
-  const isCloseday = currentTab==='closeday';
-  const cols = [
-    {key:'siteId',   label:'รหัสสถานี'},
-    {key:'siteName', label:'ชื่อสถานี'},
-    {key:'province', label:'จังหวัด'},
-    {key:'ts',       label: isCloseday?'ปิดวันล่าสุด':'คงเหลือล่าสุด'},
-    ...(!isResolved?[{key:'ageDays', label:'ค้างมา'}]:[]),
-    {key:'note',     label:'หมายเหตุ', nosort:true},
-    {key:'status',   label:'Status'},
-    {key:'_action',  label:'Action', nosort:true},
-  ];
-  document.getElementById('tableHead').innerHTML='<tr>'+cols.map(c=>{
-    if(c.nosort) return `<th>${c.label}</th>`;
-    const cls = sortCol===c.key ? (sortDir===1?'sort-asc':'sort-desc') : '';
-    return `<th class="${cls}" onclick="applySort('${c.key}')">${c.label}</th>`;
-  }).join('')+'</tr>';
-
-  document.getElementById('panelTitle').textContent =
-    currentTab==='network'  ? 'รายการ Network Error' :
-    currentTab==='closeday' ? 'รายการ Closeday Error' : 'รายการ Resolved';
-
-  const start=(currentPage-1)*cfg.rowsPerPage;
-  const pageRows=rows.slice(start,start+cfg.rowsPerPage);
-  const tbody=document.getElementById('tableBody');
-
-  if(!pageRows.length){
-    const cols = isResolved?7:(isCloseday?7:7);
-    tbody.innerHTML=`<tr><td colspan="${cols}">
-      <div class="empty-state"><div class="empty-icon">✅</div><div>ไม่มีรายการ</div></div>
-    </td></tr>`;
-    document.getElementById('rowCount').textContent='ไม่มีรายการ';
-    document.getElementById('pagination').innerHTML='';
-    return;
-  }
-
-  const slabel={open:'รอดำเนินการ',progress:'กำลังแก้ไข',resolved:'Resolved'};
-  const sdot  ={open:'🔴',progress:'🟡',resolved:'🟢'};
-
-  tbody.innerHTML=pageRows.map(r=>{
-    const isCrisis = r.ageLabel==='crisis';
-
-    // Age chip
-    const ageHtml = !isResolved ? (()=>{
-      const label=fmtAge(r.ageDays);
-      return `<span class="age-chip ${r.ageLabel}">${
-        r.ageLabel==='crisis'?'🚨':r.ageLabel==='days13'?'⚠':r.ageLabel==='today'?'⚡':''
-      } ${label}</span>`;
-    })() : '';
-
-    // Timestamp cell
-    const tsCell = isCloseday
-      ? `<span class="timestamp">${fmtTS(r.closeday)}</span>`
-      : `<span class="timestamp">${fmtTS(r.lastData)}</span>`;
-
-    // Note: wrap text
-    const noteHtml = r.note
-      ? `<span class="note-wrap" onclick="showNote(${r._idx})" title="คลิกเพื่อดูทั้งหมด">${r.note}</span>`
-      : `<span style="color:var(--text-muted);font-size:11px">—</span>`;
-
-    // Actions
-    const actions = r.status!=='resolved'
-      ? `<div class="action-group">
-           <button class="act-btn resolve" onclick="openResolveModal(${r._idx})">✓ Resolve</button>
-           <button class="act-btn notify"  onclick="notifySite(${r._idx})">🔔</button>
-         </div>`
-      : `<span style="color:var(--green);font-size:11px;font-weight:600">✅ เสร็จแล้ว</span>`;
-
-    return `<tr class="${isCrisis&&!isResolved?'crisis-row':''}">
-      <td class="single"><span class="site-id">${r.siteId}</span></td>
-      <td class="single">
-        <span class="site-name" title="${r.siteName}">${r.siteName}</span>
-      </td>
-      <td class="single"><span style="font-size:11px;color:var(--text-muted)">${r.province||'—'}</span></td>
-      <td class="single">${tsCell}</td>
-      ${!isResolved?`<td class="single">${ageHtml}</td>`:''}
-      <td>${noteHtml}</td>
-      <td class="single"><span class="status-chip ${r.status}">${sdot[r.status]} ${slabel[r.status]}</span></td>
-      <td class="single">${actions}</td>
-    </tr>`;
-  }).join('');
-
-  document.getElementById('rowCount').textContent=`แสดง ${pageRows.length} จาก ${rows.length} รายการ`;
-  renderPagination(rows.length);
-}
-
-function renderPagination(total){
-  const pages=Math.ceil(total/cfg.rowsPerPage);
-  const el=document.getElementById('pagination');
-  if(pages<=1){el.innerHTML='';return;}
-  let h='';
-  const s=Math.max(1,currentPage-2), e=Math.min(pages,currentPage+2);
-  if(s>1) h+=`<button class="page-btn" onclick="goPage(1)">1</button>`;
-  if(s>2) h+=`<span style="padding:0 4px;color:var(--text-muted)">…</span>`;
-  for(let i=s;i<=e;i++) h+=`<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
-  if(e<pages-1) h+=`<span style="padding:0 4px;color:var(--text-muted)">…</span>`;
-  if(e<pages) h+=`<button class="page-btn" onclick="goPage(${pages})">${pages}</button>`;
-  if(currentPage<pages) h+=`<button class="page-btn" onclick="goPage(${currentPage+1})">›</button>`;
-  el.innerHTML=h;
-}
-
-
-
-// ── KPI CLICK ──
-function kpiClick(filterKey){
-  if(kpiFilter === filterKey){ kpiFilter = null; } // toggle off
-  else { kpiFilter = filterKey; }
-  // switch tab if needed
-  if(filterKey && filterKey.startsWith('closeday')) {
-    if(currentTab!=='closeday'){ forceSwitchTab('closeday'); return; }
-  } else if(filterKey && filterKey.startsWith('resolved')) {
-    if(currentTab!=='resolved'){ forceSwitchTab('resolved'); return; }
-  } else if(filterKey && filterKey.startsWith('network')) {
-    if(currentTab!=='network'){ forceSwitchTab('network'); return; }
-  }
-  currentPage=1; renderAll();
-}
-function forceSwitchTab(tab){
-  const tabEls = document.querySelectorAll('.tab');
-  tabEls.forEach(t=>t.className='tab');
-  currentTab=tab;
-  const map={network:0,closeday:1,resolved:2};
-  const el=tabEls[map[tab]];
-  if(el){
-    if(tab==='network')  el.classList.add('t-red');
-    if(tab==='closeday') el.classList.add('t-amber');
-    if(tab==='resolved') el.classList.add('t-green');
-  }
-  currentPage=1; renderAll();
-}
-
-// ── SORT ──
-function applySort(col){
-  if(sortCol===col){ sortDir*=-1; }
-  else { sortCol=col; sortDir=1; }
-  currentPage=1;
-  renderTable();
-}
-
-// ── CONTROLS ──
-function switchTab(el,tab){
-  document.querySelectorAll('.tab').forEach(t=>t.className='tab');
-  currentTab=tab; currentPage=1; kpiFilter=null;
-  if(tab==='network')  el.classList.add('t-red');
-  if(tab==='closeday') el.classList.add('t-amber');
-  if(tab==='resolved') el.classList.add('t-green');
-  renderAll();
-}
-function onSearch(q){ searchQuery=q.toLowerCase(); currentPage=1; renderTable(); }
-function goPage(p){ currentPage=p; renderTable(); }
-
-// ── RESOLVE ──
-function openResolveModal(idx){
-  resolveTarget=idx;
-  const r=displayData.find(x=>x._idx===idx);
-  document.getElementById('modalSite').textContent=`${r.siteId} · ${r.siteName}`;
-  document.getElementById('modalDetail').textContent=
-    `${r.province||''} | คงเหลือล่าสุด: ${fmtTS(r.lastData)} | ค้างมา: ${fmtAge(r.ageDays)}`;
-  document.getElementById('resolveNote').value='';
-  document.getElementById('resolveModal').classList.add('open');
-}
-function confirmResolve(){
-  if(resolveTarget===null) return;
-  const note=document.getElementById('resolveNote').value;
-  const r=displayData.find(x=>x._idx===resolveTarget);
-  resolvedIds.add(resolveTarget); r.status='resolved'; r.resolveNote=note;
-  saveResolved(r.siteId, note, r.siteName);
-  saveResolved(r.siteId, note, r.siteName);  // 💾 persist
-  // Timeline
-  const tl=document.getElementById('timeline');
-  const emp=tl.querySelector('.empty-state'); if(emp) tl.innerHTML='';
-  const now=new Date();
-  const item=document.createElement('div'); item.className='tl-item';
-  item.innerHTML=`<div class="tl-dot green">✓</div>
-    <div class="tl-content">
-      <div class="tl-title">Resolved แล้ว</div>
-      <div class="tl-site">${r.siteId} · ${r.siteName}</div>
-      <div class="tl-time">${z(now.getHours())}:${z(now.getMinutes())} น.</div>
-    </div>`;
-  tl.prepend(item);
-  closeModal('resolveModal'); renderAll();
-}
-
-// ── NOTE ──
-function showNote(idx){
-  const r=displayData.find(x=>x._idx===idx);
-  document.getElementById('noteBody').textContent=r.note||'—';
-  document.getElementById('noteModal').classList.add('open');
-}
-function notifySite(idx){
-  const r=displayData.find(x=>x._idx===idx);
-  alert(`🔔 แจ้งเตือน\n${r.siteId} · ${r.siteName}\n📍 ${r.province}\n📞 ${r.phone||r.contact||'—'}`);
-}
-function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-document.addEventListener('click',e=>{
-  ['resolveModal','noteModal'].forEach(id=>{
-    if(e.target===document.getElementById(id))
-      document.getElementById(id).classList.remove('open');
-  });
-});
-
-// ── EXPORT ──
+// ══ EXPORT ══
 function exportCSV(){
   const rows=getFiltered();
-  const h=['รหัสสถานี','ชื่อสถานี','จังหวัด','คงเหลือล่าสุด','ปิดวันล่าสุด','ค้างมา (วัน)','หมายเหตุ','Status'];
-  const body=rows.map(r=>[
-    r.siteId, `"${r.siteName}"`, r.province,
-    fmtTS(r.lastData), fmtTS(r.closeday),
-    r.ageDays<999?Math.floor(r.ageDays):'—',
-    `"${(r.note||'').replace(/"/g,'""')}"`, r.status
-  ].join(','));
+  const h=['รหัสสถานี','ชื่อสถานี','จังหวัด','คงเหลือล่าสุด','ปิดวันล่าสุด','ค้างมา(วัน)','หมายเหตุ','Status'];
+  const body=rows.map(r=>[r.siteId,`"${r.siteName}"`,r.province,fmtTS(r.lastData),fmtTS(r.closeday),r.ageDays<999?Math.floor(r.ageDays):'—',`"${(r.note||'').replace(/"/g,'""')}"`,r.status].join(','));
   const csv=[h.join(','),...body].join('\n');
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
-  a.download=`network_error_${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
+  a.download=`network_error_${new Date().toISOString().slice(0,10)}.csv`;a.click();
 }
 
-
-// ── PAGE NAVIGATION ──
-let currentPage2 = 'dashboard';
+// ══ PAGE NAV ══
 function showPage(page){
-  currentPage2 = page;
-  const dash = document.getElementById('dashboard');
-  const anal = document.getElementById('analysisPage');
-  const uz   = document.getElementById('uploadZone');
-  const nb1  = document.getElementById('navDashboard');
-  const nb2  = document.getElementById('navAnalysis');
-  if(page === 'analysis'){
-    if(dash) dash.style.display = 'none';
-    if(uz)   uz.style.display   = 'none';
-    if(anal) anal.style.display = 'block';
-    nb1.classList.remove('active');
-    nb2.classList.add('active');
-    renderAnalysis();
-  } else {
-    if(anal) anal.style.display = 'none';
-    if(uz && displayData.length===0) uz.style.display = 'block';
-    if(dash && displayData.length>0) dash.style.display = 'block';
-    nb1.classList.add('active');
-    nb2.classList.remove('active');
-  }
+  currentPage2=page;
+  const dash=document.getElementById('dashboardPage');
+  const anal=document.getElementById('analysisPage');
+  const nb1=document.getElementById('navDashboard');
+  const nb2=document.getElementById('navAnalysis');
+  if(page==='analysis'){dash.style.display='none';anal.style.display='block';nb1.classList.remove('active');nb2.classList.add('active');renderAnalysis();}
+  else{anal.style.display='none';dash.style.display='block';nb1.classList.add('active');nb2.classList.remove('active');}
 }
 
-// ── ANALYSIS RENDER ──
-function renderAnalysis(){
-  if(!displayData.length) return;
-  const active = displayData.filter(r=>r.status!=='resolved');
-  const crisis = active.filter(r=>r.ageDays>1).sort((a,b)=>b.ageDays-a.ageDays);
-
-  // Stats
-  const avgDay = active.length ? (active.reduce((s,r)=>s+r.ageDays,0)/active.length).toFixed(1) : 0;
-  setEl('aTot',    active.length);
-  setEl('aCrisis', crisis.length);
-  setEl('aAvgDay', avgDay);
-
-  renderCauseChart(active);
-  renderTrendChart(active);
-  renderCrisisTable(crisis);
-  renderRootCause(active);
-}
-
-function extractCause(note){
-  const causes = [];
-  if(!note) return ['ไม่ระบุ'];
-  if(/อินเตอร์|internet/i.test(note))          causes.push('อินเทอร์เน็ต');
-  if(/คอมพิวเตอร์/i.test(note))                 causes.push('คอมพิวเตอร์');
-  if(/atg.*เสีย|เสีย.*atg/i.test(note))        causes.push('ATG เสีย');
-  if(/ping ไม่เจอ/i.test(note))                causes.push('Ping ATG ไม่เจอ');
-  if(/ปิดปรับปรุง/i.test(note))                causes.push('ปิดปรับปรุง');
-  if(/ช่างเข้า|เปิดงานช่าง/i.test(note))       causes.push('ส่งช่าง');
-  if(/ค่าเช่า/i.test(note))                    causes.push('ค้างค่าเช่า');
-  if(/time.zone/i.test(note))                  causes.push('Time-Zone');
-  if(/สถานีทดสอบ/i.test(note))                 causes.push('สถานีทดสอบ');
-  if(/bir box/i.test(note))                    causes.push('BIR BOX');
-  if(causes.length===0){
-    if(/ติดต่อ/.test(note)) causes.push('รอติดต่อกลับ');
-    else causes.push('ไม่ระบุ');
-  }
-  return causes;
-}
-
-function renderCauseChart(active){
-  const counts = {};
-  active.forEach(r=>{
-    extractCause(r.note).forEach(c=>{ counts[c]=(counts[c]||0)+1; });
-  });
-  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
-  const max = sorted[0]?.[1]||1;
-  const colors = ['#ff3b5c','#f59e0b','#f97316','#3b82f6','#10b981','#a78bfa','#06b6d4','#ec4899','#84cc16','#f43f5e'];
-  const html2 = sorted.map(([cause,cnt],i)=>{
-    const pct = Math.round(cnt/max*100);
-    const col = colors[i%colors.length];
-    return `<div class="cause-row">
-      <div class="cause-label">${cause}</div>
-      <div class="cause-bar-wrap">
-        <div class="cause-bar" style="width:${pct}%;background:${col}">
-          <span class="cause-bar-label">${cnt} สถานี</span>
-        </div>
-      </div>
-      <div class="cause-count" style="color:${col}">${cnt}</div>
-    </div>`;
-  }).join('');
-  document.getElementById('causeChart').innerHTML = html2 || '<div style="color:var(--text-muted);font-size:12px">ไม่มีข้อมูล</div>';
-}
-
-function renderTrendChart(active){
-  // Group by days ago bucket
-  const buckets = {};
-  active.forEach(r=>{
-    const d = Math.floor(r.ageDays);
-    buckets[d] = (buckets[d]||0)+1;
-  });
-  const maxDay = Math.max(...Object.keys(buckets).map(Number), 0);
-  const days = [];
-  for(let i=0;i<=Math.min(maxDay,14);i++) days.push(i);
-  const maxVal = Math.max(...days.map(d=>buckets[d]||0), 1);
-
-  let bars = '';
-  days.forEach(d=>{
-    const cnt = buckets[d]||0;
-    const h   = Math.round(cnt/maxVal*64);
-    const col = d===0?'today':'past';
-    const lbl = d===0?'วันนี้':`${d}วัน`;
-    bars += `<div class="trend-bar-wrap">
-      <div class="trend-val" style="color:${d===0?'var(--amber)':'var(--red)'}">${cnt||''}</div>
-      <div class="trend-bar ${col}" style="height:${Math.max(h,2)}px"></div>
-      <div class="trend-label">${lbl}</div>
-    </div>`;
-  });
-  // Also show sites >14 days
-  const longTail = active.filter(r=>r.ageDays>14);
-  let extra = '';
-  if(longTail.length){
-    extra = `<div style="margin-top:12px;padding:8px 10px;background:var(--crisis-dim);border:1px solid rgba(255,26,26,.3);border-radius:8px;font-size:11px;color:var(--crisis);">
-      🚨 ค้างนาน &gt;14 วัน: <strong>${longTail.length} สถานี</strong>
-      ${longTail.map(r=>`<span style="margin-left:8px;font-family:var(--mono)">${r.siteId}(${Math.floor(r.ageDays)}วัน)</span>`).join('')}
-    </div>`;
-  }
-  document.getElementById('trendChart').innerHTML =
-    `<div class="trend-row">${bars}</div>${extra}`;
-}
-
-function renderCrisisTable(crisis){
-  if(!crisis.length){
-    document.getElementById('crisisBody').innerHTML =
-      '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--green)">✅ ไม่มีสถานีวิกฤติ</td></tr>';
-    return;
-  }
-  document.getElementById('crisisBody').innerHTML = crisis.map(r=>{
-    const d = Math.floor(r.ageDays);
-    const badgeCls = d>=100?'c4':d>=7?'c3':d>=3?'c2':'c1';
-    const ultraCls = d>=100?'ultra':'';
-    const causes   = extractCause(r.note).join(', ');
-    // Get latest note line
-    const noteLine = r.note.split('\n').filter(l=>l.trim()).slice(0,1).join('').substring(0,80);
-    return `<tr class="${ultraCls}">
-      <td><span class="age-badge ${badgeCls}">${d} วัน</span></td>
-      <td><span style="font-family:var(--mono);color:var(--blue);font-size:11px">${r.siteId}</span></td>
-      <td style="font-size:12px;font-weight:500;max-width:200px">${r.siteName.substring(0,45)}${r.siteName.length>45?'...':''}</td>
-      <td style="font-size:11px;color:var(--text-muted)">${r.province||'—'}</td>
-      <td style="font-size:11px;color:var(--amber)">${causes}</td>
-      <td style="font-size:11px;color:var(--text-dim);max-width:220px;word-break:break-word">${noteLine||'—'}</td>
-    </tr>`;
-  }).join('');
-}
-
-function renderRootCause(active){
-  const causes = {};
-  active.forEach(r=>{ extractCause(r.note).forEach(c=>{ causes[c]=(causes[c]||0)+1; }); });
-  const top = Object.entries(causes).sort((a,b)=>b[1]-a[1]).slice(0,4);
-  const rcMap = {
-    'อินเทอร์เน็ต': {icon:'📡', rc:'ISP/Router/SIM มีปัญหาหรือหลุดบ่อย', action:'ติดตั้ง SIM Backup หรือ Failover Router สำหรับสถานีที่เกิดซ้ำ'},
-    'คอมพิวเตอร์':  {icon:'💻', rc:'PC ค้าง / Windows crash / AMS service หยุดทำงาน', action:'ตั้ง Auto-restart AMS service + Remote restart ผ่าน AnyDesk'},
-    'ATG เสีย':     {icon:'⚙️', rc:'Hardware ATG ชำรุด ต้องเปลี่ยนอะไหล่', action:'สร้าง SLA ส่งช่างภายใน 24 ชม. เมื่อ ATG เสีย'},
-    'รอติดต่อกลับ': {icon:'📞', rc:'ทีมงานติดต่อสถานีแล้วแต่ยังไม่ได้รับการแก้ไข', action:'กำหนด SLA: ถ้าสถานีไม่ดำเนินการภายใน 4 ชม. ให้ Escalate ทันที'},
-    'ส่งช่าง':      {icon:'🔧', rc:'รอช่างเข้าพื้นที่ / ค้างอะไหล่', action:'Track Job Order ใน Dashboard เพิ่ม ETA ช่าง'},
-    'Ping ATG ไม่เจอ':{icon:'🔌',rc:'ATG หลุดจาก Network ภายในสถานี', action:'ตรวจสอบ IP/Switch/Cable ที่สถานี ทำ Network Diagram'},
-    'ค้างค่าเช่า':  {icon:'💰', rc:'ลูกค้าค้างชำระ ทำให้ไม่ยอมให้แก้ไข', action:'แจ้ง Account Manager ติดตามค่าเช่าควบคู่กับการแก้ไข'},
-    'BIR BOX':      {icon:'📦', rc:'กล่อง BIR BOX หลุดการเชื่อมต่อ', action:'แนะนำสถานีให้ปิด-เปิด BIR BOX เองได้ + คู่มือง่ายๆ'},
-  };
-  const cards = top.map(([cause, cnt])=>{
-    const info = rcMap[cause] || {icon:'❓', rc:'สาเหตุไม่ชัดเจน', action:'รวบรวมข้อมูลเพิ่มเติมจากหมายเหตุ'};
-    return `<div class="rc-card">
-      <div class="rc-title">${info.icon} ${cause} <span style="font-family:var(--mono);font-size:10px;color:var(--text-muted);font-weight:400">(${cnt} สถานี)</span></div>
-      <div class="rc-body">🔍 <strong>Root Cause:</strong> ${info.rc}</div>
-      <div class="rc-action">✅ แนวทาง: ${info.action}</div>
-    </div>`;
-  }).join('');
-  document.getElementById('rcGrid').innerHTML = cards || '<div style="color:var(--text-muted)">อัปโหลดไฟล์เพื่อวิเคราะห์</div>';
-}
-
-
-// ── LOAD EMBEDDED DATA ──
-function fetchDataJSON(){
-  if(!EMBEDDED_DATA || !EMBEDDED_DATA.data || !EMBEDDED_DATA.data.length){
-    console.log('No embedded data — use manual upload or localStorage');
-    return false;
-  }
-  const json = EMBEDDED_DATA;
-  loadedFileName = json.source_file || 'data.json';
-  allData = json.data;
-  resolvedIds.clear();
-  processData();
-  restoreResolvedState();
-  renderAll();
-  showDashboard();
-  restoreTimeline();
-  if(json.updated_at){
-    const el = document.getElementById('dataTimestamp');
-    if(el) el.textContent = json.updated_at;
-  }
-  return true;
-}
-
-// ── SHOW ──
+// ══ SHOW DASHBOARD ══
 function showDashboard(){
-  document.getElementById('uploadZone').classList.add('hidden');
-  document.getElementById('dashboard').style.display='block';
+  document.getElementById('uploadZone').style.display='none';
+  document.getElementById('dashboardPage').style.display='block';
+  document.getElementById('navAnalysis').style.display='flex';
   document.getElementById('dataTimestamp').textContent=new Date().toLocaleString('th-TH');
-  
-    cfg.mode==='file'?`📂 ${loadedFileName}`:`🔄 ${cfg.api?.url||'API'}`;
+  updateStorageBadge();restoreTimeline();
 }
 
-// ── AUTO LOAD ON STARTUP ──
+// ══ ANALYSIS ══
+function renderAnalysis(){
+  if(!displayData.length)return;
+  const active=displayData.filter(r=>r.status!=='resolved');
+  const crisis=active.filter(r=>r.ageDays>1).sort((a,b)=>b.ageDays-a.ageDays);
+  const avgDay=active.length?(active.reduce((s,r)=>s+r.ageDays,0)/active.length).toFixed(1):0;
+  setEl('aTot',active.length);setEl('aCrisis',crisis.length);setEl('aAvgDay',avgDay);
+  renderCauseChart(active);renderTrendChart(active);renderCrisisTable(crisis);renderRootCause(active);
+}
+function extractCause(note){
+  const c=[];if(!note)return['ไม่ระบุ'];
+  if(/อินเตอร์|internet/i.test(note))c.push('อินเทอร์เน็ต');
+  if(/คอมพิวเตอร์/i.test(note))c.push('คอมพิวเตอร์');
+  if(/atg.*เสีย|เสีย.*atg/i.test(note))c.push('ATG เสีย');
+  if(/ping ไม่เจอ/i.test(note))c.push('Ping ATG ไม่เจอ');
+  if(/ปิดปรับปรุง/i.test(note))c.push('ปิดปรับปรุง');
+  if(/ช่างเข้า|เปิดงานช่าง/i.test(note))c.push('ส่งช่าง');
+  if(/ค่าเช่า/i.test(note))c.push('ค้างค่าเช่า');
+  if(/bir box/i.test(note))c.push('BIR BOX');
+  if(c.length===0){if(/ติดต่อ/.test(note))c.push('รอติดต่อกลับ');else c.push('ไม่ระบุ');}
+  return c;
+}
+function renderCauseChart(active){
+  const counts={};active.forEach(r=>extractCause(r.note).forEach(c=>{counts[c]=(counts[c]||0)+1;}));
+  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]),max=sorted[0]?.[1]||1;
+  const colors=['#ff3b5c','#f59e0b','#f97316','#3b82f6','#10b981','#a78bfa','#06b6d4','#ec4899'];
+  document.getElementById('causeChart').innerHTML=sorted.map(([cause,cnt],i)=>{
+    const pct=Math.round(cnt/max*100),col=colors[i%colors.length];
+    return`<div class="cause-row"><div class="cause-label">${cause}</div><div class="cause-bar-wrap"><div class="cause-bar" style="width:${pct}%;background:${col}"><span class="cause-bar-label">${cnt}</span></div></div><div class="cause-count" style="color:${col}">${cnt}</div></div>`;
+  }).join('')||'<div style="color:var(--text-muted);font-size:12px">ไม่มีข้อมูล</div>';
+}
+function renderTrendChart(active){
+  const buckets={};active.forEach(r=>{const d=Math.floor(r.ageDays);buckets[d]=(buckets[d]||0)+1;});
+  const maxDay=Math.max(...Object.keys(buckets).map(Number),0);
+  const days=[];for(let i=0;i<=Math.min(maxDay,14);i++)days.push(i);
+  const maxVal=Math.max(...days.map(d=>buckets[d]||0),1);
+  let bars='';
+  days.forEach(d=>{
+    const cnt=buckets[d]||0,h=Math.round(cnt/maxVal*64);
+    bars+=`<div class="trend-bar-wrap"><div class="trend-val" style="color:${d===0?'var(--amber)':'var(--red)'}">${cnt||''}</div><div class="trend-bar ${d===0?'today-bar':'past-bar'}" style="height:${Math.max(h,2)}px"></div><div class="trend-label">${d===0?'วันนี้':d+'วัน'}</div></div>`;
+  });
+  const longTail=active.filter(r=>r.ageDays>14);
+  let extra=longTail.length?`<div style="margin-top:12px;padding:8px 10px;background:var(--crisis-dim);border:1px solid rgba(255,26,26,.3);border-radius:8px;font-size:11px;color:var(--crisis);">🚨 ค้างนาน &gt;14 วัน: <strong>${longTail.length} สถานี</strong>${longTail.map(r=>`<span style="margin-left:8px;font-family:var(--mono)">${r.siteId}(${Math.floor(r.ageDays)}วัน)</span>`).join('')}</div>`:'';
+  document.getElementById('trendChart').innerHTML=`<div class="trend-row">${bars}</div>${extra}`;
+}
+function renderCrisisTable(crisis){
+  if(!crisis.length){document.getElementById('crisisBody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--green)">✅ ไม่มีสถานีวิกฤติ</td></tr>';return;}
+  document.getElementById('crisisBody').innerHTML=crisis.map(r=>{
+    const d=Math.floor(r.ageDays),bc=d>=100?'c4':d>=7?'c3':d>=3?'c2':'c1';
+    const causes=extractCause(r.note).join(', ');
+    const noteLine=r.note.split('\n').filter(l=>l.trim()).slice(0,1).join('').substring(0,80);
+    return`<tr class="${d>=100?'ultra':''}"><td><span class="age-badge ${bc}">${d} วัน</span></td><td><span style="font-family:var(--mono);color:var(--blue);font-size:11px">${r.siteId}</span></td><td style="font-size:12px;font-weight:500;max-width:200px">${r.siteName.substring(0,45)}</td><td style="font-size:11px;color:var(--text-muted)">${r.province||'—'}</td><td style="font-size:11px;color:var(--amber)">${causes}</td><td style="font-size:11px;color:var(--text-dim);max-width:220px;word-break:break-word">${noteLine||'—'}</td></tr>`;
+  }).join('');
+}
+function renderRootCause(active){
+  const counts={};active.forEach(r=>extractCause(r.note).forEach(c=>{counts[c]=(counts[c]||0)+1;}));
+  const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,4);
+  const rcMap={'อินเทอร์เน็ต':{icon:'📡',rc:'ISP/Router/SIM มีปัญหา',action:'ติดตั้ง SIM Backup สำหรับสถานีที่เกิดซ้ำ'},'คอมพิวเตอร์':{icon:'💻',rc:'PC ค้าง/AMS service หยุด',action:'ตั้ง Auto-restart AMS + Remote restart'},'ATG เสีย':{icon:'⚙️',rc:'Hardware ATG ชำรุด',action:'SLA ส่งช่างภายใน 24 ชม.'},'รอติดต่อกลับ':{icon:'📞',rc:'สถานีไม่ตอบสนอง',action:'กำหนด SLA: ถ้าไม่แก้ใน 4 ชม. ให้ Escalate'},'ส่งช่าง':{icon:'🔧',rc:'รอช่างเข้าพื้นที่',action:'Track Job Order + ETA ช่าง'},'ค้างค่าเช่า':{icon:'💰',rc:'ลูกค้าค้างชำระ',action:'แจ้ง Account Manager ควบคู่'}};
+  document.getElementById('rcGrid').innerHTML=top.map(([cause,cnt])=>{
+    const info=rcMap[cause]||{icon:'❓',rc:'สาเหตุไม่ชัดเจน',action:'รวบรวมข้อมูลเพิ่มเติม'};
+    return`<div class="rc-card"><div class="rc-title">${info.icon} ${cause} <span style="font-family:var(--mono);font-size:10px;color:var(--text-muted)">(${cnt})</span></div><div class="rc-body">🔍 ${info.rc}</div><div class="rc-action">✅ ${info.action}</div></div>`;
+  }).join('')||'<div style="color:var(--text-muted)">ไม่มีข้อมูล</div>';
+}
+
+// ══ AUTO LOAD ══
 window.addEventListener('DOMContentLoaded', ()=>{
   updateStorageBadge();
-  // Try embedded data first (injected by auto_update.py)
-  const loaded = fetchDataJSON();
-  // Fallback: localStorage
-  if(!loaded){
-    tryAutoLoad();
+  if(EMBEDDED_DATA && EMBEDDED_DATA.data && EMBEDDED_DATA.data.length){
+    // มีข้อมูลฝังอยู่ — โหลดทันที
+    allData = EMBEDDED_DATA.data;
+    resolvedIds.clear();
+    processData();
+    restoreResolvedState();
+    renderAll();
+    showDashboard();
+    restoreTimeline();
+    const ts=document.getElementById('dataTimestamp');
+    if(ts&&EMBEDDED_DATA.updated_at)ts.textContent=EMBEDDED_DATA.updated_at;
+  } else {
+    // ไม่มีข้อมูลฝัง — แสดง Upload Zone
+    document.getElementById('uploadZone').style.display='block';
   }
 });
 </script>
