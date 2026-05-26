@@ -121,6 +121,8 @@ main{position:relative;z-index:1;padding:20px 24px;max-width:1500px;margin:0 aut
 .tab.t-red{color:var(--red);border-bottom-color:var(--red);background:var(--red-dim);}
 .tab.t-amber{color:var(--amber);border-bottom-color:var(--amber);background:var(--amber-dim);}
 .tab.t-green{color:var(--green);border-bottom-color:var(--green);background:var(--green-dim);}
+.tab.t-blue{color:var(--blue);border-bottom-color:var(--blue);background:var(--blue-dim);}
+.tab.t-blue{color:var(--blue);border-bottom-color:var(--blue);background:var(--blue-dim);}
 .tab-count{font-family:var(--mono);font-size:12px;padding:1px 6px;border-radius:8px;font-weight:700;}
 .tab.t-red .tab-count{background:var(--red-dim);color:var(--red);}
 .tab.t-amber .tab-count{background:var(--amber-dim);color:var(--amber);}
@@ -281,6 +283,7 @@ tbody td.mid{vertical-align:middle;white-space:nowrap;}
     <div class="storage-badge" id="storageBadge">💾 —</div>
     <button class="nav-btn active" id="navDashboard" onclick="showPage('dashboard')">📊 Dashboard</button>
     <button class="nav-btn" id="navAnalysis" onclick="showPage('analysis')" style="display:none">🔍 Analysis</button>
+    <button class="nav-btn" id="exportBtn" onclick="openExportModal()" style="display:none;border-color:rgba(16,185,129,.4);color:var(--green)">⬇ Export Excel</button>
     <button class="upload-btn" onclick="document.getElementById('fileInput').click()">⬆ Upload Excel</button>
     <input id="fileInput" type="file" accept=".xlsx,.xls" style="display:none" onchange="handleFileUpload(event)">
   </div>
@@ -310,15 +313,15 @@ tbody td.mid{vertical-align:middle;white-space:nowrap;}
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title" id="panelTitle">รายการ Network Error</div>
-          <div class="panel-actions">
+          <div class="panel-actions" id="panelActions">
             <input class="search-box" placeholder="🔍 รหัส / ชื่อ / จังหวัด..." oninput="onSearch(this.value)">
-            <button class="icon-btn" onclick="exportCSV()">⬇ Export</button>
           </div>
         </div>
         <div class="tab-nav">
           <div class="tab t-red" onclick="switchTab(this,'network')">📡 Network Error <span class="tab-count" id="tcNetwork">0</span></div>
           <div class="tab" onclick="switchTab(this,'closeday')">📋 Closeday Error <span class="tab-count" id="tcCloseday">0</span></div>
           <div class="tab" onclick="switchTab(this,'resolved')">✅ Resolved <span class="tab-count" id="tcResolved">0</span></div>
+          <div class="tab" onclick="switchTab(this,'history')">📅 ประวัติรายวัน <span class="tab-count" id="tcHistory">0</span></div>
         </div>
         <div class="table-wrap"><table><thead id="tableHead"></thead><tbody id="tableBody"></tbody></table></div>
         <div class="table-footer">
@@ -352,7 +355,7 @@ tbody td.mid{vertical-align:middle;white-space:nowrap;}
           <div class="notify-form">
             <div class="notify-option"><div class="notify-icon" style="background:var(--green-dim)">💬</div><div><div class="notify-name">Line Notify</div><div class="notify-desc">ส่งรายการ Error</div></div></div>
             <div class="notify-option"><div class="notify-icon" style="background:var(--blue-dim)">✉️</div><div><div class="notify-name">Email</div><div class="notify-desc">สรุปรายงานประจำวัน</div></div></div>
-            <button class="send-btn" onclick="exportCSV()">📤 Export รายงาน CSV</button>
+
           </div>
         </div>
       </div>
@@ -365,7 +368,6 @@ tbody td.mid{vertical-align:middle;white-space:nowrap;}
       <div style="font-size:13px;font-weight:600;color:var(--text)">📊 วิเคราะห์ข้อมูล Network Error</div>
       <div style="display:flex;gap:8px;">
         <button class="icon-btn" onclick="clearStorageConfirm()" style="color:var(--red);border-color:rgba(255,59,92,.3)">🗑 ล้างข้อมูล</button>
-        <button class="icon-btn" onclick="exportHistory()">📥 Export ประวัติ</button>
       </div>
     </div>
     <div class="stat-row">
@@ -383,6 +385,59 @@ tbody td.mid{vertical-align:middle;white-space:nowrap;}
     </div>
   </div>
 </main>
+
+<!-- EXPORT MODAL -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal" style="width:480px">
+    <h3>⬇ Export รายงาน Excel</h3>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">เลือกช่วงวันที่และ Sheet ที่ต้องการ</div>
+
+    <!-- Date Range -->
+    <div style="display:flex;gap:10px;margin-bottom:14px;align-items:center">
+      <div style="flex:1">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">วันที่เริ่มต้น</div>
+        <input type="date" id="exportDateFrom" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;padding:6px 10px;color:var(--text);font-size:13px;outline:none">
+      </div>
+      <div style="flex:1">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">วันที่สิ้นสุด</div>
+        <input type="date" id="exportDateTo" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;padding:6px 10px;color:var(--text);font-size:13px;outline:none">
+      </div>
+    </div>
+
+    <!-- Presets -->
+    <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="icon-btn" onclick="setDatePreset(0)">วันนี้</button>
+      <button class="icon-btn" onclick="setDatePreset(7)">7 วัน</button>
+      <button class="icon-btn" onclick="setDatePreset(30)">30 วัน</button>
+      <button class="icon-btn" onclick="setDatePreset(-1)">ทั้งหมด</button>
+    </div>
+
+    <!-- Sheets -->
+    <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px">Sheet ที่จะ Export:</div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:18px">
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer">
+        <input type="checkbox" id="chkNetwork" checked> 📡 Network Error (วันที่เลือก)
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer">
+        <input type="checkbox" id="chkCloseday" checked> 📋 Closeday Error
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer">
+        <input type="checkbox" id="chkResolved" checked> ✅ Resolved
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer">
+        <input type="checkbox" id="chkHistory" checked> 📅 ประวัติรายวัน
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer">
+        <input type="checkbox" id="chkResolveHistory" checked> 📝 ประวัติการ Resolve
+      </label>
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal('exportModal')">ยกเลิก</button>
+      <button class="modal-confirm" style="background:linear-gradient(135deg,var(--green),#059669)" onclick="doExportExcel()">⬇ Export Excel</button>
+    </div>
+  </div>
+</div>
 
 <!-- RESOLVE MODAL -->
 <div class="modal-overlay" id="resolveModal">
@@ -667,7 +722,24 @@ function renderPagination(total){
 }
 
 // ══ CONTROLS ══
-function switchTab(el,tab){document.querySelectorAll('.tab').forEach(t=>t.className='tab');currentTab=tab;currentPage=1;kpiFilter=null;if(tab==='network')el.classList.add('t-red');if(tab==='closeday')el.classList.add('t-amber');if(tab==='resolved')el.classList.add('t-green');renderAll();}
+function switchTab(el,tab){
+  document.querySelectorAll('.tab').forEach(t=>t.className='tab');
+  currentTab=tab;currentPage=1;kpiFilter=null;
+  if(tab==='network')  el.classList.add('t-red');
+  if(tab==='closeday') el.classList.add('t-amber');
+  if(tab==='resolved') el.classList.add('t-green');
+  if(tab==='history')  el.classList.add('t-blue');
+  if(tab==='history'){
+    renderHistory();
+  } else {
+    // Restore normal panel actions
+    document.querySelector('.panel-actions').innerHTML = `
+      <input class="search-box" placeholder="🔍 รหัส / ชื่อ / จังหวัด..." oninput="onSearch(this.value)">
+      <button class="icon-btn" onclick="exportCSV()">⬇ Export</button>
+    `;
+    renderAll();
+  }
+}
 function onSearch(q){searchQuery=q.toLowerCase();currentPage=1;renderTable();}
 function goPage(p){currentPage=p;renderTable();}
 function applySort(col){if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=1;}currentPage=1;renderTable();}
@@ -743,6 +815,7 @@ function showDashboard(){
   document.getElementById('uploadZone').style.display='none';
   document.getElementById('dashboardPage').style.display='block';
   document.getElementById('navAnalysis').style.display='flex';
+  document.getElementById('exportBtn').style.display='flex';
   document.getElementById('dataTimestamp').textContent=new Date().toLocaleString('th-TH');
   updateStorageBadge();restoreTimeline();
 }
@@ -809,6 +882,243 @@ function renderRootCause(active){
     const info=rcMap[cause]||{icon:'❓',rc:'สาเหตุไม่ชัดเจน',action:'รวบรวมข้อมูลเพิ่มเติม'};
     return`<div class="rc-card"><div class="rc-title">${info.icon} ${cause} <span style="font-family:var(--mono);font-size:10px;color:var(--text-muted)">(${cnt})</span></div><div class="rc-body">🔍 ${info.rc}</div><div class="rc-action">✅ ${info.action}</div></div>`;
   }).join('')||'<div style="color:var(--text-muted)">ไม่มีข้อมูล</div>';
+}
+
+
+// ══ HISTORY ══
+function renderHistory(){
+  const logs = EMBEDDED_DATA && EMBEDDED_DATA.daily_logs ? EMBEDDED_DATA.daily_logs : {};
+  const dates = Object.keys(logs).sort().reverse();
+  setEl('tcHistory', dates.length);
+  document.getElementById('panelTitle').textContent = 'ประวัติ Network Error รายวัน';
+
+  // Update panel actions to show export all button
+  document.querySelector('.panel-actions').innerHTML = `
+    <button class="icon-btn" onclick="exportHistoryAll()" style="color:var(--green);border-color:rgba(16,185,129,.3)">⬇ Export ทั้งหมด</button>
+  `;
+
+  if(!dates.length){
+    document.getElementById('tableHead').innerHTML='<tr><th>วันที่</th><th>จำนวนสถานี</th><th>รายชื่อสถานี</th><th>Action</th></tr>';
+    document.getElementById('tableBody').innerHTML='<tr><td colspan="4"><div class="empty-state"><div style="font-size:36px">📅</div><div>ยังไม่มีประวัติ</div></div></td></tr>';
+    document.getElementById('rowCount').textContent='ไม่มีข้อมูล';
+    document.getElementById('pagination').innerHTML='';
+    return;
+  }
+
+  document.getElementById('tableHead').innerHTML='<tr><th>วันที่</th><th>จำนวนสถานี</th><th>รายชื่อสถานี</th><th>Export</th></tr>';
+  document.getElementById('tableBody').innerHTML = dates.map(date=>{
+    const sites = logs[date];
+    const nameList = sites.map(s=>s['ชื่อ']||s['Name']||'').join(', ');
+    return`<tr>
+      <td class="mid"><span style="font-family:var(--mono);font-size:14px;color:var(--text);font-weight:600">${date}</span></td>
+      <td class="mid"><span class="age-chip days13">📊 ${sites.length} สถานี</span></td>
+      <td style="font-size:12px;color:var(--text-dim);line-height:1.8;max-width:400px">${nameList}</td>
+      <td class="mid"><button class="act-btn resolve" onclick="exportHistoryDay('${date}')">⬇ Export วันนี้</button></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('rowCount').textContent=`${dates.length} วัน`;
+  document.getElementById('pagination').innerHTML='';
+}
+
+function exportHistoryDay(date){
+  const logs = EMBEDDED_DATA && EMBEDDED_DATA.daily_logs ? EMBEDDED_DATA.daily_logs : {};
+  const sites = logs[date] || [];
+  const h=['วันที่','รหัสสถานี','ชื่อสถานี','จังหวัด','คงเหลือล่าสุด','ปิดวันล่าสุด','หมายเหตุ'];
+  const rows=sites.map(s=>[
+    date,
+    s['รหัสสถานี']||'',
+    `"${(s['ชื่อ']||'').replace(/"/g,'""')}"`,
+    s['จังหวัด']||'',
+    s['คงเหลือล่าสุด']||'',
+    s['ปิดวันล่าสุด']||'',
+    `"${(s['หมายเหตุ']||'').replace(/"/g,'""')}"`
+  ].join(','));
+  const csv=[h.join(','),...rows].join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`network_error_${date}.csv`;
+  a.click();
+}
+
+function exportHistoryAll(){
+  const logs = EMBEDDED_DATA && EMBEDDED_DATA.daily_logs ? EMBEDDED_DATA.daily_logs : {};
+  const dates = Object.keys(logs).sort();
+  if(!dates.length){alert('ยังไม่มีประวัติ');return;}
+  const h=['วันที่','รหัสสถานี','ชื่อสถานี','จังหวัด','คงเหลือล่าสุด','ปิดวันล่าสุด','หมายเหตุ'];
+  const rows=[];
+  dates.forEach(date=>{
+    const sites=logs[date]||[];
+    sites.forEach(s=>rows.push([
+      date,
+      s['รหัสสถานี']||'',
+      `"${(s['ชื่อ']||'').replace(/"/g,'""')}"`,
+      s['จังหวัด']||'',
+      s['คงเหลือล่าสุด']||'',
+      s['ปิดวันล่าสุด']||'',
+      `"${(s['หมายเหตุ']||'').replace(/"/g,'""')}"`
+    ].join(',')));
+  });
+  const csv=[h.join(','),...rows].join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`network_error_history_all.csv`;
+  a.click();
+}
+
+
+// ══ EXPORT MODAL ══
+function openExportModal(){
+  // Set default dates
+  const today = new Date().toISOString().slice(0,10);
+  document.getElementById('exportDateTo').value = today;
+  document.getElementById('exportDateFrom').value = today;
+  document.getElementById('exportModal').classList.add('open');
+}
+
+function setDatePreset(days){
+  const today = new Date();
+  const to = today.toISOString().slice(0,10);
+  let from;
+  if(days === -1){
+    // All — use oldest log date
+    const logs = EMBEDDED_DATA && EMBEDDED_DATA.daily_logs ? EMBEDDED_DATA.daily_logs : {};
+    const dates = Object.keys(logs).sort();
+    from = dates.length ? dates[0] : to;
+  } else {
+    const d = new Date(today);
+    d.setDate(d.getDate() - days);
+    from = d.toISOString().slice(0,10);
+  }
+  document.getElementById('exportDateFrom').value = from;
+  document.getElementById('exportDateTo').value = to;
+}
+
+function doExportExcel(){
+  const fromDate = document.getElementById('exportDateFrom').value;
+  const toDate   = document.getElementById('exportDateTo').value;
+  const chkNet   = document.getElementById('chkNetwork').checked;
+  const chkCls   = document.getElementById('chkCloseday').checked;
+  const chkRes   = document.getElementById('chkResolved').checked;
+  const chkHist  = document.getElementById('chkHistory').checked;
+  const chkRHist = document.getElementById('chkResolveHistory').checked;
+
+  if(!fromDate || !toDate){ alert('กรุณาเลือกช่วงวันที่'); return; }
+
+  const wb = XLSX.utils.book_new();
+
+  // Filter by date range
+  const inRange = (ts) => {
+    if(!ts) return false;
+    const d = ts.substring(0,10);
+    return d >= fromDate && d <= toDate;
+  };
+
+  // ── Sheet 1: Network Error ──
+  if(chkNet){
+    const rows = displayData.filter(r => r.status !== 'resolved' && r.networkError && inRange(r.lastData ? r.lastData.toISOString() : ''));
+    const wsData = [
+      ['รหัสสถานี','ชื่อสถานี','จังหวัด','คงเหลือล่าสุด','ปิดวันล่าสุด','ค้างมา(วัน)','หมายเหตุ'],
+      ...rows.map(r => [r.siteId, r.siteName, r.province, fmtTS(r.lastData), fmtTS(r.closeday), Math.floor(r.ageDays), r.note||''])
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    ws['!cols'] = [{wch:14},{wch:35},{wch:16},{wch:18},{wch:18},{wch:10},{wch:40}];
+    XLSX.utils.book_append_sheet(wb, ws, 'Network Error');
+  }
+
+  // ── Sheet 2: Closeday Error ──
+  if(chkCls){
+    const rows = displayData.filter(r => r.status !== 'resolved' && r.closedayError);
+    const wsData = [
+      ['รหัสสถานี','ชื่อสถานี','จังหวัด','คงเหลือล่าสุด','ปิดวันล่าสุด','ค้างมา(วัน)','หมายเหตุ'],
+      ...rows.map(r => [r.siteId, r.siteName, r.province, fmtTS(r.lastData), fmtTS(r.closeday), Math.floor(r.ageDays), r.note||''])
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    ws['!cols'] = [{wch:14},{wch:35},{wch:16},{wch:18},{wch:18},{wch:10},{wch:40}];
+    XLSX.utils.book_append_sheet(wb, ws, 'Closeday Error');
+  }
+
+  // ── Sheet 3: Resolved ──
+  if(chkRes){
+    const rows = displayData.filter(r => r.status === 'resolved');
+    const wsData = [
+      ['รหัสสถานี','ชื่อสถานี','จังหวัด','คงเหลือล่าสุด','หมายเหตุการแก้ไข'],
+      ...rows.map(r => [r.siteId, r.siteName, r.province, fmtTS(r.lastData), r.resolveNote||''])
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    ws['!cols'] = [{wch:14},{wch:35},{wch:16},{wch:18},{wch:40}];
+    XLSX.utils.book_append_sheet(wb, ws, 'Resolved');
+  }
+
+  // ── Sheet 4: ประวัติรายวัน ──
+  if(chkHist){
+    const logs = EMBEDDED_DATA && EMBEDDED_DATA.daily_logs ? EMBEDDED_DATA.daily_logs : {};
+    const filteredDates = Object.keys(logs).filter(d => d >= fromDate && d <= toDate).sort();
+    const wsData = [['วันที่','รหัสสถานี','ชื่อสถานี','จังหวัด','คงเหลือล่าสุด','ปิดวันล่าสุด','หมายเหตุ']];
+    filteredDates.forEach(date => {
+      (logs[date]||[]).forEach(s => {
+        wsData.push([date, s['รหัสสถานี']||'', s['ชื่อ']||'', s['จังหวัด']||'', s['คงเหลือล่าสุด']||'', s['ปิดวันล่าสุด']||'', s['หมายเหตุ']||'']);
+      });
+    });
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    ws['!cols'] = [{wch:12},{wch:14},{wch:35},{wch:16},{wch:18},{wch:18},{wch:40}];
+    XLSX.utils.book_append_sheet(wb, ws, 'ประวัติรายวัน');
+  }
+
+  // ── Sheet 5: ประวัติ Resolve ──
+  if(chkRHist){
+    const hist = lsLoad('ned_history', []);
+    const filtered = hist.filter(h => {
+      const d = h.ts ? h.ts.substring(0,10) : '';
+      return d >= fromDate && d <= toDate;
+    });
+    const wsData = [
+      ['วันที่/เวลา','รหัสสถานี','ชื่อสถานี','หมายเหตุการแก้ไข'],
+      ...filtered.map(h => [new Date(h.ts).toLocaleString('th-TH'), h.siteId||'', h.siteName||'', h.note||''])
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    ws['!cols'] = [{wch:20},{wch:14},{wch:35},{wch:40}];
+    XLSX.utils.book_append_sheet(wb, ws, 'ประวัติ Resolve');
+  }
+
+  if(wb.SheetNames.length === 0){ alert('กรุณาเลือก Sheet อย่างน้อย 1 Sheet'); return; }
+
+  const dateStr = fromDate === toDate ? fromDate : `${fromDate}_to_${toDate}`;
+  XLSX.writeFile(wb, `network_error_report_${dateStr}.xlsx`);
+  closeModal('exportModal');
+}
+
+// ══ HISTORY ══
+function renderHistory(){
+  const logs = EMBEDDED_DATA && EMBEDDED_DATA.daily_logs ? EMBEDDED_DATA.daily_logs : {};
+  const dates = Object.keys(logs).sort().reverse();
+  setEl('tcHistory', dates.length);
+  document.getElementById('panelTitle').textContent = 'ประวัติ Network Error รายวัน';
+
+  // Update panel actions
+  document.getElementById('panelActions').innerHTML = '';
+
+  if(!dates.length){
+    document.getElementById('tableHead').innerHTML='<tr><th>วันที่</th><th>จำนวนสถานี</th><th>รายชื่อสถานี</th></tr>';
+    document.getElementById('tableBody').innerHTML='<tr><td colspan="3"><div class="empty-state"><div style="font-size:36px">📅</div><div>ยังไม่มีประวัติ</div></div></td></tr>';
+    document.getElementById('rowCount').textContent='ไม่มีข้อมูล';
+    document.getElementById('pagination').innerHTML='';
+    return;
+  }
+
+  document.getElementById('tableHead').innerHTML='<tr><th>วันที่</th><th>จำนวนสถานี</th><th>รายชื่อสถานี</th></tr>';
+  document.getElementById('tableBody').innerHTML = dates.map(date=>{
+    const sites = logs[date];
+    const nameList = sites.map(s=>s['ชื่อ']||'').join(', ');
+    return`<tr>
+      <td class="mid"><span style="font-family:var(--mono);font-size:14px;color:var(--text);font-weight:600">${date}</span></td>
+      <td class="mid"><span class="age-chip days13">📊 ${sites.length} สถานี</span></td>
+      <td style="font-size:12px;color:var(--text-dim);line-height:1.8">${nameList}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('rowCount').textContent=`${dates.length} วัน`;
+  document.getElementById('pagination').innerHTML='';
 }
 
 // ══ AUTO LOAD ══
