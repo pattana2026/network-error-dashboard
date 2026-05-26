@@ -1,0 +1,12 @@
+# ไม่ต้องขึ้น Git
+atg_site.xlsx
+*.xlsx
+*.xls
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log

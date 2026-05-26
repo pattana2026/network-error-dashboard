@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Error Dashboard</title>
+<script src="config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f0f5ff; --surface:#ffffff; --surface2:#e8f0fe;
+  --border:#dbeafe; --border2:#bfdbfe;
+  --red:#dc2626; --red-dim:#fee2e2;
+  --amber:#b45309; --amber-dim:#fef3c7;
+  --green:#15803d; --green-dim:#dcfce7;
+  --blue:#1d4ed8; --blue-dim:#dbeafe;
+  --text:#1e293b; --text-muted:#64748b; --text-dim:#94a3b8;
+  --mono:'IBM Plex Mono',monospace; --sans:'IBM Plex Sans Thai',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(29,78,216,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(29,78,216,.04) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0;}
+
+/* HEADER */
+header{position:relative;z-index:10;background:#fff;border-bottom:1px solid var(--border2);
+  padding:0 24px;display:flex;align-items:center;justify-content:space-between;
+  height:56px;box-shadow:0 1px 8px rgba(29,78,216,.06);}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#1d4ed8,#2563eb);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;
+  box-shadow:0 2px 10px rgba(29,78,216,.3);}
+.logo-text{font-size:15px;font-weight:700;color:var(--text);}
+.logo-sub{font-size:11px;color:var(--text-muted);font-family:var(--mono);}
+.header-right{display:flex;align-items:center;gap:10px;}
+.mode-badge{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;
+  font-size:11px;font-family:var(--mono);font-weight:500;border:1px solid;}
+.mode-badge.file{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe;}
+.mode-badge.api{background:#dcfce7;color:#15803d;border-color:#86efac;}
+.live-dot{width:6px;height:6px;border-radius:50%;animation:pulse 1.5s infinite;}
+.file .live-dot{background:#1d4ed8;}
+.api .live-dot{background:#15803d;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.upload-btn{background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;border:none;
+  border-radius:8px;padding:7px 16px;font-size:13px;font-family:var(--sans);font-weight:600;
+  cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;
+  box-shadow:0 2px 10px rgba(29,78,216,.25);}
+.upload-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(29,78,216,.35);}
+.upload-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.refresh-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;
+  padding:7px 12px;font-size:13px;color:var(--blue);cursor:pointer;transition:all .2s;
+  font-family:var(--sans);}
+.refresh-btn:hover{background:var(--blue-dim);}
+
+/* MAIN */
+main{position:relative;z-index:1;padding:20px 24px;max-width:1440px;margin:0 auto;}
+
+/* UPLOAD ZONE */
+.upload-zone{background:#fff;border:2px dashed var(--border2);border-radius:16px;
+  padding:48px 24px;text-align:center;margin-bottom:20px;transition:all .2s;cursor:pointer;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--blue);background:var(--blue-dim);}
+.upload-zone.hidden{display:none;}
+.upload-icon{font-size:48px;margin-bottom:12px;}
+.upload-title{font-size:18px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.upload-sub{font-size:13px;color:var(--text-muted);}
+.upload-sub span{color:var(--blue);font-weight:500;}
+
+/* DATE BAR */
+.date-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.date-label{font-size:13px;color:var(--text-muted);font-family:var(--mono);}
+.date-label span{color:var(--blue);font-weight:500;}
+.file-info{font-size:12px;color:var(--text-muted);font-family:var(--mono);
+  background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:4px 10px;}
+.filter-tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border2);
+  border-radius:10px;padding:4px;box-shadow:0 1px 4px rgba(29,78,216,.06);}
+.filter-tab{padding:5px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;
+  transition:all .15s;color:var(--text-muted);border:none;background:none;font-family:var(--sans);}
+.filter-tab.active{background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;
+  box-shadow:0 2px 8px rgba(29,78,216,.25);}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border2);border-radius:12px;
+  padding:16px 20px;position:relative;overflow:hidden;transition:all .2s;
+  box-shadow:0 1px 6px rgba(29,78,216,.06);}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(29,78,216,.1);}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi-card.red::before{background:linear-gradient(90deg,#dc2626,#ef4444);}
+.kpi-card.amber::before{background:linear-gradient(90deg,#b45309,#d97706);}
+.kpi-card.green::before{background:linear-gradient(90deg,#15803d,#16a34a);}
+.kpi-card.blue::before{background:linear-gradient(90deg,#1d4ed8,#2563eb);}
+.kpi-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text-muted);margin-bottom:10px;}
+.kpi-value{font-size:36px;font-weight:700;font-family:var(--mono);line-height:1;margin-bottom:6px;}
+.kpi-card.red .kpi-value{color:var(--red);}
+.kpi-card.amber .kpi-value{color:var(--amber);}
+.kpi-card.green .kpi-value{color:var(--green);}
+.kpi-card.blue .kpi-value{color:var(--blue);}
+.kpi-sub{font-size:11px;color:var(--text-muted);}
+.kpi-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:28px;opacity:.1;}
+
+/* CONTENT GRID */
+.content-grid{display:grid;grid-template-columns:1fr 290px;gap:16px;}
+
+/* PANEL */
+.panel{background:var(--surface);border:1px solid var(--border2);border-radius:12px;
+  overflow:hidden;box-shadow:0 1px 6px rgba(29,78,216,.06);}
+.panel-header{display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface2);}
+.panel-title{font-size:13px;font-weight:600;color:var(--text);}
+.panel-actions{display:flex;gap:8px;align-items:center;}
+.search-box{background:var(--bg);border:1px solid var(--border2);border-radius:7px;
+  padding:5px 10px;font-size:12px;color:var(--text);font-family:var(--sans);
+  outline:none;width:200px;transition:border-color .2s;}
+.search-box:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,78,216,.1);}
+.search-box::placeholder{color:var(--text-dim);}
+.icon-btn{background:var(--surface);border:1px solid var(--border2);border-radius:7px;
+  padding:5px 12px;font-size:12px;color:var(--text-muted);cursor:pointer;
+  transition:all .15s;font-family:var(--sans);}
+.icon-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-dim);}
+
+/* TABS */
+.tab-nav{display:flex;border-bottom:1px solid var(--border);background:var(--surface);}
+.tab{padding:10px 20px;font-size:12px;font-weight:500;cursor:pointer;
+  border-bottom:2px solid transparent;color:var(--text-muted);transition:all .15s;
+  display:flex;align-items:center;gap:6px;}
+.tab.active-red{color:var(--red);border-bottom-color:var(--red);background:#fff5f5;}
+.tab.active-amber{color:var(--amber);border-bottom-color:var(--amber);background:#fffbeb;}
+.tab.active-green{color:var(--green);border-bottom-color:var(--green);background:#f0fdf4;}
+.tab-count{font-family:var(--mono);font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700;}
+.tab.active-red .tab-count{background:#fee2e2;color:var(--red);}
+.tab.active-amber .tab-count{background:#fef3c7;color:var(--amber);}
+.tab.active-green .tab-count{background:#dcfce7;color:var(--green);}
+.tab:not(.active-red):not(.active-amber):not(.active-green) .tab-count{background:var(--surface2);color:var(--text-muted);}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead th{background:var(--bg);padding:10px 12px;text-align:left;font-size:10px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);
+  border-bottom:1px solid var(--border2);white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
+tbody tr:hover{background:#f0f5ff;}
+tbody td{padding:10px 12px;vertical-align:middle;}
+.site-id{font-family:var(--mono);font-size:11px;color:var(--blue);font-weight:500;}
+.site-name{font-weight:500;font-size:12px;color:var(--text);max-width:200px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.timestamp{font-family:var(--mono);font-size:11px;color:var(--text-muted);}
+.duration-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;
+  font-family:var(--mono);font-size:11px;font-weight:600;}
+.duration-chip.critical{background:#fee2e2;color:var(--red);border:1px solid #fca5a5;}
+.duration-chip.warning{background:#fef3c7;color:var(--amber);border:1px solid #fde68a;}
+.duration-chip.ok{background:#dcfce7;color:var(--green);border:1px solid #86efac;}
+.status-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;
+  font-size:10px;font-weight:600;}
+.status-chip.open{background:#fee2e2;color:var(--red);border:1px solid #fca5a5;}
+.status-chip.resolved{background:#dcfce7;color:var(--green);border:1px solid #86efac;}
+.status-chip.progress{background:#fef3c7;color:var(--amber);border:1px solid #fde68a;}
+.note-cell{color:var(--text-dim);font-size:11px;max-width:180px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;cursor:help;}
+.action-group{display:flex;gap:4px;}
+.act-btn{padding:4px 8px;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;
+  border:1px solid;transition:all .15s;font-family:var(--sans);white-space:nowrap;}
+.act-btn.resolve{border-color:#86efac;color:var(--green);background:#dcfce7;}
+.act-btn.resolve:hover{background:#bbf7d0;}
+.act-btn.export{border-color:var(--border2);color:var(--text-muted);background:transparent;}
+.act-btn.export:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-dim);}
+.act-btn.notify{border-color:#fde68a;color:var(--amber);background:#fef3c7;}
+.act-btn.notify:hover{background:#fde68a;}
+.empty-state{text-align:center;padding:48px 24px;color:var(--text-muted);}
+.empty-icon{font-size:36px;margin-bottom:8px;}
+
+/* TABLE FOOTER */
+.table-footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;
+  align-items:center;justify-content:space-between;font-size:11px;
+  color:var(--text-muted);font-family:var(--mono);}
+.pagination{display:flex;gap:4px;}
+.page-btn{width:26px;height:26px;display:flex;align-items:center;justify-content:center;
+  border-radius:5px;font-size:11px;cursor:pointer;border:1px solid var(--border2);
+  background:transparent;color:var(--text-muted);transition:all .15s;font-family:var(--mono);}
+.page-btn.active{background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;
+  border-color:transparent;font-weight:700;}
+.page-btn:hover:not(.active){border-color:var(--blue);color:var(--blue);background:var(--blue-dim);}
+
+/* SIDE */
+.side-col{display:flex;flex-direction:column;gap:14px;}
+.mini-panel{background:var(--surface);border:1px solid var(--border2);border-radius:12px;
+  overflow:hidden;box-shadow:0 1px 6px rgba(29,78,216,.06);}
+.mini-header{padding:12px 16px;border-bottom:1px solid var(--border);font-size:11px;
+  font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+  background:var(--surface2);display:flex;align-items:center;gap:6px;}
+
+/* SUMMARY */
+.summary-list{padding:12px 16px;display:flex;flex-direction:column;gap:10px;}
+.sum-row{display:flex;align-items:center;gap:10px;}
+.sum-label{font-size:12px;color:var(--text-dim);flex:1;}
+.sum-bar-wrap{flex:2;height:5px;background:var(--bg);border-radius:3px;
+  overflow:hidden;border:1px solid var(--border);}
+.sum-bar{height:100%;border-radius:3px;transition:width .6s ease;}
+.sum-val{font-family:var(--mono);font-size:11px;font-weight:600;width:24px;text-align:right;}
+
+/* TIMELINE */
+.timeline{padding:14px 16px;display:flex;flex-direction:column;gap:0;max-height:260px;overflow-y:auto;}
+.tl-item{display:flex;gap:12px;padding-bottom:14px;position:relative;}
+.tl-item:not(:last-child)::after{content:'';position:absolute;left:7px;top:16px;bottom:0;
+  width:1px;background:var(--border2);}
+.tl-dot{width:15px;height:15px;border-radius:50%;flex-shrink:0;margin-top:2px;
+  display:flex;align-items:center;justify-content:center;font-size:8px;}
+.tl-dot.red{background:#fee2e2;border:2px solid #fca5a5;color:var(--red);}
+.tl-dot.amber{background:#fef3c7;border:2px solid #fde68a;color:var(--amber);}
+.tl-dot.green{background:#dcfce7;border:2px solid #86efac;color:var(--green);}
+.tl-content{flex:1;}
+.tl-title{font-size:12px;font-weight:500;color:var(--text);}
+.tl-site{font-size:11px;font-family:var(--mono);color:var(--text-muted);}
+.tl-time{font-size:10px;color:var(--text-dim);margin-top:2px;}
+
+/* NOTIFY */
+.notify-form{padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.notify-option{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;
+  background:var(--bg);border:1px solid var(--border2);cursor:pointer;transition:all .15s;}
+.notify-option:hover{border-color:var(--blue);background:var(--blue-dim);}
+.notify-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;font-size:16px;}
+.notify-icon.line{background:#dcfce7;}
+.notify-icon.email{background:var(--blue-dim);}
+.notify-info{flex:1;}
+.notify-name{font-size:12px;font-weight:500;color:var(--text);}
+.notify-desc{font-size:10px;color:var(--text-muted);}
+.send-btn{background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;border:none;
+  border-radius:8px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;
+  font-family:var(--sans);transition:all .2s;text-align:center;
+  box-shadow:0 2px 10px rgba(29,78,216,.25);}
+.send-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(29,78,216,.35);}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(30,41,59,.5);
+  z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:14px;
+  padding:24px;width:420px;box-shadow:0 20px 60px rgba(29,78,216,.15);}
+.modal h3{font-size:15px;font-weight:600;margin-bottom:4px;color:var(--text);}
+.modal-site{font-size:12px;font-family:var(--mono);color:var(--blue);margin-bottom:4px;}
+.modal-detail{font-size:11px;color:var(--text-muted);margin-bottom:16px;}
+.modal textarea{width:100%;background:var(--bg);border:1px solid var(--border2);
+  border-radius:8px;padding:10px 12px;color:var(--text);font-family:var(--sans);
+  font-size:13px;resize:none;outline:none;transition:border-color .2s;}
+.modal textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,78,216,.1);}
+.modal-actions{display:flex;gap:8px;margin-top:12px;}
+.modal-cancel{flex:1;background:transparent;border:1px solid var(--border2);border-radius:8px;
+  padding:9px;font-size:13px;color:var(--text-muted);cursor:pointer;font-family:var(--sans);}
+.modal-cancel:hover{border-color:var(--text-dim);color:var(--text);}
+.modal-confirm{flex:2;background:linear-gradient(135deg,#15803d,#16a34a);border:none;
+  border-radius:8px;padding:9px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;
+  font-family:var(--sans);transition:all .2s;}
+.modal-confirm:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(21,128,61,.35);}
+
+/* NOTE MODAL */
+.note-modal{background:var(--surface);border:1px solid var(--border2);border-radius:14px;
+  padding:20px;width:360px;box-shadow:0 20px 60px rgba(29,78,216,.15);}
+.note-modal h3{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.note-body{font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap;}
+.note-close{margin-top:14px;width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:8px;padding:8px;font-size:13px;cursor:pointer;font-family:var(--sans);}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    <div>
+      <div class="logo-text" id="headerTitle">Network Error Dashboard</div>
+      <div class="logo-sub" id="headerSubtitle">AMS · ATG · ic05 Monitor</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="mode-badge" id="modeBadge">
+      <div class="live-dot"></div>
+      <span id="modeText">FILE MODE</span>
+    </div>
+    <button class="refresh-btn" id="refreshBtn" onclick="handleRefresh()" style="display:none">🔄 Refresh</button>
+    <button class="upload-btn" id="uploadBtn" onclick="document.getElementById('fileInput').click()">
+      ⬆ Upload Excel
+    </button>
+    <input id="fileInput" type="file" accept=".xlsx,.xls" style="display:none" onchange="handleFileUpload(event)">
+  </div>
+</header>
+
+<main>
+  <!-- UPLOAD ZONE -->
+  <div class="upload-zone" id="uploadZone"
+    ondragover="event.preventDefault();this.classList.add('drag')"
+    ondragleave="this.classList.remove('drag')"
+    ondrop="handleDrop(event)"
+    onclick="document.getElementById('fileInput').click()">
+    <div class="upload-icon">📂</div>
+    <div class="upload-title">วาง หรือ คลิกเพื่อเลือกไฟล์ Excel</div>
+    <div class="upload-sub">รองรับ <span>atg_site.xlsx</span> — ลาก & วางได้เลย</div>
+  </div>
+
+  <!-- DASHBOARD (hidden until file loaded) -->
+  <div id="dashboard" style="display:none">
+
+    <!-- DATE BAR -->
+    <div class="date-bar">
+      <div>
+        <div class="date-label">ข้อมูล ณ <span id="dataTimestamp">—</span></div>
+        <div class="file-info" id="fileInfo" style="margin-top:4px">—</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="setDayFilter(this,0)">วันนี้</button>
+          <button class="filter-tab" onclick="setDayFilter(this,7)">7 วัน</button>
+          <button class="filter-tab" onclick="setDayFilter(this,30)">30 วัน</button>
+          <button class="filter-tab" onclick="setDayFilter(this,-1)">ทั้งหมด</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI -->
+    <div class="kpi-grid">
+      <div class="kpi-card red">
+        <div class="kpi-label">Network Error</div>
+        <div class="kpi-value" id="kpiNetwork">0</div>
+        <div class="kpi-sub">ขาดการเชื่อมต่อ &gt;30 นาที</div>
+        <div class="kpi-icon">📡</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">Closeday Error</div>
+        <div class="kpi-value" id="kpiCloseday">0</div>
+        <div class="kpi-sub">ไม่มีข้อมูล ic05 ปิดวัน</div>
+        <div class="kpi-icon">📋</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">Resolved วันนี้</div>
+        <div class="kpi-value" id="kpiResolved">0</div>
+        <div class="kpi-sub">แก้ไขแล้วในเซสชันนี้</div>
+        <div class="kpi-icon">✅</div>
+      </div>
+      <div class="kpi-card blue">
+        <div class="kpi-label">สถานีทั้งหมด</div>
+        <div class="kpi-value" id="kpiTotal">0</div>
+        <div class="kpi-sub">ในไฟล์ที่โหลด</div>
+        <div class="kpi-icon">🏪</div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content-grid">
+      <!-- MAIN TABLE -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">รายการ Error</div>
+          <div class="panel-actions">
+            <input class="search-box" placeholder="🔍 รหัส / ชื่อสถานี / จังหวัด..." oninput="onSearch(this.value)">
+            <button class="icon-btn" onclick="exportCSV()">⬇ Export CSV</button>
+          </div>
+        </div>
+
+        <div class="tab-nav">
+          <div class="tab active-red" onclick="switchTab(this,'network')">
+            🔴 Network Error <span class="tab-count" id="tcNetwork">0</span>
+          </div>
+          <div class="tab" onclick="switchTab(this,'closeday')">
+            🟡 Closeday Error <span class="tab-count" id="tcCloseday">0</span>
+          </div>
+          <div class="tab" onclick="switchTab(this,'resolved')">
+            ✅ Resolved <span class="tab-count" id="tcResolved">0</span>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>รหัสสถานี</th>
+                <th>ชื่อสถานี</th>
+                <th>จังหวัด</th>
+                <th>คงเหลือล่าสุด</th>
+                <th>ปิดวันล่าสุด</th>
+                <th>ขาดการเชื่อมต่อ</th>
+                <th>ประเภท Error</th>
+                <th>หมายเหตุ</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+        <div class="table-footer">
+          <span id="rowCount">—</span>
+          <div class="pagination" id="pagination"></div>
+        </div>
+      </div>
+
+      <!-- SIDE -->
+      <div class="side-col">
+
+        <!-- SUMMARY -->
+        <div class="mini-panel">
+          <div class="mini-header">📊 สรุปภาพรวม</div>
+          <div class="summary-list">
+            <div class="sum-row">
+              <div class="sum-label">Network Error</div>
+              <div class="sum-bar-wrap"><div class="sum-bar" id="barNetwork" style="background:#dc2626;width:0%"></div></div>
+              <div class="sum-val" style="color:var(--red)" id="sNetwork">0</div>
+            </div>
+            <div class="sum-row">
+              <div class="sum-label">Closeday Error</div>
+              <div class="sum-bar-wrap"><div class="sum-bar" id="barCloseday" style="background:#b45309;width:0%"></div></div>
+              <div class="sum-val" style="color:var(--amber)" id="sCloseday">0</div>
+            </div>
+            <div class="sum-row">
+              <div class="sum-label">Resolved</div>
+              <div class="sum-bar-wrap"><div class="sum-bar" id="barResolved" style="background:#15803d;width:0%"></div></div>
+              <div class="sum-val" style="color:var(--green)" id="sResolved">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TIMELINE -->
+        <div class="mini-panel">
+          <div class="mini-header">🕐 กิจกรรมล่าสุด</div>
+          <div class="timeline" id="timeline">
+            <div class="empty-state" style="padding:20px">
+              <div style="font-size:24px">📋</div>
+              <div style="font-size:12px;margin-top:6px">ยังไม่มีกิจกรรม</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NOTIFY -->
+        <div class="mini-panel">
+          <div class="mini-header">🔔 แจ้งเตือน</div>
+          <div class="notify-form">
+            <div class="notify-option">
+              <div class="notify-icon line">💬</div>
+              <div class="notify-info">
+                <div class="notify-name">Line Notify</div>
+                <div class="notify-desc">ส่งรายการ Error ทั้งหมด</div>
+              </div>
+            </div>
+            <div class="notify-option">
+              <div class="notify-icon email">✉️</div>
+              <div class="notify-info">
+                <div class="notify-name">Email</div>
+                <div class="notify-desc">สรุปรายงานประจำวัน</div>
+              </div>
+            </div>
+            <button class="send-btn" onclick="exportCSV()">📤 Export รายงานตอนนี้</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- RESOLVE MODAL -->
+<div class="modal-overlay" id="resolveModal">
+  <div class="modal">
+    <h3>✅ Mark as Resolved</h3>
+    <div class="modal-site" id="modalSite"></div>
+    <div class="modal-detail" id="modalDetail"></div>
+    <textarea id="resolveNote" rows="4" placeholder="บันทึกวิธีแก้ไข / หมายเหตุเพิ่มเติม..."></textarea>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal('resolveModal')">ยกเลิก</button>
+      <button class="modal-confirm" onclick="confirmResolve()">✓ ยืนยัน Resolved</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTE MODAL -->
+<div class="modal-overlay" id="noteModal">
+  <div class="note-modal">
+    <h3>📝 หมายเหตุ</h3>
+    <div class="note-body" id="noteBody"></div>
+    <button class="note-close" onclick="closeModal('noteModal')">ปิด</button>
+  </div>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────
+const cfg = typeof DASHBOARD_CONFIG !== 'undefined' ? DASHBOARD_CONFIG : {
+  mode:'file', networkErrorMinutes:30, closedayFilterToday:true,
+  rowsPerPage:10, title:'Network Error Dashboard', subtitle:'AMS · ATG · ic05 Monitor'
+};
+
+let allData = [];          // raw rows from Excel / API
+let displayData = [];      // after classify + filter
+let resolvedIds = new Set();
+let resolveTarget = null;
+let currentTab = 'network';
+let currentPage = 1;
+let searchQuery = '';
+let dayFilter = 0;         // 0=today, 7, 30, -1=all
+let apiTimer = null;
+let loadedFileName = '';
+let loadedFileTime = '';
+
+// ─── INIT ─────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('headerTitle').textContent = cfg.title;
+  document.getElementById('headerSubtitle').textContent = cfg.subtitle;
+  initMode();
+});
+
+function initMode() {
+  const badge = document.getElementById('modeBadge');
+  const modeText = document.getElementById('modeText');
+  if (cfg.mode === 'api') {
+    badge.className = 'mode-badge api';
+    modeText.textContent = 'API · LIVE';
+    document.getElementById('uploadBtn').style.display = 'none';
+    document.getElementById('refreshBtn').style.display = 'flex';
+    document.getElementById('uploadZone').style.display = 'none';
+    fetchFromAPI();
+    if (cfg.api.intervalSeconds > 0) {
+      apiTimer = setInterval(fetchFromAPI, cfg.api.intervalSeconds * 1000);
+    }
+  } else {
+    badge.className = 'mode-badge file';
+    modeText.textContent = 'FILE MODE';
+    document.getElementById('refreshBtn').style.display = 'none';
+  }
+}
+
+// ─── FILE UPLOAD ──────────────────────────────────────────
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+}
+
+function handleFileUpload(e) {
+  const file = e.target.files[0];
+  if (file) processFile(file);
+}
+
+function processFile(file) {
+  loadedFileName = file.name;
+  loadedFileTime = new Date().toLocaleString('th-TH');
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const wb = XLSX.read(e.target.result, {type:'array', cellDates:true});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {raw:false, dateNF:'yyyy-mm-dd hh:mm'});
+      allData = rows;
+      resolvedIds.clear();
+      processData();
+      showDashboard();
+    } catch(err) {
+      alert('ไม่สามารถอ่านไฟล์ได้: ' + err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ─── API MODE ─────────────────────────────────────────────
+async function fetchFromAPI() {
+  try {
+    const res = await fetch(cfg.api.url, {headers: cfg.api.headers || {}});
+    const json = await res.json();
+    allData = Array.isArray(json) ? json : json.data || [];
+    processData();
+    showDashboard();
+    document.getElementById('dataTimestamp').textContent =
+      new Date().toLocaleString('th-TH');
+  } catch(err) {
+    console.error('API Error:', err);
+  }
+}
+
+function handleRefresh() { fetchFromAPI(); }
+
+// ─── DATA PROCESSING ──────────────────────────────────────
+function parseThaiDate(str) {
+  if (!str) return null;
+  // format: "2026-05-25 15:49" or Date object
+  if (str instanceof Date) return str;
+  const m = String(str).match(/(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2})/);
+  if (!m) return null;
+  return new Date(+m[1], +m[2]-1, +m[3], +m[4], +m[5]);
+}
+
+function getToday() {
+  const d = new Date();
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+function diffMinutes(a, b) {
+  return (b - a) / 60000;
+}
+
+function formatDuration(minutes) {
+  if (minutes < 60) return `${Math.round(minutes)}m`;
+  const h = Math.floor(minutes / 60);
+  const m = Math.round(minutes % 60);
+  return m > 0 ? `${h}h ${m}m` : `${h}h`;
+}
+
+function formatTS(str) {
+  if (!str) return '—';
+  return String(str).replace('T',' ').substring(0,16);
+}
+
+function processData() {
+  const now = new Date();
+  const today = getToday();
+  const threshold = cfg.networkErrorMinutes * 60 * 1000;
+
+  displayData = allData.map((row, idx) => {
+    const siteId   = row['รหัสสถานี'] || row['site_id'] || '';
+    const siteName = row['ชื่อ'] || row['name'] || '';
+    const province = String(row['จังหวัด'] || row['province'] || '').trim();
+    const lastData = parseThaiDate(row['คงเหลือล่าสุด'] || row['last_update']);
+    const closeday = parseThaiDate(row['ปิดวันล่าสุด'] || row['closeday']);
+    const note     = row['หมายเหตุ'] || row['note'] || '';
+    const phone    = row['โทร'] || row['phone'] || '';
+    const contact  = row['ชื่อผู้ติดต่อ'] || row['contact'] || '';
+
+    // Network Error: lastData > 30 min ago
+    let networkError = false;
+    let diffMin = null;
+    if (lastData) {
+      diffMin = diffMinutes(lastData, now);
+      networkError = diffMin > cfg.networkErrorMinutes;
+    }
+
+    // Closeday Error: มีรายชื่อในไฟล์ = มีปัญหาแล้ว
+    // ตัดออกถ้าปิดวันล่าสุด = วันนี้
+    let closedayError = false;
+    if (cfg.closedayFilterToday && closeday) {
+      const cdDate = new Date(closeday.getFullYear(), closeday.getMonth(), closeday.getDate());
+      closedayError = cdDate < today;  // ถ้าปิดวันล่าสุดไม่ใช่วันนี้ = Error
+    } else if (!closeday) {
+      closedayError = true;  // ไม่มีข้อมูลปิดวัน = Error
+    }
+
+    return {
+      _idx: idx,
+      siteId, siteName, province, note, phone, contact,
+      lastData, closeday, diffMin,
+      networkError, closedayError,
+      status: resolvedIds.has(idx) ? 'resolved' : (networkError || closedayError ? 'open' : 'ok'),
+      resolveNote: '',
+    };
+  }).filter(r => r.networkError || r.closedayError || resolvedIds.has(r._idx));
+
+  renderAll();
+}
+
+// ─── FILTERS ──────────────────────────────────────────────
+function getFiltered() {
+  const now = new Date();
+  return displayData.filter(r => {
+    // Tab filter
+    if (currentTab === 'resolved') {
+      if (r.status !== 'resolved') return false;
+    } else if (currentTab === 'network') {
+      if (r.status === 'resolved' || !r.networkError) return false;
+    } else if (currentTab === 'closeday') {
+      if (r.status === 'resolved' || !r.closedayError) return false;
+    }
+
+    // Day filter (based on lastData)
+    if (dayFilter >= 0 && r.lastData) {
+      const cutoff = new Date(now - dayFilter * 86400000);
+      if (dayFilter === 0) {
+        const today = getToday();
+        if (r.lastData < today) return false;
+      } else {
+        if (r.lastData < cutoff) return false;
+      }
+    }
+
+    // Search
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      return r.siteId.toLowerCase().includes(q) ||
+             r.siteName.toLowerCase().includes(q) ||
+             r.province.toLowerCase().includes(q);
+    }
+    return true;
+  });
+}
+
+// ─── RENDER ───────────────────────────────────────────────
+function renderAll() {
+  updateKPI();
+  renderTable();
+  updateSummaryBars();
+}
+
+function updateKPI() {
+  const net  = displayData.filter(r => r.networkError  && r.status !== 'resolved').length;
+  const cls  = displayData.filter(r => r.closedayError && r.status !== 'resolved').length;
+  const res  = displayData.filter(r => r.status === 'resolved').length;
+  const tot  = allData.length;
+  document.getElementById('kpiNetwork').textContent  = net;
+  document.getElementById('kpiCloseday').textContent = cls;
+  document.getElementById('kpiResolved').textContent = res;
+  document.getElementById('kpiTotal').textContent    = tot;
+  document.getElementById('tcNetwork').textContent   = net;
+  document.getElementById('tcCloseday').textContent  = cls;
+  document.getElementById('tcResolved').textContent  = res;
+  document.getElementById('sNetwork').textContent    = net;
+  document.getElementById('sCloseday').textContent   = cls;
+  document.getElementById('sResolved').textContent   = res;
+}
+
+function updateSummaryBars() {
+  const net = parseInt(document.getElementById('kpiNetwork').textContent);
+  const cls = parseInt(document.getElementById('kpiCloseday').textContent);
+  const res = parseInt(document.getElementById('kpiResolved').textContent);
+  const max = Math.max(net, cls, res, 1);
+  document.getElementById('barNetwork').style.width  = (net/max*100)+'%';
+  document.getElementById('barCloseday').style.width = (cls/max*100)+'%';
+  document.getElementById('barResolved').style.width = (res/max*100)+'%';
+}
+
+function renderTable() {
+  const rows = getFiltered();
+  const start = (currentPage - 1) * cfg.rowsPerPage;
+  const pageRows = rows.slice(start, start + cfg.rowsPerPage);
+  const tbody = document.getElementById('tableBody');
+
+  if (pageRows.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10">
+      <div class="empty-state">
+        <div class="empty-icon">✅</div>
+        <div>ไม่มีรายการใน Tab นี้</div>
+      </div></td></tr>`;
+    document.getElementById('rowCount').textContent = 'ไม่มีรายการ';
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+
+  const statusLabel = {open:'รอดำเนินการ', resolved:'Resolved', ok:'ปกติ'};
+  const statusDot   = {open:'🔴', resolved:'🟢', ok:'⚪'};
+
+  tbody.innerHTML = pageRows.map(r => {
+    // Duration chip
+    let durHtml = '—';
+    if (r.diffMin !== null) {
+      const cls2 = r.diffMin > 120 ? 'critical' : r.diffMin > 30 ? 'warning' : 'ok';
+      durHtml = `<span class="duration-chip ${cls2}">⚠ ${formatDuration(r.diffMin)}</span>`;
+    }
+    // Error type
+    const errTypes = [];
+    if (r.networkError)  errTypes.push(`<span style="color:var(--red);font-size:11px;font-weight:500">📡 Network</span>`);
+    if (r.closedayError) errTypes.push(`<span style="color:var(--amber);font-size:11px;font-weight:500">📋 Closeday</span>`);
+    const errHtml = errTypes.join('<br>') || '—';
+
+    // Note (truncated, clickable)
+    const noteHtml = r.note
+      ? `<span class="note-cell" title="${r.note.replace(/"/g,'&quot;')}" onclick="showNote(${r._idx})">${r.note.substring(0,40)}${r.note.length>40?'...':''}</span>`
+      : '<span style="color:var(--text-dim);font-size:11px">—</span>';
+
+    // Actions
+    const actions = r.status !== 'resolved'
+      ? `<div class="action-group">
+           <button class="act-btn resolve" onclick="openResolveModal(${r._idx})">✓ Resolve</button>
+           <button class="act-btn notify" title="แจ้งเตือน" onclick="notifySite(${r._idx})">🔔</button>
+         </div>`
+      : `<div class="action-group">
+           <span style="font-size:11px;color:var(--green)">✅ เสร็จแล้ว</span>
+         </div>`;
+
+    return `<tr>
+      <td><span class="site-id">${r.siteId}</span></td>
+      <td><span class="site-name" title="${r.siteName}">${r.siteName}</span></td>
+      <td><span style="font-size:11px;color:var(--text-muted)">${r.province||'—'}</span></td>
+      <td><span class="timestamp">${formatTS(r.lastData)}</span></td>
+      <td><span class="timestamp">${formatTS(r.closeday)}</span></td>
+      <td>${durHtml}</td>
+      <td>${errHtml}</td>
+      <td>${noteHtml}</td>
+      <td><span class="status-chip ${r.status}">${statusDot[r.status]} ${statusLabel[r.status]}</span></td>
+      <td>${actions}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('rowCount').textContent = `แสดง ${pageRows.length} จาก ${rows.length} รายการ`;
+  renderPagination(rows.length);
+}
+
+function renderPagination(total) {
+  const pages = Math.ceil(total / cfg.rowsPerPage);
+  const el = document.getElementById('pagination');
+  if (pages <= 1) { el.innerHTML = ''; return; }
+  let html = '';
+  const start = Math.max(1, currentPage - 2);
+  const end   = Math.min(pages, currentPage + 2);
+  if (start > 1) html += `<button class="page-btn" onclick="goPage(1)">1</button>`;
+  if (start > 2) html += `<span style="padding:0 4px;color:var(--text-dim)">…</span>`;
+  for (let i = start; i <= end; i++)
+    html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  if (end < pages - 1) html += `<span style="padding:0 4px;color:var(--text-dim)">…</span>`;
+  if (end < pages) html += `<button class="page-btn" onclick="goPage(${pages})">${pages}</button>`;
+  if (currentPage < pages) html += `<button class="page-btn" onclick="goPage(${currentPage+1})">›</button>`;
+  el.innerHTML = html;
+}
+
+// ─── CONTROLS ─────────────────────────────────────────────
+function switchTab(el, tab) {
+  document.querySelectorAll('.tab').forEach(t => t.className = 'tab');
+  currentTab = tab; currentPage = 1;
+  if (tab === 'network')  el.classList.add('active-red');
+  if (tab === 'closeday') el.classList.add('active-amber');
+  if (tab === 'resolved') el.classList.add('active-green');
+  renderTable();
+}
+
+function onSearch(q) { searchQuery = q.toLowerCase(); currentPage = 1; renderTable(); }
+function goPage(p) { currentPage = p; renderTable(); }
+
+function setDayFilter(el, days) {
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  dayFilter = days; currentPage = 1;
+  renderTable();
+}
+
+// ─── RESOLVE ──────────────────────────────────────────────
+function openResolveModal(idx) {
+  resolveTarget = idx;
+  const r = displayData.find(x => x._idx === idx);
+  document.getElementById('modalSite').textContent = `${r.siteId} · ${r.siteName}`;
+  document.getElementById('modalDetail').textContent =
+    `${r.province || ''} | คงเหลือล่าสุด: ${formatTS(r.lastData)}`;
+  document.getElementById('resolveNote').value = '';
+  document.getElementById('resolveModal').classList.add('open');
+}
+
+function confirmResolve() {
+  if (resolveTarget === null) return;
+  const note = document.getElementById('resolveNote').value;
+  const r = displayData.find(x => x._idx === resolveTarget);
+  resolvedIds.add(resolveTarget);
+  r.status = 'resolved';
+  r.resolveNote = note;
+
+  // Add timeline
+  const tl = document.getElementById('timeline');
+  const empty = tl.querySelector('.empty-state');
+  if (empty) tl.innerHTML = '';
+  const now = new Date();
+  const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} น.`;
+  const item = document.createElement('div');
+  item.className = 'tl-item';
+  item.innerHTML = `<div class="tl-dot green">✓</div>
+    <div class="tl-content">
+      <div class="tl-title">Resolved แล้ว</div>
+      <div class="tl-site">${r.siteId} · ${r.siteName}</div>
+      <div class="tl-time">${timeStr}</div>
+    </div>`;
+  tl.prepend(item);
+
+  closeModal('resolveModal');
+  renderAll();
+}
+
+// ─── NOTE MODAL ───────────────────────────────────────────
+function showNote(idx) {
+  const r = displayData.find(x => x._idx === idx);
+  document.getElementById('noteBody').textContent = r.note || '—';
+  document.getElementById('noteModal').classList.add('open');
+}
+
+function notifySite(idx) {
+  const r = displayData.find(x => x._idx === idx);
+  alert(`แจ้งเตือน: ${r.siteId} · ${r.siteName}\nโทร: ${r.phone || r.contact || '—'}`);
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// Click outside modal to close
+document.addEventListener('click', e => {
+  ['resolveModal','noteModal'].forEach(id => {
+    const el = document.getElementById(id);
+    if (e.target === el) el.classList.remove('open');
+  });
+});
+
+// ─── EXPORT ───────────────────────────────────────────────
+function exportCSV() {
+  const rows = getFiltered();
+  const headers = ['รหัสสถานี','ชื่อสถานี','จังหวัด','คงเหลือล่าสุด','ปิดวันล่าสุด',
+                   'ขาดการเชื่อมต่อ','ประเภท Error','หมายเหตุ','Status'];
+  const csvRows = rows.map(r => [
+    r.siteId, r.siteName, r.province,
+    formatTS(r.lastData), formatTS(r.closeday),
+    r.diffMin !== null ? formatDuration(r.diffMin) : '—',
+    [r.networkError?'Network':'', r.closedayError?'Closeday':''].filter(Boolean).join('+'),
+    (r.note || '').replace(/,/g,' '), r.status
+  ]);
+  const csv = [headers, ...csvRows].map(r => r.join(',')).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  const dateStr = new Date().toISOString().slice(0,10);
+  a.href = URL.createObjectURL(blob);
+  a.download = `network_error_report_${dateStr}.csv`;
+  a.click();
+}
+
+// ─── SHOW DASHBOARD ───────────────────────────────────────
+function showDashboard() {
+  document.getElementById('uploadZone').classList.add('hidden');
+  document.getElementById('dashboard').style.display = 'block';
+  document.getElementById('dataTimestamp').textContent = new Date().toLocaleString('th-TH');
+  document.getElementById('fileInfo').textContent =
+    cfg.mode === 'file'
+      ? `📂 ${loadedFileName} · โหลดเมื่อ ${loadedFileTime}`
+      : `🔄 API Mode · ${cfg.api.url}`;
+}
+</script>
+</body>
+</html>
