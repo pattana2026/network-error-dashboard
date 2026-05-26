@@ -1463,8 +1463,9 @@ function fetchDataJSON(){
       }
     })
     .catch(e => {
-      // data.json not found — show upload zone (normal mode)
-      console.log('data.json not available, use manual upload.');
+      console.log('data.json not available:', e.message);
+      // Fallback to localStorage
+      tryAutoLoad();
     });
 }
 
@@ -1480,16 +1481,17 @@ function showDashboard(){
 // ── AUTO LOAD ON STARTUP ──
 window.addEventListener('DOMContentLoaded', ()=>{
   updateStorageBadge();
-  // Try data.json first (auto update mode)
-  fetchDataJSON();
-  // Fallback: try localStorage
-  setTimeout(()=>{
-    if(!displayData.length){
-      if(typeof DASHBOARD_CONFIG==='undefined'||DASHBOARD_CONFIG.mode==='file'){
-        tryAutoLoad();
-      }
-    }
-  }, 1500);
+
+  const isGitHubPages = window.location.hostname.includes('github.io');
+  const isLocalhost   = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+  if(isGitHubPages || isLocalhost){
+    // Fetch data.json จาก server
+    fetchDataJSON();
+  } else {
+    // file:// protocol — ใช้ localStorage
+    tryAutoLoad();
+  }
 });
 </script>
 </body>
