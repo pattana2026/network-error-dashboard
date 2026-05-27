@@ -40,12 +40,16 @@ LOG_FILE    = os.path.join(OUTPUT_DIR, "auto_update.log")
 #  EMAIL CONFIG — แก้ไขตรงนี้
 # ══════════════════════════════════════════════
 EMAIL_ENABLED   = True
-EMAIL_SENDER    = "pattana@flowco.co.th"       # ← ใส่ Email ผู้ส่ง
-EMAIL_PASSWORD  = "patt1975"                 # ← ใส่ Password (หรือ App Password)
+EMAIL_SENDER    = "your_email@company.com"       # ← ใส่ Email ผู้ส่ง
+EMAIL_PASSWORD  = "your_password"                 # ← ใส่ Password (หรือ App Password)
 EMAIL_RECIPIENTS = [
-    "simone.2008@windowslive.com",
-    ]
-EMAIL_CC        = ["pchancheam@gmail.com"]          # ← ใส่ CC
+    "person1@company.com",
+    "person2@company.com",
+    "person3@company.com",
+    "person4@company.com",
+    "person5@company.com",
+]
+EMAIL_CC        = ["manager@company.com"]          # ← ใส่ CC
 EMAIL_SMTP      = "smtp.office365.com"
 EMAIL_PORT      = 587
 EMAIL_SEND_TIME = "16:30"                          # ส่งเวลานี้เท่านั้น
@@ -154,7 +158,7 @@ def embed_data_into_html(output, html_path):
     # ensure_ascii=True ทำให้ภาษาไทยเป็น \uXXXX (safe ใน JS)
     json_str = json.dumps(output, ensure_ascii=True)
     # escape </script> ไม่ให้ตัด script tag
-    json_str = json_str.replace("</" , "<\/")
+    json_str = json_str.replace("</" , "</")
 
     old_line = "const EMBEDDED_DATA = null; // auto_update.py will replace this line"
     new_line = f"const EMBEDDED_DATA = {json_str}; // auto_update.py will replace this line"
@@ -165,7 +169,7 @@ def embed_data_into_html(output, html_path):
     log(f"ฝังข้อมูลลงใน index.html สำเร็จ ({output['total']} รายการ)")
 
 
-def send_email_report(data, daily_logs):
+def send_email_report(data, daily_logs, force=False):
     """ส่งรายงาน Email ทุก 16:30"""
     import smtplib
     from email.mime.multipart import MIMEMultipart
@@ -173,15 +177,15 @@ def send_email_report(data, daily_logs):
     from email.mime.base import MIMEBase
     from email import encoders
 
-    if not EMAIL_ENABLED:
+    if not EMAIL_ENABLED and not force:
         return
     if not EMAIL_SENDER or EMAIL_SENDER == "your_email@company.com":
         log("EMAIL: ยังไม่ได้ตั้งค่า Email ใน config")
         return
 
-    # ตรวจสอบเวลา — ส่งเฉพาะ 16:30
+    # ตรวจสอบเวลา — ส่งเฉพาะ 16:30 (ยกเว้น force=True)
     now_time = datetime.now().strftime("%H:%M")
-    if now_time != EMAIL_SEND_TIME:
+    if not force and now_time != EMAIL_SEND_TIME:
         log(f"EMAIL: ไม่ถึงเวลาส่ง ({now_time} != {EMAIL_SEND_TIME})")
         return
 
@@ -202,19 +206,17 @@ def send_email_report(data, daily_logs):
 
 """
     if crisis:
-        body += "รายการวิกฤติ:
-"
+        body += "รายการวิกฤติ:\n"
         for r in sorted(crisis, key=lambda x: x.get('คงเหลือล่าสุด',''))[:10]:
-            body += f"  - {r.get('รหัสสถานี','')} {r.get('ชื่อ','')} ({r.get('จังหวัด','')})
-"
-            if r.get('หมายเหตุ'):
-                body += f"    หมายเหตุ: {r.get('หมายเหตุ','')}
-"
+            sid  = r.get('รหัสสถานี','')
+            name = r.get('ชื่อ','')
+            prov = r.get('จังหวัด','')
+            note = r.get('หมายเหตุ','')
+            body += f"  - {sid} {name} ({prov})\n"
+            if note:
+                body += f"    หมายเหตุ: {note}\n" 
 
-    body += f"
-ดูรายละเอียดเพิ่มเติมได้ที่ Dashboard:
-https://pattana2026.github.io/network-error-dashboard/
-"
+    body += "\nดูรายละเอียดเพิ่มเติมได้ที่ Dashboard:\nhttps://pattana2026.github.io/network-error-dashboard/\n" 
 
     # สร้าง Excel attachment
     try:
@@ -281,6 +283,15 @@ https://pattana2026.github.io/network-error-dashboard/
 
 
 def main():
+    # ── Test Email Mode ──
+    if len(sys.argv) > 1 and sys.argv[1] == "--test-email":
+        log("=" * 50)
+        log("ทดสอบส่ง Email...")
+        test_data = [{"รหัสสถานี":"TEST001","ชื่อ":"สถานีทดสอบ","จังหวัด":"กรุงเทพ","คงเหลือล่าสุด":"2026-05-24 08:00","หมายเหตุ":"ทดสอบระบบ Email"}]
+        send_email_report(test_data, {}, force=True)
+        log("=" * 50)
+        return
+
     log("=" * 50)
     log("Network Error Dashboard — Auto Update เริ่มทำงาน")
 
