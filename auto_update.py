@@ -112,7 +112,27 @@ def read_excel(filepath):
         'จังหวัด':        'จังหวัด',
         'โทร':            'โทร',
         'ชื่อผู้ติดต่อ':  'ชื่อผู้ติดต่อ',
+        # เพิ่มเติม สำหรับปุ่มแจ้งเตือน/Copy SMS
+        'ATG Model':      'ATG Model',
+        'ID Link':        'ID Link',
+        'ID Remark':      'ID Remark',
+        'ชื่อผู้จัดการ':  'ชื่อผู้จัดการ',
+        'Manager':        'ชื่อผู้จัดการ',
+        # เพิ่มเติม สำหรับ Popup ข้อมูลสถานี (คลิกรหัสสถานี)
+        'ATG Version':       'ATG Version',
+        'ประเภทการซื้อ':     'ประเภทการซื้อ',
+        'Purchase Type':     'ประเภทการซื้อ',
+        'พนักงานขาย':        'พนักงานขาย',
+        'Sale':              'พนักงานขาย',
+        'วันที่ติดตั้ง':      'วันที่ติดตั้ง',
+        'Install Date':      'วันที่ติดตั้ง',
+        'วันเริ่มสัญญา':      'วันเริ่มสัญญา',
+        'Contract Start':    'วันเริ่มสัญญา',
+        'วันสิ้นสุดสัญญา':    'วันสิ้นสุดสัญญา',
+        'Contract End':      'วันสิ้นสุดสัญญา',
     }
+
+    DATE_ONLY_KEYS = {'วันที่ติดตั้ง', 'วันเริ่มสัญญา', 'วันสิ้นสุดสัญญา'}
 
     data = []
     for row in rows[1:]:
@@ -127,7 +147,10 @@ def read_excel(filepath):
                 continue
             thai_key = COL_MAP[col]
             if isinstance(val, datetime):
-                record[thai_key] = val.strftime("%Y-%m-%d %H:%M")
+                if thai_key in DATE_ONLY_KEYS:
+                    record[thai_key] = val.strftime("%Y-%m-%d")
+                else:
+                    record[thai_key] = val.strftime("%Y-%m-%d %H:%M")
             elif val is None:
                 record[thai_key] = ""
             else:
