@@ -455,12 +455,12 @@
     "errors": [
       {
         "start": "2026-08-25 15:18",
-        "end": null,
-        "duration_min": null
+        "end": "2026-08-25 15:18",
+        "duration_min": 0
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-08-25 15:18"
   },
   "10007251": {
