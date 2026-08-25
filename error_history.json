@@ -1,0 +1,562 @@
+{
+  "10006326": {
+    "site_id": "10006326",
+    "site_name": "BCP เมืองไทยเจริญกิจ",
+    "atgmodel": "TLS4",
+    "province": "บุรีรัมย์",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10012583": {
+    "site_id": "10012583",
+    "site_name": "PTT ล้านพันแก้ว ออยล์ บจก. (สารภี)",
+    "atgmodel": "TLS350R",
+    "province": "เชียงใหม่",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10014211": {
+    "site_id": "10014211",
+    "site_name": "PT อิงฟ้าปิโตรเลียม",
+    "atgmodel": "TLS4",
+    "province": "ศรีสะเกษ",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10010262": {
+    "site_id": "10010262",
+    "site_name": "PTT LAO Xaythany Station (ไซทานี)",
+    "atgmodel": "TLS4",
+    "province": "ไม่ระบุ",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10015207": {
+    "site_id": "10015207",
+    "site_name": "บริษัท เหล็กฟ้าใส จำกัด (OKET+VG2)",
+    "atgmodel": "OKET",
+    "province": "นครราชสีมา",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10007900": {
+    "site_id": "10007900",
+    "site_name": "PTT อภิสิทธิ์รุ่งรัตน์ (2008) บ้านดอนไพล \"ปิดปรับปรุง\"",
+    "atgmodel": "TLS4",
+    "province": "นครราชสีมา",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10002978": {
+    "site_id": "10002978",
+    "site_name": "PTT ส.โชคสันติ (Inventory Only)",
+    "atgmodel": "TLS4 NOBIR",
+    "province": "เพชรบุรี",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10009661": {
+    "site_id": "10009661",
+    "site_name": "PTT วีพีคิว ปิโตรเลียม \"ปิดปรับปรุง\"",
+    "atgmodel": "TLS4",
+    "province": "นครปฐม",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10001773": {
+    "site_id": "10001773",
+    "site_name": "PTT โคราชกว้างไพศาล หัวทะเล (OKET Wireless+PTT ICT)",
+    "atgmodel": "OKET",
+    "province": "นครราชสีมา",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "0000F006": {
+    "site_id": "0000F006",
+    "site_name": "Flowco Learning Center (OKET+ATGGO) \"สถานีทดสอบ\"",
+    "atgmodel": "OKET",
+    "province": "กรุงเทพมหานคร",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10000925": {
+    "site_id": "10000925",
+    "site_name": "PBL 106901 - BCP นราพรรณ (สุราษฎร์ธานี) \"ปิดปรับปรุง\"",
+    "atgmodel": "TLS450P",
+    "province": "สุราษฏ์ธานี",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10004027": {
+    "site_id": "10004027",
+    "site_name": "PTT สุขุมเซอร์วิส (สาขาสวนตาล ถ.มหายศ) \"ปิดปรับปรุง\"",
+    "atgmodel": "TLS4",
+    "province": "น่าน",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10005357": {
+    "site_id": "10005357",
+    "site_name": "PTT พรชัยรุ่งเรืองกิจ จำกัด (สำนักงานใหญ่)",
+    "atgmodel": "TLS4",
+    "province": "ตรัง",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10008769": {
+    "site_id": "10008769",
+    "site_name": "BSRC เต็มสิบ พลังงาน จำกัด",
+    "atgmodel": "TLS350R",
+    "province": "ระยอง",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10003398": {
+    "site_id": "10003398",
+    "site_name": "PTT หจก.หมงฮวดปิโตรเลียม (OKET+PTT ICT)",
+    "atgmodel": "OKET",
+    "province": "นครพนม",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10007187": {
+    "site_id": "10007187",
+    "site_name": "PBL 107082 - BSRC นบพรสรวง ออยล์ (สิงห์แสงทอง) \"รื้อถอนอุปกรณ์คอม\"",
+    "atgmodel": "TLS450P",
+    "province": "พิจิตร",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10002005": {
+    "site_id": "10002005",
+    "site_name": "PTT เด่นห้าปิโตรเลียม (OKET+PTT ICT)",
+    "atgmodel": "OKET",
+    "province": "เชียงราย",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10011845": {
+    "site_id": "10011845",
+    "site_name": "PTT ก้องกิ่มเฮงปิโตรเลียม (สาขา 1) \"คอมพิวเตอร์เสีย\"",
+    "atgmodel": "TLS4",
+    "province": "ตรัง",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10014190": {
+    "site_id": "10014190",
+    "site_name": "PTT เคจี สเตชั่น (บจ) \"คอมพิวเตอร์เสีย\"",
+    "atgmodel": "TLS4",
+    "province": "ราชบุรี",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10014194": {
+    "site_id": "10014194",
+    "site_name": "บริษัท ๙ กิโล ปิโตรเลียม จำกัด (BIR BOX) \"ค้างอะไหล่เสนอราคา\"",
+    "atgmodel": "TLS4",
+    "province": "ชลบุรี",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10001004": {
+    "site_id": "10001004",
+    "site_name": "PBL 117977 - BSRC ดุสิตไทเกอร์ เอนเนอร์ยี (สาขา 1)",
+    "atgmodel": "TLS450P",
+    "province": "กระบี่",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10001650": {
+    "site_id": "10001650",
+    "site_name": "PTT สตาร์ เอ็นเนอร์ยี่ (กิ่งแก้ว)",
+    "atgmodel": "TLS350R",
+    "province": "สมุทรปราการ",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10011085": {
+    "site_id": "10011085",
+    "site_name": "PTT สินทรัพย์ ปิโตรเลียม (1955)",
+    "atgmodel": "TLS4",
+    "province": "นครสวรรค์",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10011039": {
+    "site_id": "10011039",
+    "site_name": "บริษัท พี โอ ออยล์ จำกัด สาขา 9 (จุดที่ 2 ชุมพวง)",
+    "atgmodel": "TLS350R",
+    "province": "นครราชสีมา",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10012533": {
+    "site_id": "10012533",
+    "site_name": "ศูนย์กระจายสินค้าโลตัส (ขอนแก่น)",
+    "atgmodel": "TLS350R",
+    "province": "ขอนแก่น",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10002514": {
+    "site_id": "10002514",
+    "site_name": "PTT พลังไทยเพื่อไทย (เสรีไทย) \"ปิดปรับปรุง\"",
+    "atgmodel": "TLS350R",
+    "province": "กรุงเทพมหานคร",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10014717": {
+    "site_id": "10014717",
+    "site_name": "BSRC สมกมล ปิโตรเลียม จำกัด (Inventory Only) \"รอผรม.เดินสายใต้ดินใหม่\"",
+    "atgmodel": "TLS4",
+    "province": "สระบุรี",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10000963": {
+    "site_id": "10000963",
+    "site_name": "PBL 106002 - BSRC วิจิตรธนภัณฑ์บริการ สาขา 2",
+    "atgmodel": "TLS450P",
+    "province": "นครสวรรค์",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10014388": {
+    "site_id": "10014388",
+    "site_name": "CALTEX-SFL เค.รังสิต (Orbis)",
+    "atgmodel": "TLS4",
+    "province": "ปทุมธานี",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10007251": {
+    "site_id": "10007251",
+    "site_name": "PTT พลังไทยเพื่อไทย (สาขา 1) พหลโยธิน \"ปิดปรับปรุง\"",
+    "atgmodel": "TLS350R",
+    "province": "กรุงเทพมหานคร",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10013564": {
+    "site_id": "10013564",
+    "site_name": "บริษัท พี อาร์ จี พร็อพเพอร์ตี้ส์ จำกัด (Inventory Only) \"อินเตอร์เน็ตเสีย\"",
+    "atgmodel": "TLS4",
+    "province": "ปทุมธานี",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10000189": {
+    "site_id": "10000189",
+    "site_name": "CHEVRON แสงอาทิตย์ภูเก็ตปิโตรเลียม (VGC)",
+    "atgmodel": "TLS450P",
+    "province": "ภูเก็ต",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10009946": {
+    "site_id": "10009946",
+    "site_name": "PTT มานะ-เสริมพล ปิโตรเลียม สาขา6 (โนนดินแดง2)",
+    "atgmodel": "TLS4",
+    "province": "บุรีรัมย์",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10001923": {
+    "site_id": "10001923",
+    "site_name": "PTT ชูติวัฒน์ \"คอมพิวเตอร์เสีย\"",
+    "atgmodel": "TLS4",
+    "province": "พังงา",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  },
+  "10010294": {
+    "site_id": "10010294",
+    "site_name": "FSM Easyfill 3",
+    "atgmodel": "TLS4",
+    "province": "ไม่ระบุ",
+    "errors": [
+      {
+        "start": "2026-08-25 15:18",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-25 15:18"
+  }
+}
