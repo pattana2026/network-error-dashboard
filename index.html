@@ -419,14 +419,14 @@ tbody td.mid{vertical-align:middle;white-space:nowrap;}
       <div class="kpi-card amber"><div class="kpi-label">📍 Crisis Rate</div><div class="kpi-value" id="aCrisisRate">—</div><div class="kpi-sub">% วิกฤติจากทั้งหมด</div></div>
     </div>
 
-    <!-- Row 1: Bar + Donut -->
+    <!-- Row 1: Problem Bar + Donut -->
     <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:14px;margin-bottom:14px">
       <div class="panel">
         <div class="panel-header">
-          <div class="panel-title">📊 Network Error จำแนกตาม ATG Model</div>
+          <div class="panel-title">🔧 ปัญหาที่พบบ่อย (วิเคราะห์จากชื่อ + หมายเหตุ)</div>
         </div>
         <div style="padding:16px;height:220px;position:relative">
-          <canvas id="chartAtgModel"></canvas>
+          <canvas id="chartProblems"></canvas>
         </div>
       </div>
       <div class="panel">
@@ -1320,7 +1320,7 @@ function renderAnalysis(){
   setEl('aResolved',  resolved.length);
   setEl('aCrisisRate',rate + '%');
 
-  renderChartAtgModel(active);
+  renderChartProblems(active);
   renderChartSeverity(active);
   renderChartTrend();
   renderChartProvince(active);
@@ -1345,29 +1345,56 @@ function baseChartOpts(){
   };
 }
 
-function renderChartAtgModel(active){
-  destroyChart('atgModel');
+// ── Problem keyword extraction ──
+const PROBLEM_CATEGORIES = [
+  { label:'คอมพิวเตอร์เสีย',     patterns:[/คอมพิวเตอร์\s*เสีย/i,/รื้อถอน.*คอม/i,/pc.*เสีย/i] },
+  { label:'ATG เสีย/ชำรุด',      patterns:[/atg\s*เสีย/i,/atg\s*ชำรุด/i,/probe\s*เสีย/i,/sensor\s*เสีย/i,/hardware\s*เสีย/i] },
+  { label:'ปิดปรับปรุง',          patterns:[/ปิดปรับปรุง/i,/ปิด\s*ซ่อม/i,/renovation/i] },
+  { label:'อินเทอร์เน็ต/Router',  patterns:[/อินเตอร์เน็ต/i,/internet/i,/router/i,/isp/i,/sim/i,/ไม่มีสัญญาณ/i] },
+  { label:'รอช่าง/อะไหล่',        patterns:[/ค้างอะไหล่/i,/รออะไหล่/i,/เสนอราคา/i,/ส่งช่าง/i,/รอช่าง/i,/spare/i] },
+  { label:'เดินสาย/ติดตั้ง',      patterns:[/เดินสาย/i,/รอผรม/i,/ติดตั้งใหม่/i,/ย้ายเครื่อง/i] },
+  { label:'ไฟฟ้า/UPS',            patterns:[/ไฟฟ้า/i,/ups/i,/ไฟดับ/i,/power/i] },
+  { label:'ATGGO ใช้งานไม่ได้',   patterns:[/atggo/i,/atg\s*go/i] },
+  { label:'BIR BOX',              patterns:[/bir\s*box/i,/bir/i] },
+];
+
+function extractProblem(siteName, remark){
+  const text = `${siteName||''} ${remark||''}`;
+  for(const cat of PROBLEM_CATEGORIES){
+    for(const p of cat.patterns){
+      if(p.test(text)) return cat.label;
+    }
+  }
+  return 'ไม่ระบุ/อื่นๆ';
+}
+
+function renderChartProblems(active){
+  destroyChart('problems');
   const counts = {};
   active.forEach(r => {
-    const m = (r.atgModel||'ไม่ระบุ').replace(/\s+/g,' ').substring(0,14)||'ไม่ระบุ';
-    counts[m] = (counts[m]||0) + 1;
+    const prob = extractProblem(r.siteName, r.note);
+    counts[prob] = (counts[prob]||0) + 1;
   });
-  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,7);
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
   const C = chartColors();
-  const bgColors = [C.red,C.amber,C.blue,C.green,C.purple,C.orange,C.teal];
-  const ctx = document.getElementById('chartAtgModel')?.getContext('2d');
+  const bgList = [C.red,C.amber,C.blue,C.green,C.purple,C.orange,C.teal,C.pink,C.muted];
+  const ctx = document.getElementById('chartProblems')?.getContext('2d');
   if(!ctx) return;
-  _charts.atgModel = new Chart(ctx,{
+  _charts.problems = new Chart(ctx,{
     type:'bar',
     data:{
       labels: sorted.map(([k])=>k),
-      datasets:[{ label:'สถานี', data:sorted.map(([,v])=>v),
-        backgroundColor: bgColors.map(c=>c+'99'), borderColor: bgColors,
-        borderWidth:1.5, borderRadius:4 }]
+      datasets:[{
+        label:'สถานี',
+        data:sorted.map(([,v])=>v),
+        backgroundColor: sorted.map((_,i)=>bgList[i%bgList.length]+'99'),
+        borderColor:     sorted.map((_,i)=>bgList[i%bgList.length]),
+        borderWidth:1.5, borderRadius:4
+      }]
     },
     options:{...baseChartOpts(),
       plugins:{ legend:{display:false},
-        tooltip:{ callbacks:{ label: ctx => ` ${ctx.parsed.y} สถานี` } }
+        tooltip:{ callbacks:{ label: ctx=>`  ${ctx.parsed.y} สถานี` } }
       },
       scales:{
         x:{ ticks:{color:C.text,font:{size:10,family:'IBM Plex Mono'}}, grid:{color:C.grid} },
