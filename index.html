@@ -2385,7 +2385,7 @@ const AMS_DATA  = `${AMS_BASE}/Data/get`;
 const AMS_BODY  = JSON.stringify({"_t":"api_sites","typeload":"@error"});
 
 // Column order from API response
-const AMS_COLS = ['site_id','site_name','last_inventory','last_closeday','atgmodel','id_link','phone','managername','iserror'];
+const AMS_COLS = ['site_id','site_name','typeload','last_inventory','last_closeday','atgmodel','id_link','phone','managername','iserror'];
 
 let _amsToken = ''; // cache token in memory
 
@@ -2451,9 +2451,11 @@ async function loadFromAMS(){
     const parsed = rows.map(r => {
       const obj = {};
       AMS_COLS.forEach((col,i) => { obj[col] = r[i] ?? ''; });
+      const base = (EMBEDDED_DATA?.data || []).find(x => String(x['รหัสสถานี']||x['Station ID']||'') === String(obj.site_id));
       return {
         'รหัสสถานี':    obj.site_id,
         'ชื่อ':         obj.site_name,
+        'จังหวัด':      base?.['จังหวัด'] || base?.['Province'] || '',
         'คงเหลือล่าสุด': obj.last_inventory,
         'ปิดวันล่าสุด':  obj.last_closeday,
         'ATG Model':    obj.atgmodel,
