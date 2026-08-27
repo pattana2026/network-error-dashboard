@@ -13,7 +13,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10012583": {
     "site_id": "10012583",
@@ -45,7 +45,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10010262": {
     "site_id": "10010262",
@@ -77,7 +77,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10007900": {
     "site_id": "10007900",
@@ -93,7 +93,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10002978": {
     "site_id": "10002978",
@@ -125,7 +125,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10001773": {
     "site_id": "10001773",
@@ -157,7 +157,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10000925": {
     "site_id": "10000925",
@@ -173,7 +173,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10004027": {
     "site_id": "10004027",
@@ -189,7 +189,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10005357": {
     "site_id": "10005357",
@@ -253,7 +253,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10002005": {
     "site_id": "10002005",
@@ -285,7 +285,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10014190": {
     "site_id": "10014190",
@@ -301,7 +301,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10014194": {
     "site_id": "10014194",
@@ -317,7 +317,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10001004": {
     "site_id": "10001004",
@@ -333,7 +333,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10001650": {
     "site_id": "10001650",
@@ -349,7 +349,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10011085": {
     "site_id": "10011085",
@@ -365,7 +365,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10011039": {
     "site_id": "10011039",
@@ -375,12 +375,12 @@
     "errors": [
       {
         "start": "2026-08-25 15:18",
-        "end": null,
-        "duration_min": null
+        "end": "2026-08-27 14:59",
+        "duration_min": 2861
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-08-27 12:42"
   },
   "10012533": {
@@ -418,7 +418,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10014717": {
     "site_id": "10014717",
@@ -434,7 +434,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10000963": {
     "site_id": "10000963",
@@ -512,7 +512,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10013564": {
     "site_id": "10013564",
@@ -528,7 +528,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10000189": {
     "site_id": "10000189",
@@ -585,7 +585,7 @@
     ],
     "total": 5,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10001923": {
     "site_id": "10001923",
@@ -622,7 +622,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10013897": {
     "site_id": "10013897",
@@ -653,7 +653,7 @@
     ],
     "total": 4,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10014083": {
     "site_id": "10014083",
@@ -698,12 +698,12 @@
       },
       {
         "start": "2026-08-27 12:42",
-        "end": null,
-        "duration_min": null
+        "end": "2026-08-27 14:59",
+        "duration_min": 137
       }
     ],
     "total": 8,
-    "active": true,
+    "active": false,
     "last_seen": "2026-08-27 12:42"
   },
   "10011246": {
@@ -735,7 +735,7 @@
     ],
     "total": 4,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10009950": {
     "site_id": "10009950",
@@ -762,11 +762,16 @@
         "start": "2026-08-26 16:12",
         "end": "2026-08-27 12:42",
         "duration_min": 1230
+      },
+      {
+        "start": "2026-08-27 14:59",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 4,
-    "active": false,
-    "last_seen": "2026-08-27 11:40"
+    "total": 5,
+    "active": true,
+    "last_seen": "2026-08-27 14:59"
   },
   "10011506": {
     "site_id": "10011506",
@@ -1312,7 +1317,7 @@
     ],
     "total": 3,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10013522": {
     "site_id": "10013522",
@@ -1365,7 +1370,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10001007": {
     "site_id": "10001007",
@@ -1393,11 +1398,16 @@
         "start": "2026-08-26 14:07",
         "end": "2026-08-26 15:38",
         "duration_min": 91
+      },
+      {
+        "start": "2026-08-27 14:59",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 1,
-    "active": false,
-    "last_seen": "2026-08-26 14:26"
+    "total": 2,
+    "active": true,
+    "last_seen": "2026-08-27 14:59"
   },
   "10013979": {
     "site_id": "10013979",
@@ -1508,12 +1518,12 @@
       },
       {
         "start": "2026-08-27 11:37",
-        "end": null,
-        "duration_min": null
+        "end": "2026-08-27 14:59",
+        "duration_min": 202
       }
     ],
     "total": 2,
-    "active": true,
+    "active": false,
     "last_seen": "2026-08-27 12:42"
   },
   "10015245": {
@@ -1524,12 +1534,12 @@
     "errors": [
       {
         "start": "2026-08-27 09:06",
-        "end": null,
-        "duration_min": null
+        "end": "2026-08-27 14:59",
+        "duration_min": 353
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-08-27 12:42"
   },
   "10014994": {
@@ -1588,12 +1598,12 @@
     "errors": [
       {
         "start": "2026-08-27 09:06",
-        "end": null,
-        "duration_min": null
+        "end": "2026-08-27 14:59",
+        "duration_min": 353
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-08-27 12:42"
   },
   "10014419": {
@@ -1636,12 +1646,12 @@
     "errors": [
       {
         "start": "2026-08-27 09:06",
-        "end": null,
-        "duration_min": null
+        "end": "2026-08-27 14:59",
+        "duration_min": 353
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-08-27 12:42"
   },
   "10009445": {
@@ -1652,12 +1662,12 @@
     "errors": [
       {
         "start": "2026-08-27 09:06",
-        "end": null,
-        "duration_min": null
+        "end": "2026-08-27 14:59",
+        "duration_min": 353
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-08-27 12:42"
   },
   "10002324": {
@@ -1706,7 +1716,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10010253": {
     "site_id": "10010253",
@@ -1722,7 +1732,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10010907": {
     "site_id": "10010907",
@@ -1770,7 +1780,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
   },
   "10009918": {
     "site_id": "10009918",
@@ -1786,6 +1796,38 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-08-27 12:42"
+    "last_seen": "2026-08-27 14:59"
+  },
+  "10012471": {
+    "site_id": "10012471",
+    "site_name": "CHEVRON เต็กย้ง ชัยรุ่งเรือง",
+    "atgmodel": "TLS450P",
+    "province": "ชลบุรี",
+    "errors": [
+      {
+        "start": "2026-08-27 14:59",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-27 14:59"
+  },
+  "10002582": {
+    "site_id": "10002582",
+    "site_name": "PTT เพ็ชรทวีโชค",
+    "atgmodel": "TLS4",
+    "province": "กรุงเทพมหานคร",
+    "errors": [
+      {
+        "start": "2026-08-27 14:59",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-08-27 14:59"
   }
 }
