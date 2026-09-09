@@ -13,7 +13,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10012583": {
     "site_id": "10012583",
@@ -77,7 +77,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10007900": {
     "site_id": "10007900",
@@ -125,7 +125,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10001773": {
     "site_id": "10001773",
@@ -157,7 +157,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10000925": {
     "site_id": "10000925",
@@ -173,7 +173,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10004027": {
     "site_id": "10004027",
@@ -189,7 +189,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10005357": {
     "site_id": "10005357",
@@ -217,15 +217,20 @@
         "start": "2026-08-25 15:18",
         "end": "2026-08-26 11:28",
         "duration_min": 1210
+      },
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 1,
-    "active": false,
-    "last_seen": "2026-08-26 09:23"
+    "total": 2,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
   },
   "10003398": {
     "site_id": "10003398",
-    "site_name": "PTT หจก.หมงฮวดปิโตรเลียม (OKET+PTT ICT)",
+    "site_name": "PTT หจก.หมงฮวดปิโตรเลียม (OKET Wireless+PTT ICT)",
     "atgmodel": "OKET",
     "province": "นครพนม",
     "errors": [
@@ -242,7 +247,7 @@
     ],
     "total": 2,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10007187": {
     "site_id": "10007187",
@@ -258,7 +263,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10002005": {
     "site_id": "10002005",
@@ -290,7 +295,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10014190": {
     "site_id": "10014190",
@@ -306,7 +311,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10014194": {
     "site_id": "10014194",
@@ -322,7 +327,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10001004": {
     "site_id": "10001004",
@@ -338,7 +343,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10001650": {
     "site_id": "10001650",
@@ -354,7 +359,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10011085": {
     "site_id": "10011085",
@@ -375,7 +380,7 @@
     ],
     "total": 2,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10011039": {
     "site_id": "10011039",
@@ -438,7 +443,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10014717": {
     "site_id": "10014717",
@@ -454,7 +459,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10000963": {
     "site_id": "10000963",
@@ -522,11 +527,16 @@
         "start": "2026-09-04 11:29",
         "end": "2026-09-07 11:25",
         "duration_min": 4316
+      },
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 9,
-    "active": false,
-    "last_seen": "2026-09-07 10:04"
+    "total": 10,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
   },
   "10007251": {
     "site_id": "10007251",
@@ -542,7 +552,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10013564": {
     "site_id": "10013564",
@@ -558,7 +568,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10000189": {
     "site_id": "10000189",
@@ -615,7 +625,7 @@
     ],
     "total": 5,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10001923": {
     "site_id": "10001923",
@@ -652,7 +662,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10013897": {
     "site_id": "10013897",
@@ -687,12 +697,12 @@
       },
       {
         "start": "2026-09-07 10:04",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-09 09:01",
+        "duration_min": 2817
       }
     ],
     "total": 6,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-07 11:33"
   },
   "10014083": {
@@ -753,12 +763,12 @@
       },
       {
         "start": "2026-09-07 09:44",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-09 09:01",
+        "duration_min": 2837
       }
     ],
     "total": 11,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-07 11:33"
   },
   "10011246": {
@@ -786,11 +796,16 @@
         "start": "2026-08-27 11:09",
         "end": "2026-08-28 09:35",
         "duration_min": 1346
+      },
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 4,
-    "active": false,
-    "last_seen": "2026-08-27 16:59"
+    "total": 5,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
   },
   "10009950": {
     "site_id": "10009950",
@@ -841,7 +856,7 @@
     ],
     "total": 8,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10011506": {
     "site_id": "10011506",
@@ -879,11 +894,16 @@
         "start": "2026-08-27 15:32",
         "end": "2026-08-28 09:35",
         "duration_min": 1083
+      },
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 3,
-    "active": false,
-    "last_seen": "2026-08-27 16:59"
+    "total": 4,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
   },
   "10008814": {
     "site_id": "10008814",
@@ -939,12 +959,12 @@
       },
       {
         "start": "2026-09-07 09:44",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-09 09:01",
+        "duration_min": 2837
       }
     ],
     "total": 5,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-07 11:33"
   },
   "10011413": {
@@ -983,11 +1003,16 @@
         "start": "2026-08-27 09:06",
         "end": "2026-08-27 11:09",
         "duration_min": 123
+      },
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 2,
-    "active": false,
-    "last_seen": "2026-08-27 09:31"
+    "total": 3,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
   },
   "10009805": {
     "site_id": "10009805",
@@ -1068,11 +1093,16 @@
         "start": "2026-08-26 08:56",
         "end": "2026-08-27 11:09",
         "duration_min": 1573
+      },
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 1,
-    "active": false,
-    "last_seen": "2026-08-27 09:31"
+    "total": 2,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
   },
   "10012089": {
     "site_id": "10012089",
@@ -1126,11 +1156,16 @@
         "start": "2026-08-26 17:02",
         "end": "2026-08-27 09:06",
         "duration_min": 964
+      },
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 2,
-    "active": false,
-    "last_seen": "2026-08-26 17:12"
+    "total": 3,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
   },
   "10000050": {
     "site_id": "10000050",
@@ -1167,7 +1202,7 @@
     ],
     "total": 2,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10005689": {
     "site_id": "10005689",
@@ -1401,7 +1436,7 @@
     ],
     "total": 2,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10010233": {
     "site_id": "10010233",
@@ -1437,7 +1472,7 @@
     ],
     "total": 5,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10013522": {
     "site_id": "10013522",
@@ -1760,12 +1795,12 @@
       },
       {
         "start": "2026-09-07 09:44",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-09 09:01",
+        "duration_min": 2837
       }
     ],
     "total": 2,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-07 11:33"
   },
   "10002540": {
@@ -1813,12 +1848,12 @@
       },
       {
         "start": "2026-09-07 09:44",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-09 09:01",
+        "duration_min": 2837
       }
     ],
     "total": 2,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-07 11:33"
   },
   "10010499": {
@@ -2208,7 +2243,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10001666": {
     "site_id": "10001666",
@@ -2234,12 +2269,12 @@
     "errors": [
       {
         "start": "2026-09-04 11:29",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-09 09:01",
+        "duration_min": 7052
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-07 11:33"
   },
   "10014134": {
@@ -2288,7 +2323,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "0000F001": {
     "site_id": "0000F001",
@@ -2369,11 +2404,16 @@
         "start": "2026-09-04 11:29",
         "end": "2026-09-04 15:32",
         "duration_min": 243
+      },
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 1,
-    "active": false,
-    "last_seen": "2026-09-04 11:29"
+    "total": 2,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
   },
   "10011164": {
     "site_id": "10011164",
@@ -2385,11 +2425,16 @@
         "start": "2026-09-04 11:29",
         "end": "2026-09-04 15:32",
         "duration_min": 243
+      },
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 1,
-    "active": false,
-    "last_seen": "2026-09-04 11:29"
+    "total": 2,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
   },
   "10007188": {
     "site_id": "10007188",
@@ -2511,12 +2556,12 @@
     "errors": [
       {
         "start": "2026-09-04 15:32",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-09 09:01",
+        "duration_min": 6809
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-07 11:33"
   },
   "10009363": {
@@ -2575,12 +2620,12 @@
     "errors": [
       {
         "start": "2026-09-04 16:33",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-09 09:01",
+        "duration_min": 6748
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-07 11:33"
   },
   "10001846": {
@@ -2607,12 +2652,12 @@
     "errors": [
       {
         "start": "2026-09-07 09:44",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-09 09:01",
+        "duration_min": 2837
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-07 11:33"
   },
   "10014434": {
@@ -2639,12 +2684,12 @@
     "errors": [
       {
         "start": "2026-09-07 09:44",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-09 09:01",
+        "duration_min": 2837
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-07 11:33"
   },
   "10007290": {
@@ -2693,7 +2738,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10006978": {
     "site_id": "10006978",
@@ -2703,12 +2748,12 @@
     "errors": [
       {
         "start": "2026-09-07 09:44",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-09 09:01",
+        "duration_min": 2837
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-07 11:33"
   },
   "10014358": {
@@ -2725,7 +2770,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10008713": {
     "site_id": "10008713",
@@ -2735,12 +2780,12 @@
     "errors": [
       {
         "start": "2026-09-07 09:44",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-09 09:01",
+        "duration_min": 2837
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-07 11:33"
   },
   "10000945": {
@@ -2757,7 +2802,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10013452": {
     "site_id": "10013452",
@@ -2799,12 +2844,12 @@
     "errors": [
       {
         "start": "2026-09-07 09:44",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-09 09:01",
+        "duration_min": 2837
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-07 11:33"
   },
   "10002364": {
@@ -2821,7 +2866,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
   },
   "10009448": {
     "site_id": "10009448",
@@ -2831,12 +2876,12 @@
     "errors": [
       {
         "start": "2026-09-07 09:44",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-09 09:01",
+        "duration_min": 2837
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-07 11:33"
   },
   "10013310": {
@@ -2863,12 +2908,12 @@
     "errors": [
       {
         "start": "2026-09-07 11:25",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-09 09:01",
+        "duration_min": 2736
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-07 11:33"
   },
   "10009878": {
@@ -2885,6 +2930,374 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-07 11:33"
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10011059": {
+    "site_id": "10011059",
+    "site_name": "PTT ทรีเค ออยล์ (สาขา 1)",
+    "atgmodel": "TLS4",
+    "province": "เพชรบูรณ์",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10014117": {
+    "site_id": "10014117",
+    "site_name": "PTT อาร์ โอ อาร์ ปิโตรเลียม",
+    "atgmodel": "TLS4",
+    "province": "นครปฐม",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10007881": {
+    "site_id": "10007881",
+    "site_name": "PTT เจเค (2011) สำนักงานใหญ่",
+    "atgmodel": "TLS350R",
+    "province": "เลย",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10004395": {
+    "site_id": "10004395",
+    "site_name": "PTT วิทยชัยปิโตรเลียม สาขา 2",
+    "atgmodel": "TLS4",
+    "province": "นครราชสีมา",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10010200": {
+    "site_id": "10010200",
+    "site_name": "สถานีบริการน้ำมันเชื้อไฟลาว สาขา Homsouk Oudomxay",
+    "atgmodel": "TLS4",
+    "province": "",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10008648": {
+    "site_id": "10008648",
+    "site_name": "PTT ปิโตรเลียม (ถนน 347)",
+    "atgmodel": "TLS4",
+    "province": "ปทุมธานี",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10000104": {
+    "site_id": "10000104",
+    "site_name": "CHEVRON เพชรสาทร (VGC+BIR BOX)",
+    "atgmodel": "TLS350R",
+    "province": "กรุงเทพมหานคร",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10010493": {
+    "site_id": "10010493",
+    "site_name": "PTT หจก.ตราดท่าพริก ปิโตรเลียม",
+    "atgmodel": "TLS4",
+    "province": "ตราด",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10002670": {
+    "site_id": "10002670",
+    "site_name": "PTT มาลีรัตน์ออยล์ จำกัด",
+    "atgmodel": "TLS350R",
+    "province": "ปทุมธานี",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10013578": {
+    "site_id": "10013578",
+    "site_name": "CALTEX ดาวไฮเท็กซ์ (2022) จำกัด",
+    "atgmodel": "TLS4",
+    "province": "ชลบุรี",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10004201": {
+    "site_id": "10004201",
+    "site_name": "PTT เจริญไชยบริการ (สำนักงานใหญ่)",
+    "atgmodel": "TLS4",
+    "province": "สุรินทร์",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10003223": {
+    "site_id": "10003223",
+    "site_name": "PTT สหกรณ์ชาวไร่อ้อยบ้านโป่ง (B) (กรับใหญ่)",
+    "atgmodel": "TLS4",
+    "province": "ราชบุรี",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10005508": {
+    "site_id": "10005508",
+    "site_name": "PTT ไตรสุวรรณ (ต.คูหาสวรรค์)",
+    "atgmodel": "TLS350R",
+    "province": "พัทลุง",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10009050": {
+    "site_id": "10009050",
+    "site_name": "CALTEX สตาร์ แหลมฉบัง 2014 (OKET+VGC)",
+    "atgmodel": "OKET",
+    "province": "ชลบุรี",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10007993": {
+    "site_id": "10007993",
+    "site_name": "PTT มือทอง พร็อพเพอร์ตี้",
+    "atgmodel": "TLS350R",
+    "province": "เพชรบุรี",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10013246": {
+    "site_id": "10013246",
+    "site_name": "PTT เอ เค. ปิโตรเลียม เซอร์วิส จำกัด",
+    "atgmodel": "TLS4",
+    "province": "ระยอง",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10012509": {
+    "site_id": "10012509",
+    "site_name": "CHEVRON ปาณิศฬาฌนก์ (สาขา 00002)",
+    "atgmodel": "TLS450P",
+    "province": "กรุงเทพมหานคร",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10009348": {
+    "site_id": "10009348",
+    "site_name": "สถานีบริการน้ำมันเชื้อไฟลาว สาขา สำนักงานใหญ่",
+    "atgmodel": "TLS4",
+    "province": "",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10015214": {
+    "site_id": "10015214",
+    "site_name": "PTT เจอาร์ พลัส พาวเวอร์",
+    "atgmodel": "TLS4",
+    "province": "ราชบุรี",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10011561": {
+    "site_id": "10011561",
+    "site_name": "PTT สุวิชาดาบริการ",
+    "atgmodel": "TLS4",
+    "province": "ลพบุรี",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10001953": {
+    "site_id": "10001953",
+    "site_name": "PTT ไชโยปิโตรเลียม (อ่างทอง)",
+    "atgmodel": "TLS4",
+    "province": "อ่างทอง",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10009388": {
+    "site_id": "10009388",
+    "site_name": "PTT เอส.พี.ดับบลิว.ออยล์",
+    "atgmodel": "TLS4",
+    "province": "ยโสธร",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10004553": {
+    "site_id": "10004553",
+    "site_name": "PTT เตียวเจริญ จำกัด",
+    "atgmodel": "TLS4",
+    "province": "ชลบุรี",
+    "errors": [
+      {
+        "start": "2026-09-09 09:01",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-09 09:01"
   }
 }
