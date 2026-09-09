@@ -1555,6 +1555,24 @@ header .header-right{display:flex!important;flex-direction:column!important;alig
 
 </style>
 
+
+<style id="ams-semantic-kpi-colors-v1">
+/* Semantic KPI number colors — shared visual language across all 3 modules */
+#dashboardPage .dashboard-hero .kpi-card.red .kpi-value,
+#alarmPage .module-hero-kpis .kpi-card.red .kpi-value,
+#contractPage .module-hero-kpis .kpi-card.red .kpi-value{color:#ff7a45!important;text-shadow:0 2px 5px rgba(3,12,35,.52),0 0 18px rgba(255,122,69,.28)!important}
+#dashboardPage .dashboard-hero .kpi-card.orange .kpi-value,
+#dashboardPage .dashboard-hero .kpi-card.amber .kpi-value,
+#alarmPage .module-hero-kpis .kpi-card.amber .kpi-value,
+#contractPage .module-hero-kpis .kpi-card.amber .kpi-value{color:#ffb13b!important;text-shadow:0 2px 5px rgba(3,12,35,.52),0 0 18px rgba(255,177,59,.25)!important}
+#dashboardPage .dashboard-hero .kpi-card.crisis .kpi-value{color:#ff665f!important;text-shadow:0 2px 5px rgba(3,12,35,.52),0 0 18px rgba(255,102,95,.30)!important}
+#dashboardPage .dashboard-hero .kpi-card.green .kpi-value,
+#alarmPage .module-hero-kpis .kpi-card.green .kpi-value,
+#contractPage .module-hero-kpis .kpi-card.green .kpi-value{color:#52e3a4!important;text-shadow:0 2px 5px rgba(3,12,35,.52),0 0 18px rgba(82,227,164,.24)!important}
+#dashboardPage .dashboard-hero .kpi-card.blue .kpi-value,
+#alarmPage .module-hero-kpis .kpi-card.blue .kpi-value,
+#contractPage .module-hero-kpis .kpi-card.blue .kpi-value{color:#68c8ff!important;text-shadow:0 2px 5px rgba(3,12,35,.52),0 0 18px rgba(104,200,255,.24)!important}
+</style>
 </head>
 <body>
 <header>
@@ -3048,14 +3066,14 @@ function alarmEscape(v){return escapeHtml(String(v??''));}
 async function refreshAlarmDashboard(silent=false){
   const badge=document.getElementById('alarmLiveBadge');if(badge)badge.textContent='● กำลังโหลด AMS...';
   try{
-    const ctl=new AbortController();const timer=setTimeout(()=>ctl.abort(),90000);
+    const ctl=new AbortController();const timer=setTimeout(()=>ctl.abort('Alarm request timeout after 180 seconds'),180000);
     const r=await fetch(`${AMS_WRITE_PROXY}/api/alarms`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({include_remark:true}),signal:ctl.signal});clearTimeout(timer);
     const j=await r.json();if(!r.ok||!j.success)throw new Error(j.message||`HTTP ${r.status}`);
     ALARM_DATA=Array.isArray(j.data)?j.data:[];
     if(badge)badge.textContent='● LIVE AMS';
-    alarmSetText('alarmUpdatedAt',`อัปเดต ${j.updated_at||new Date().toLocaleString('th-TH')} · Source: AMS Local Client`);
+    const alarmStamp=j.updated_at||new Date().toLocaleString('th-TH'); alarmSetText('alarmUpdatedAt',`อัปเดต ${alarmStamp} · Source: AMS Local Client`); alarmSetText('alarmUpdatedAtHero',`• LIVE ${alarmStamp}`);
     populateAlarmTypeFilter();renderAlarmKPIs();renderAlarmTable();
-  }catch(e){if(badge)badge.textContent='● Local Client ไม่พร้อม';if(!silent)showInfoToast('⚠️ โหลด Alarm ไม่สำเร็จ',String(e.message||e));}
+  }catch(e){const aborted=e?.name==='AbortError'||String(e?.message||e).toLowerCase().includes('abort');if(badge)badge.textContent=aborted?'● Alarm โหลดเกินเวลา':'● Local Client ไม่พร้อม';if(!silent)showInfoToast('⚠️ โหลด Alarm ไม่สำเร็จ',aborted?'AMS Alarm ใช้เวลาเกิน 180 วินาที กรุณากด Refresh Alarm อีกครั้ง':String(e.message||e));}
 }
 function populateAlarmTypeFilter(){const sel=document.getElementById('alarmTypeFilter');if(!sel)return;const cur=sel.value;sel.innerHTML='<option value="all">Alarm: ทั้งหมด</option>'+ALARM_ORDER.map(x=>`<option value="${x.aa}/${x.nn}">${x.title.replace(/^\d+(?:\.\d+)?\./,'')} (${x.aa}/${x.nn})</option>`).join('');if([...sel.options].some(o=>o.value===cur))sel.value=cur;}
 function renderAlarmKPIs(){const d=ALARM_DATA;alarmSetText('alarmKpiTotal',d.length);alarmSetText('alarmKpiNotified',d.filter(x=>x.remark_status==='notified').length);alarmSetText('alarmKpiUnnotified',d.filter(x=>x.remark_status==='unnotified').length);alarmSetText('alarmKpiAuto',d.filter(x=>x.remark_status==='auto').length);alarmSetText('alarmKpiOver24',d.filter(x=>Number(x.age_hours||0)>=24).length);alarmSetText('alarmKpiSites',new Set(d.map(x=>x.sta_id).filter(Boolean)).size);}
@@ -4172,6 +4190,7 @@ async function saveNoteOverride(siteId, note){
       `Station ID: ${siteId}\nRemark: ${j.verified_note ?? note}\nผู้บันทึก: ${j.saved_by || 'ไม่ทราบ'}${j.saved_by_uid ? ` (UID ${j.saved_by_uid})` : ''}\nเวลา: ${j.saved_at || ''}\n\nตรวจสอบ Read-back จาก AMS แล้ว`);
     // Refresh the full live dataset so every table/metric reflects AMS immediately.
     await refreshFromLocalClient({silent:true});
+    const ap=document.getElementById('alarmPage'); if((ap&&ap.style.display!=='none')||ALARM_DATA.length){ await refreshAlarmDashboard(true); }
   }catch(e){
     overrides[siteId].synced = false;
     overrides[siteId].sync_status = String(e.message || e);
