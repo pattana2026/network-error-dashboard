@@ -4242,7 +4242,7 @@ function applyNoteOverrides(){
 // ══ CONTRACT MODULE ══
 const SK_CONTRACT_DOCS = 'ned_contract_docs';
 const SK_CONTRACT_TRACK = 'ned_contract_tracking_v1'; // {site_id: {so:{name,data,size}, transfer:{name,data,size}}}
-let contractFilter = 'soon90'; // default filter
+let contractFilter = 'all'; // default: show all AUTO stations
 let contractData = []; // processed contract rows
 
 function normalizePurchaseType(v){
@@ -4283,13 +4283,30 @@ function sortContractRows(rows){
   });
 }
 
+function applyContractStatusFilter(rows){
+  let out=Array.isArray(rows)?rows:[];
+  if(contractFilter === 'expired') out = out.filter(r => r.status === 'expired');
+  else if(contractFilter === 'soon30') out = out.filter(r => ['expired','soon30'].includes(r.status));
+  else if(contractFilter === 'soon90') out = out.filter(r => ['expired','soon30','soon90'].includes(r.status));
+  else if(contractFilter === 'followup'){
+    const tr=lsLoad(SK_CONTRACT_TRACK,{});
+    out=out.filter(r=>['prepared','notified','waiting'].includes(tr[r.siteId]?.status));
+  }
+  return out;
+}
+
 function updatePurchaseTypeCounts(rows){
   const el=document.getElementById('contractPurchaseFilter');
   if(!el)return;
-  const buy=rows.filter(r=>normalizePurchaseType(r.purchaseTypeRaw||r.purchaseType)==='ซื้อ').length;
-  const rent=rows.filter(r=>normalizePurchaseType(r.purchaseTypeRaw||r.purchaseType)==='เช่า').length;
-  const all=rows.length;
+
+  // Count from the SAME Contract Status scope currently displayed.
+  // This keeps dropdown totals consistent with the table.
+  const scopedRows=applyContractStatusFilter(rows);
+  const buy=scopedRows.filter(r=>normalizePurchaseType(r.purchaseTypeRaw||r.purchaseType)==='ซื้อ').length;
+  const rent=scopedRows.filter(r=>normalizePurchaseType(r.purchaseTypeRaw||r.purchaseType)==='เช่า').length;
+  const all=scopedRows.length;
   const cur=el.value;
+
   el.innerHTML=`<option value="all">Purchase Type: ทั้งหมด (${all})</option>
     <option value="ซื้อ">ซื้อ (${buy})</option>
     <option value="เช่า">เช่า (${rent})</option>`;
@@ -4316,6 +4333,7 @@ function filterContract(f){
   contractFilter = f;
   const titles = {expired:'🔴 หมดอายุแล้ว', soon30:'🟡 ใกล้หมด 30 วัน', soon90:'🔵 ใกล้หมด 90 วัน', followup:'🧭 รายการที่ต้องติดตาม', all:'📋 Type AUTO ทั้งหมด'};
   setEl('contractPanelTitle', titles[f] || 'รายการสัญญา');
+  updatePurchaseTypeCounts(contractData);
   renderContractTable();
 }
 
@@ -4324,11 +4342,8 @@ function renderContractTable(){
   const purchaseFilter = (document.getElementById('contractPurchaseFilter')?.value || 'all').trim();
   let rows = contractData;
 
-  // Filter by status
-  if(contractFilter === 'expired')  rows = rows.filter(r => r.status === 'expired');
-  else if(contractFilter === 'soon30') rows = rows.filter(r => ['expired','soon30'].includes(r.status));
-  else if(contractFilter === 'soon90') rows = rows.filter(r => ['expired','soon30','soon90'].includes(r.status));
-  else if(contractFilter === 'followup'){ const tr=lsLoad(SK_CONTRACT_TRACK,{}); rows=rows.filter(r=>['prepared','notified','waiting'].includes(tr[r.siteId]?.status)); }
+  // Filter by the same Contract Status scope used for Purchase Type counts.
+  rows = applyContractStatusFilter(rows);
 
   // Purchase Type filter — รองรับค่าจาก API เช่น ซื้อ, ซื้อขาด, เช่า, เช่าบริการ
   if(purchaseFilter !== 'all'){
@@ -4812,15 +4827,51 @@ function saveTokenAndLoad(){
 }
 
 
+function mergeLiveNetworkWithSnapshot(liveRows){
+  // SHARED NETWORK DISPLAY:
+  // Use the GitHub embedded Network snapshot as the common station/error universe
+  // for every Dashboard machine. A user's AMS account may expose only a subset,
+  // so Local Client data may enrich matching rows but must never shrink the shared list.
+  const snapshotRows=(EMBEDDED_DATA&&Array.isArray(EMBEDDED_DATA.data))
+    ? EMBEDDED_DATA.data
+    : [];
+  const live=Array.isArray(liveRows)?liveRows:[];
+
+  // If no shared snapshot exists, fall back to the Local Client data.
+  if(!snapshotRows.length) return live;
+
+  const getId=r=>String(
+    r?.['รหัสสถานี'] ?? r?.['Station ID'] ?? r?.site_id ?? r?.sta_id ?? ''
+  ).trim();
+
+  const liveMap=new Map(live.map(r=>[getId(r),r]).filter(([id])=>id));
+
+  return snapshotRows.map(base=>{
+    const id=getId(base);
+    const liveRow=liveMap.get(id);
+    return liveRow ? {...base,...liveRow} : base;
+  });
+}
+
 function mergeLiveAutoWithSnapshot(liveRows){
-  const oldRows=(AUTO_MASTER_DATA&&AUTO_MASTER_DATA.length)
-    ? AUTO_MASTER_DATA
-    : ((EMBEDDED_DATA&&EMBEDDED_DATA.all_auto_data)||[]);
-  const oldMap=new Map(oldRows.map(r=>[String(r['รหัสสถานี']||r['Station ID']||''),r]));
-  return (liveRows||[]).map(r=>{
-    const id=String(r['รหัสสถานี']||r['Station ID']||'');
-    const old=oldMap.get(id)||{};
-    // Keep descriptive master fields from GitHub snapshot when live AUTO endpoint does not provide them.
+  // MASTER-FIRST MERGE:
+  // GitHub embedded AUTO snapshot is the common station universe for every Dashboard user.
+  // A user's AMS account may see only a subset (e.g. cen34), so liveRows must enrich
+  // matching Master stations only — it must never shrink the Master list.
+  const masterRows=(EMBEDDED_DATA&&Array.isArray(EMBEDDED_DATA.all_auto_data))
+    ? EMBEDDED_DATA.all_auto_data
+    : ((AUTO_MASTER_DATA&&AUTO_MASTER_DATA.length)?AUTO_MASTER_DATA:[]);
+  const liveMap=new Map(
+    (Array.isArray(liveRows)?liveRows:[])
+      .map(r=>[String(r?.['รหัสสถานี']||r?.['Station ID']||''),r])
+      .filter(([id])=>id)
+  );
+
+  return masterRows.map(old=>{
+    const id=String(old?.['รหัสสถานี']||old?.['Station ID']||'');
+    const r=liveMap.get(id)||{};
+    // Live fields override only stations visible to this AMS user.
+    // Descriptive Master fields remain available when the live endpoint omits them.
     return {...old,...r,
       'จังหวัด':r['จังหวัด']||old['จังหวัด']||'',
       'ชื่อผู้จัดการ':r['ชื่อผู้จัดการ']||old['ชื่อผู้จัดการ']||'',
@@ -4878,7 +4929,7 @@ async function refreshFromLocalClient(options={}){
     const j=await res.json().catch(()=>({success:false,message:`HTTP ${res.status}`}));
     if(!res.ok||!j.success)throw new Error(j.message||`HTTP ${res.status}`);
 
-    allData=Array.isArray(j.data)?j.data:[];
+    allData=mergeLiveNetworkWithSnapshot(j.data||[]);
     AUTO_MASTER_DATA=mergeLiveAutoWithSnapshot(j.all_auto_data||[]);
     if(j.remark_audit && typeof j.remark_audit==='object'){
       LIVE_REMARK_AUDIT=j.remark_audit;
@@ -4909,7 +4960,7 @@ async function refreshFromLocalClient(options={}){
     }
 
     if(!silent)showInfoToast('✅ AMS Live อัปเดตแล้ว',
-      `Network Error: ${allData.length} สถานี\nเวลา: ${j.updated_at||'ล่าสุด'}\n\nข้อมูลถูกอ่านจาก AMS โดยตรงผ่าน Client เครื่องนี้`);
+      `Network Error: ${allData.length} สถานี\nเวลา: ${j.updated_at||'ล่าสุด'}\n\nหน้าจอ Network ใช้ Shared GitHub Snapshot เป็นฐานร่วม และ Local Client อัปเดตเฉพาะสถานีที่บัญชีนี้มองเห็น`);
     return true;
   }catch(e){
     if(!silent){
