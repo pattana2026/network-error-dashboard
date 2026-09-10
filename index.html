@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- V19 Unified Remark Audit + Author Report -->
+<!-- ACCESS V1: patt=ALL, others=Network+Contract | Job Tracking V2 restored -->
+<!-- NETWORK KPI STRICT SHARED + JOB/MONTHLY RESTORE 2026-09-10 -->
+<!-- ALARM ACTION BINDINGS V3: delegated clicks + visible errors -->
+<!-- FAST ALARM V4: instant cache + background sync + 15s auto refresh -->
 <title>AMS Service Intelligence Center</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -1841,7 +1845,8 @@ header .header-right{display:flex!important;flex-direction:column!important;alig
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <span id="alarmLiveBadge" class="dashboard-live-badge"><span class="dashboard-live-dot"></span> รอโหลดข้อมูล</span>
-        <button class="module-refresh-btn" onclick="refreshAlarmDashboard(false)">↻ Refresh Alarm</button>
+        <button class="module-refresh-btn" id="monthlyAlarmBtn" type="button">📊 Monthly Alarm Report</button>
+        <button class="module-refresh-btn" onclick="refreshAlarmDashboard(false)">↻ Refresh Alarm View</button>
       </div>
     </div>
     <div class="alarm-kpi-grid module-hero-kpis">
@@ -1852,12 +1857,18 @@ header .header-right{display:flex!important;flex-direction:column!important;alig
       <div class="kpi-card amber"><div class="kpi-label">⏱ &gt;24 ชม.</div><div class="kpi-value" id="alarmKpiOver24">0</div><div class="kpi-sub">Alarm ค้างนาน</div></div>
       <div class="kpi-card blue"><div class="kpi-label">📍 สถานี</div><div class="kpi-value" id="alarmKpiSites">0</div><div class="kpi-sub">สถานีที่มี Alarm</div></div>
     </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+      <div class="dashboard-live-badge">🧰 Open Jobs <b id="jobKpiOpen">0</b></div>
+      <div class="dashboard-live-badge">👨‍🔧 Waiting Technician <b id="jobKpiWaiting">0</b></div>
+      <div class="dashboard-live-badge">⏳ Waiting Alarm Clear <b id="jobKpiClearWait">0</b></div>
+      <div class="dashboard-live-badge">✅ Closed Jobs <b id="jobKpiClosed">0</b></div>
+    </div>
   </section>
 
   <div class="panel">
     <div class="panel-header">
       <div>
-        <div class="panel-title">รายการ Alarm ตามลำดับ AMS</div>
+        <div class="panel-title">รายการ Alarm ตามลำดับ AMS <span style="font-size:10px;color:#68c8ff;margin-left:8px">JOB TRACKING V5 · SERVER CACHE</span></div>
         <div id="alarmUpdatedAt" style="font-size:10px;color:var(--text-muted);margin-top:3px">—</div>
       </div>
       <div class="alarm-toolbar">
@@ -1870,9 +1881,9 @@ header .header-right{display:flex!important;flex-direction:column!important;alig
     <div class="table-wrap">
       <table class="alarm-table">
         <thead><tr>
-          <th onclick="setAlarmSort('order')">ลำดับ AMS ↕</th><th onclick="setAlarmSort('site_id')">Site ID ↕</th><th onclick="setAlarmSort('sta_name')">ชื่อสถานี ↕</th><th>Tank / Sensor</th><th onclick="setAlarmSort('name')">Alarm ↕</th><th onclick="setAlarmSort('currentdate')">Alarm Time ↕</th><th onclick="setAlarmSort('age_hours')">ค้างมา ↕</th><th onclick="setAlarmSort('remark_status')">สถานะ Remark ↕</th><th>Remark</th><th>บันทึกโดย</th><th>Remark Date</th>
+          <th onclick="setAlarmSort('order')">ลำดับ AMS ↕</th><th onclick="setAlarmSort('site_id')">Site ID ↕</th><th onclick="setAlarmSort('sta_name')">ชื่อสถานี ↕</th><th>Tank / Sensor</th><th onclick="setAlarmSort('name')">Alarm ↕</th><th onclick="setAlarmSort('currentdate')">Alarm Time ↕</th><th onclick="setAlarmSort('age_hours')">ค้างมา ↕</th><th onclick="setAlarmSort('remark_status')">สถานะ Remark ↕</th><th>Remark</th><th>บันทึกโดย</th><th>Remark Date</th><th>Job Tracking</th>
         </tr></thead>
-        <tbody id="alarmBody"><tr><td colspan="11" class="alarm-empty">กด Refresh Alarm เพื่อโหลดข้อมูลจาก AMS</td></tr></tbody>
+        <tbody id="alarmBody"><tr><td colspan="12" class="alarm-empty">กำลังอ่าน Alarm จาก Server Cache…</td></tr></tbody>
       </table>
     </div>
     <div class="table-footer"><span id="alarmRowCount">—</span><span id="alarmRemarkCoverage">—</span></div>
@@ -3012,8 +3023,71 @@ function exportCSV(){
   a.download=`network_error_${new Date().toISOString().slice(0,10)}.csv`;a.click();
 }
 
+// ══ USER MODULE ACCESS CONTROL ══
+// patt = access all modules. Other AMS users = Network + Contract only.
+const PATT_MANAGER_USER='patt';
+let MODULE_ACCESS={checked:false,isPatt:false,username:'',rawUser:null};
+
+function normalizeCurrentUsername(v){
+  if(v == null) return '';
+  if(typeof v === 'string') return v.trim();
+  if(typeof v === 'object'){
+    return String(v.username ?? v.user ?? v.login ?? v.name ?? v.display_name ?? '').trim();
+  }
+  return String(v).trim();
+}
+
+function applyModuleNavVisibility(){
+  const isPatt=MODULE_ACCESS.isPatt===true;
+  const show=(id,on)=>{const el=document.getElementById(id);if(el)el.style.display=on?'flex':'none';};
+
+  // Everyone
+  show('navDashboard',true);
+  show('navContract',true);
+
+  // patt only
+  show('navAlarm',isPatt);
+  show('navAnalysis',isPatt);
+  show('navErrHistory',isPatt && !!ERROR_HISTORY);
+  show('exportBtn',isPatt);
+}
+
+async function checkModuleAccess(){
+  // Fail closed until Local Client confirms the AMS username.
+  MODULE_ACCESS={checked:false,isPatt:false,username:'',rawUser:null};
+  applyModuleNavVisibility();
+  try{
+    const r=await fetch(`${AMS_WRITE_PROXY}/api/health`,{cache:'no-store'});
+    const j=await r.json();
+    const username=normalizeCurrentUsername(j.current_user ?? j.username ?? j.user);
+    const isPatt=!!(r.ok && j.success && username.toLowerCase()===PATT_MANAGER_USER);
+    MODULE_ACCESS={checked:true,isPatt,username,rawUser:j.current_user ?? null};
+    applyModuleNavVisibility();
+    return isPatt;
+  }catch(e){
+    MODULE_ACCESS={checked:true,isPatt:false,username:'',rawUser:null};
+    applyModuleNavVisibility();
+    return false;
+  }
+}
+
+function requirePattAccess(featureName='ฟังก์ชันนี้'){
+  if(MODULE_ACCESS.isPatt===true) return true;
+  showInfoToast('🔒 จำกัดสิทธิ์การใช้งาน',`${featureName} อนุญาตเฉพาะ user: patt`);
+  return false;
+}
+
+function isPattOnlyPage(page){
+  return ['alarm','analysis','errhistory'].includes(page);
+}
+
 // ══ PAGE NAV ══
 function showPage(page){
+  if(isPattOnlyPage(page) && !MODULE_ACCESS.isPatt){
+    showInfoToast('🔒 จำกัดสิทธิ์การใช้งาน','บัญชีนี้ใช้งานได้เฉพาะ Network Monitoring และ Contract Management');
+    page='dashboard';
+  }
+
   currentPage2=page;
   const pages={
     dashboard: document.getElementById('dashboardPage'),
@@ -3033,10 +3107,19 @@ function showPage(page){
   Object.values(navs).forEach(el=>{if(el)el.classList.remove('active');});
   const pg = pages[page]||pages.dashboard;
   const nb = navs[page]||navs.dashboard;
-  pg.style.display='block'; nb.classList.add('active');
-  if(page==='analysis')   renderAnalysis();
-  if(page==='alarm')      { renderAlarmTable(); if(!ALARM_DATA.length) refreshAlarmDashboard(true); }
-  if(page==='contract')   renderContractPage();
+  if(pg) pg.style.display='block';
+  if(nb) nb.classList.add('active');
+
+  if(page!=='alarm') stopAlarmAutoRefresh();
+  if(page==='analysis') renderAnalysis();
+  if(page==='alarm'){
+    if(!ALARM_DATA.length) loadAlarmLiveCache();
+    renderAlarmKPIs();
+    renderAlarmTable();
+    refreshAlarmDashboard(true);   // instant read from Local Client Server Alarm Cache
+    startAlarmAutoRefresh();       // lightweight cache-status polling while Alarm page is open
+  }
+  if(page==='contract') renderContractPage();
   if(page==='errhistory'){ renderErrHistoryKPIs(); renderErrHistory(); }
 }
 
@@ -3044,15 +3127,14 @@ function showPage(page){
 function showDashboard(){
   document.getElementById('uploadZone').style.display='none';
   document.getElementById('dashboardPage').style.display='block';
-  document.getElementById('navAnalysis').style.display='flex';
-  document.getElementById('navAlarm').style.display='flex';
-  document.getElementById('navContract').style.display='flex';
-  if(ERROR_HISTORY) document.getElementById('navErrHistory').style.display='flex';
-  document.getElementById('exportBtn').style.display='flex';
+
+  // Network + Contract show immediately. patt-only modules remain hidden until /api/health confirms patt.
+  applyModuleNavVisibility();
+  checkModuleAccess();
+
   document.getElementById('dataTimestamp').textContent=new Date().toLocaleString('th-TH');
   updateStorageBadge();restoreTimeline();
 }
-
 
 // ══ ALARM DASHBOARD V1 ══
 const ALARM_ORDER=[
@@ -3069,6 +3151,73 @@ const ALARM_ORDER=[
   {order:11,aa:'88',nn:'02',title:'8.2.Mag&PLLD Sensor Alarm',name:'Mag&PLLD Sensor Alarm',group:'Sensor'}
 ];
 let ALARM_DATA=[];
+const SK_ALARM_LIVE_CACHE='ams_alarm_live_cache_v1';
+const ALARM_AUTO_INTERVAL_MS=10000;
+let ALARM_REFRESH_IN_FLIGHT=false;
+let ALARM_AUTO_TIMER=null;
+
+function alarmNowText(){
+  return new Date().toLocaleString('th-TH',{hour12:false});
+}
+function saveAlarmLiveCache(rows, stamp){
+  try{
+    localStorage.setItem(SK_ALARM_LIVE_CACHE,JSON.stringify({
+      saved_at:new Date().toISOString(),
+      source_stamp:stamp||'',
+      data:Array.isArray(rows)?rows:[]
+    }));
+  }catch(e){
+    console.warn('Alarm cache save failed',e);
+  }
+}
+function loadAlarmLiveCache(){
+  try{
+    const raw=localStorage.getItem(SK_ALARM_LIVE_CACHE);
+    if(!raw)return false;
+    const c=JSON.parse(raw);
+    if(!c||!Array.isArray(c.data)||!c.data.length)return false;
+
+    ALARM_DATA=c.data;
+    loadAlarmJobs();
+    populateAlarmTypeFilter();
+    renderAlarmKPIs();
+    renderAlarmTable();
+
+    const saved=c.saved_at?new Date(c.saved_at):null;
+    const cacheStamp=saved&&!Number.isNaN(saved.getTime())
+      ? saved.toLocaleString('th-TH',{hour12:false})
+      : (c.source_stamp||'ไม่ทราบเวลา');
+
+    const badge=document.getElementById('alarmLiveBadge');
+    if(badge)badge.textContent='● CACHE · กำลัง Sync AMS';
+    alarmSetText('alarmUpdatedAt',`แสดง Cache ล่าสุด ${cacheStamp} · กำลัง Sync AMS เบื้องหลัง`);
+    alarmSetText('alarmUpdatedAtHero',`• CACHE ${cacheStamp}`);
+    return true;
+  }catch(e){
+    console.warn('Alarm cache load failed',e);
+    return false;
+  }
+}
+function isAlarmPageVisible(){
+  const p=document.getElementById('alarmPage');
+  return !!(p&&p.style.display!=='none');
+}
+function stopAlarmAutoRefresh(){
+  if(ALARM_AUTO_TIMER){
+    clearInterval(ALARM_AUTO_TIMER);
+    ALARM_AUTO_TIMER=null;
+  }
+}
+function startAlarmAutoRefresh(){
+  stopAlarmAutoRefresh();
+  if(!MODULE_ACCESS.isPatt)return;
+  ALARM_AUTO_TIMER=setInterval(()=>{
+    if(MODULE_ACCESS.isPatt&&isAlarmPageVisible()&&!ALARM_REFRESH_IN_FLIGHT){
+      refreshAlarmDashboard(true);
+    }
+  },ALARM_AUTO_INTERVAL_MS);
+}
+
 let alarmSortKey='order',alarmSortDir='asc';
 function alarmSetText(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
 function setAlarmStatusFilter(v){const e=document.getElementById('alarmStatusFilter');if(e)e.value=v;renderAlarmTable();}
@@ -3077,21 +3226,113 @@ function alarmFmtAge(h){h=Number(h||0);if(h<1)return `${Math.max(0,Math.round(h*
 function alarmStatusHtml(s){if(s==='notified')return '<span class="alarm-status notified">✅ แจ้งแล้ว</span>';if(s==='unnotified')return '<span class="alarm-status unnotified">❗ ยังไม่แจ้ง</span>';if(s==='auto')return '<span class="alarm-status auto">⚙️ Auto</span>';return '<span class="alarm-status unknown">? ไม่พบ History</span>';}
 function alarmEscape(v){return escapeHtml(String(v??''));}
 async function refreshAlarmDashboard(silent=false){
-  const badge=document.getElementById('alarmLiveBadge');if(badge)badge.textContent='● กำลังโหลด AMS...';
+  if(!MODULE_ACCESS.isPatt){
+    if(!silent)showInfoToast('🔒 ไม่มีสิทธิ์เข้า Alarm Management','อนุญาตเฉพาะ user: patt');
+    return;
+  }
+  if(ALARM_REFRESH_IN_FLIGHT){
+    if(!silent)showInfoToast('ℹ️ Alarm Sync','กำลัง Sync AMS อยู่แล้ว กรุณารอสักครู่');
+    return;
+  }
+
+  ALARM_REFRESH_IN_FLIGHT=true;
+  const badge=document.getElementById('alarmLiveBadge');
+  if(badge)badge.textContent=ALARM_DATA.length?'● SERVER CACHE · Checking...':'● SERVER CACHE · Loading...';
+
   try{
-    const ctl=new AbortController();const timer=setTimeout(()=>ctl.abort('Alarm request timeout after 180 seconds'),180000);
-    const r=await fetch(`${AMS_WRITE_PROXY}/api/alarms`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({include_remark:true}),signal:ctl.signal});clearTimeout(timer);
-    const j=await r.json();if(!r.ok||!j.success)throw new Error(j.message||`HTTP ${r.status}`);
+    const ctl=new AbortController();
+    const timer=setTimeout(()=>ctl.abort('Alarm cache request timeout after 8 seconds'),8000);
+    let r;
+    try{
+      r=await fetch(`${AMS_WRITE_PROXY}/api/alarms`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({include_remark:true}),
+        signal:ctl.signal,
+        cache:'no-store'
+      });
+    } finally {
+      clearTimeout(timer);
+    }
+
+    const j=await r.json();
+
+    // V2.9.3 AlarmCache returns HTTP 202 while the very first cache is warming.
+    // Keep any existing browser snapshot visible rather than treating that as a hard failure.
+    if(r.status===202 && j?.warming_up){
+      if(badge)badge.textContent='● SERVER CACHE · Warming up';
+      alarmSetText('alarmUpdatedAt','Server Alarm Cache กำลังสร้างข้อมูลรอบแรก · ยังแสดง Browser Cache เดิมถ้ามี');
+      return;
+    }
+    if(!r.ok||!j.success)throw new Error(j.message||`HTTP ${r.status}`);
+
     ALARM_DATA=Array.isArray(j.data)?j.data:[];
-    if(badge)badge.textContent='● LIVE AMS';
-    const alarmStamp=j.updated_at||new Date().toLocaleString('th-TH'); alarmSetText('alarmUpdatedAt',`อัปเดต ${alarmStamp} · Source: AMS Local Client`); alarmSetText('alarmUpdatedAtHero',`• LIVE ${alarmStamp}`);
-    populateAlarmTypeFilter();renderAlarmKPIs();renderAlarmTable();
-  }catch(e){const aborted=e?.name==='AbortError'||String(e?.message||e).toLowerCase().includes('abort');if(badge)badge.textContent=aborted?'● Alarm โหลดเกินเวลา':'● Local Client ไม่พร้อม';if(!silent)showInfoToast('⚠️ โหลด Alarm ไม่สำเร็จ',aborted?'AMS Alarm ใช้เวลาเกิน 180 วินาที กรุณากด Refresh Alarm อีกครั้ง':String(e.message||e));}
+    loadAlarmJobs();
+
+    const alarmStamp=j.updated_at||alarmNowText();
+    saveAlarmLiveCache(ALARM_DATA,alarmStamp);
+
+    const c=j.cache||{};
+    const ageText=c.refreshing?' · AMS Background Sync กำลังทำงาน':'';
+    if(badge)badge.textContent=c.refreshing?'● SERVER CACHE · AMS Syncing':'● SERVER CACHE · Ready';
+    alarmSetText('alarmUpdatedAt',`Snapshot ${alarmStamp} · ${ALARM_DATA.length.toLocaleString()} Alarm · Server Cache${ageText}`);
+    alarmSetText('alarmUpdatedAtHero',`• CACHE ${alarmStamp}`);
+
+    populateAlarmTypeFilter();
+    renderAlarmKPIs();
+    renderAlarmTable();
+  }catch(e){
+    const aborted=e?.name==='AbortError'||String(e?.message||e).toLowerCase().includes('abort');
+    if(ALARM_DATA.length){
+      if(badge)badge.textContent='● CACHE · AMS Sync Delay';
+      alarmSetText('alarmUpdatedAt',`ใช้ข้อมูล Cache ล่าสุด · AMS Sync ไม่สำเร็จ ${alarmNowText()}`);
+    }else{
+      if(badge)badge.textContent=aborted?'● Alarm โหลดเกินเวลา':'● Local Client ไม่พร้อม';
+    }
+    if(!silent){
+      showInfoToast(
+        '⚠️ Alarm Sync ไม่สำเร็จ',
+        ALARM_DATA.length
+          ? `ยังแสดงข้อมูล Cache ล่าสุดต่อไป\n${String(e.message||e)}`
+          : (aborted?'Local Client Alarm Cache ไม่ตอบภายใน 8 วินาที':String(e.message||e))
+      );
+    }
+  }finally{
+    ALARM_REFRESH_IN_FLIGHT=false;
+  }
 }
 function populateAlarmTypeFilter(){const sel=document.getElementById('alarmTypeFilter');if(!sel)return;const cur=sel.value;sel.innerHTML='<option value="all">Alarm: ทั้งหมด</option>'+ALARM_ORDER.map(x=>`<option value="${x.aa}/${x.nn}">${x.title.replace(/^\d+(?:\.\d+)?\./,'')} (${x.aa}/${x.nn})</option>`).join('');if([...sel.options].some(o=>o.value===cur))sel.value=cur;}
 function renderAlarmKPIs(){const d=ALARM_DATA;alarmSetText('alarmKpiTotal',d.length);alarmSetText('alarmKpiNotified',d.filter(x=>x.remark_status==='notified').length);alarmSetText('alarmKpiUnnotified',d.filter(x=>x.remark_status==='unnotified').length);alarmSetText('alarmKpiAuto',d.filter(x=>x.remark_status==='auto').length);alarmSetText('alarmKpiOver24',d.filter(x=>Number(x.age_hours||0)>=24).length);alarmSetText('alarmKpiSites',new Set(d.map(x=>x.sta_id).filter(Boolean)).size);}
 function filteredAlarmRows(){const group=document.getElementById('alarmGroupFilter')?.value||'all';const type=document.getElementById('alarmTypeFilter')?.value||'all';const status=document.getElementById('alarmStatusFilter')?.value||'all';const q=(document.getElementById('alarmSearch')?.value||'').trim().toLowerCase();let rows=ALARM_DATA.filter(x=>(group==='all'||x.group===group)&&(type==='all'||`${x.aa}/${x.nn}`===type)&&(status==='all'||x.remark_status===status));if(q)rows=rows.filter(x=>[x.sta_id,x.sta_name,x.tankname2,x.name,x.title,x.remark,x.updatedby].join(' ').toLowerCase().includes(q));return rows.sort((a,b)=>{let av=a[alarmSortKey],bv=b[alarmSortKey];if(['order','age_hours'].includes(alarmSortKey)){av=Number(av||0);bv=Number(bv||0);}else if(alarmSortKey==='currentdate'){av=Date.parse(String(av||'').replace(' ','T'))||0;bv=Date.parse(String(bv||'').replace(' ','T'))||0;}else{av=String(av||'').toLowerCase();bv=String(bv||'').toLowerCase();}if(av<bv)return alarmSortDir==='asc'?-1:1;if(av>bv)return alarmSortDir==='asc'?1:-1;return 0;});}
-function renderAlarmTable(){const body=document.getElementById('alarmBody');if(!body)return;renderAlarmKPIs();const rows=filteredAlarmRows();if(!rows.length){body.innerHTML='<tr><td colspan="11" class="alarm-empty">ไม่พบ Alarm ตามเงื่อนไข</td></tr>';alarmSetText('alarmRowCount','0 รายการ');return;}body.innerHTML=rows.map(x=>{const age=Number(x.age_hours||0);const ageCls=age>=72?'critical':age>=24?'warn':'';return `<tr><td class="alarm-code">${x.order||'—'}</td><td class="alarm-code">${alarmEscape(x.sta_id)}</td><td><div style="font-weight:700">${alarmEscape(x.sta_name)}</div></td><td>${alarmEscape(x.tankname2||x.tanknum||'—')}</td><td><div class="alarm-name">${alarmEscape(x.name)}</div><div class="alarm-title">${alarmEscape(x.title)} · ${alarmEscape(x.aa)}/${alarmEscape(x.nn)}</div></td><td style="white-space:nowrap">${alarmEscape(x.currentdate)}</td><td class="alarm-age ${ageCls}" style="white-space:nowrap">${alarmFmtAge(age)}</td><td>${alarmStatusHtml(x.remark_status)}</td><td class="alarm-remark">${x.remark?alarmEscape(x.remark):'<span style="color:var(--text-muted)">—</span>'}</td><td>${x.updatedby?`<b>${alarmEscape(x.updatedby)}</b>`:'—'}</td><td><div style="white-space:nowrap">${alarmEscape(x.remarkdate||'—')}</div></td></tr>`;}).join('');alarmSetText('alarmRowCount',`${rows.length.toLocaleString()} / ${ALARM_DATA.length.toLocaleString()} รายการ`);const known=ALARM_DATA.filter(x=>x.remark_status!=='unknown').length;alarmSetText('alarmRemarkCoverage',`Remark History matched ${known}/${ALARM_DATA.length}`);}
+function renderAlarmTable(){const body=document.getElementById('alarmBody');if(!body)return;renderAlarmKPIs();const rows=filteredAlarmRows();if(!rows.length){body.innerHTML='<tr><td colspan="12" class="alarm-empty">ไม่พบ Alarm ตามเงื่อนไข</td></tr>';alarmSetText('alarmRowCount','0 รายการ');return;}body.innerHTML=rows.map(x=>{const age=Number(x.age_hours||0);const ageCls=age>=72?'critical':age>=24?'warn':'';return `<tr><td class="alarm-code">${x.order||'—'}</td><td class="alarm-code">${alarmEscape(x.sta_id)}</td><td><div style="font-weight:700">${alarmEscape(x.sta_name)}</div></td><td>${alarmEscape(x.tankname2||x.tanknum||'—')}</td><td><div class="alarm-name">${alarmEscape(x.name)}</div><div class="alarm-title">${alarmEscape(x.title)} · ${alarmEscape(x.aa)}/${alarmEscape(x.nn)}</div></td><td style="white-space:nowrap">${alarmEscape(x.currentdate)}</td><td class="alarm-age ${ageCls}" style="white-space:nowrap">${alarmFmtAge(age)}</td><td>${alarmStatusHtml(x.remark_status)}</td><td class="alarm-remark">${x.remark?alarmEscape(x.remark):'<span style="color:var(--text-muted)">—</span>'}</td><td>${x.updatedby?`<b>${alarmEscape(x.updatedby)}</b>`:'—'}</td><td><div style="white-space:nowrap">${alarmEscape(x.remarkdate||'—')}</div></td><td>${jobCellHtml(x)}</td></tr>`;}).join('');alarmSetText('alarmRowCount',`${rows.length.toLocaleString()} / ${ALARM_DATA.length.toLocaleString()} รายการ`);const known=ALARM_DATA.filter(x=>x.remark_status!=='unknown').length;alarmSetText('alarmRemarkCoverage',`Remark History matched ${known}/${ALARM_DATA.length}`);}
+
+// ══ ALARM JOB TRACKING V1 ══
+const SK_ALARM_JOBS='ams_alarm_jobs_v1';
+let ALARM_JOBS=[];
+function loadAlarmJobs(){try{ALARM_JOBS=JSON.parse(localStorage.getItem(SK_ALARM_JOBS)||'[]');if(!Array.isArray(ALARM_JOBS))ALARM_JOBS=[];}catch(e){ALARM_JOBS=[];}syncJobsWithActiveAlarms();renderJobKPIs();}
+function saveAlarmJobs(){localStorage.setItem(SK_ALARM_JOBS,JSON.stringify(ALARM_JOBS));renderJobKPIs();}
+function alarmEventKey(x){return [x.sta_id,x.tanknum||x.tankname2||'',x.nn,x.aa,x.currentdate].join('::');}
+function jobForAlarm(x){const k=alarmEventKey(x);return ALARM_JOBS.find(j=>j.alarm_event_key===k && j.status!=='closed')||ALARM_JOBS.find(j=>j.alarm_event_key===k)||null;}
+function syncJobsWithActiveAlarms(){const active=new Set((ALARM_DATA||[]).map(alarmEventKey));let changed=false;ALARM_JOBS.forEach(j=>{if(j.status==='technician_completed'&&active.has(j.alarm_event_key)){j.status='waiting_alarm_clear';j.last_update=new Date().toISOString();changed=true;}else if(j.status==='waiting_alarm_clear'&&!active.has(j.alarm_event_key)){j.status='closed';j.closed_reason='Alarm cleared from AMS Active Alarm';j.closed_at=new Date().toISOString();j.last_update=j.closed_at;changed=true;}});if(changed)localStorage.setItem(SK_ALARM_JOBS,JSON.stringify(ALARM_JOBS));}
+function jobStatusLabel(s){return ({opened:'Job Opened',waiting_technician:'Waiting Technician',technician_completed:'Technician Completed',waiting_alarm_clear:'Waiting Alarm Clear',closed:'Closed'})[s]||s||'—';}
+function jobStatusClass(s){return s==='opened'?'open':s==='waiting_technician'?'waiting':s==='technician_completed'?'completed':s==='waiting_alarm_clear'?'clearwait':'closed';}
+function renderJobKPIs(){const a=ALARM_JOBS;alarmSetText('jobKpiOpen',a.filter(j=>j.status!=='closed').length);alarmSetText('jobKpiWaiting',a.filter(j=>j.status==='waiting_technician').length);alarmSetText('jobKpiClearWait',a.filter(j=>j.status==='waiting_alarm_clear').length);alarmSetText('jobKpiClosed',a.filter(j=>j.status==='closed').length);}
+function jobCellHtml(x){
+  const j=jobForAlarm(x);
+  const key=encodeURIComponent(alarmEventKey(x));
+  if(!j){
+    return `<button type="button" class="job-btn primary job-open-btn" data-job-key="${key}">+ Open Job</button>`;
+  }
+  return `<div><span class="job-status ${jobStatusClass(j.status)}">${jobStatusLabel(j.status)}</span></div>
+          <div style="margin-top:5px"><button type="button" class="job-btn job-open-btn" data-job-key="${key}">จัดการ Job</button></div>`;
+}
+function openJobModal(key){
+  if(!requirePattAccess('Job Tracking')) return;const x=ALARM_DATA.find(a=>alarmEventKey(a)===key);let j=ALARM_JOBS.find(a=>a.alarm_event_key===key&&a.status!=='closed')||ALARM_JOBS.find(a=>a.alarm_event_key===key);if(!x&&!j)return;const now=new Date().toISOString();if(!j){j={job_no:'JOB-'+new Date().toISOString().replace(/[-:TZ.]/g,'').slice(0,14),alarm_event_key:key,sta_id:x.sta_id,sta_name:x.sta_name,tank:x.tankname2||x.tanknum||'',alarm_name:x.name,alarm_time:x.currentdate,status:'opened',assigned_to:'',note:'',opened_at:now,last_update:now};ALARM_JOBS.push(j);saveAlarmJobs();}
+ const wrap=document.createElement('div');wrap.className='job-modal-backdrop';wrap.id='jobModal';wrap.innerHTML=`<div class="job-modal"><h3>🧰 Job Tracking</h3><div style="font-size:11px;color:#617085;margin-bottom:14px">${alarmEscape(j.sta_id)} · ${alarmEscape(j.sta_name)} · ${alarmEscape(j.alarm_name)}</div><div class="job-grid"><div class="job-field"><label>Job No.</label><input id="jmNo" value="${alarmEscape(j.job_no)}"></div><div class="job-field"><label>Status</label><select id="jmStatus"><option value="opened">Job Opened</option><option value="waiting_technician">Waiting Technician</option><option value="technician_completed">Technician Completed</option><option value="waiting_alarm_clear">Waiting Alarm Clear</option><option value="closed">Closed</option></select></div><div class="job-field"><label>Assigned To</label><input id="jmAssigned" value="${alarmEscape(j.assigned_to||'')}" placeholder="ชื่อช่าง / ผู้รับผิดชอบ"></div><div class="job-field"><label>Opened At</label><input value="${alarmEscape(j.opened_at||'')}" disabled></div><div class="job-field" style="grid-column:1/-1"><label>Job Note</label><textarea id="jmNote" placeholder="รายละเอียดงาน / การติดตาม">${alarmEscape(j.note||'')}</textarea></div></div><div style="font-size:10px;color:#b66b0d;margin-top:10px">กติกา: Technician Completed จะไม่ปิด Job หาก Alarm ยัง Active — ระบบจะเปลี่ยนเป็น Waiting Alarm Clear</div><div class="job-actions"><button class="job-btn" onclick="document.getElementById('jobModal').remove()">ยกเลิก</button><button class="job-btn primary" onclick='saveJobModal(${JSON.stringify(key)})'>บันทึก Job</button></div></div>`;document.body.appendChild(wrap);document.getElementById('jmStatus').value=j.status;}
+function saveJobModal(key){const j=ALARM_JOBS.find(a=>a.alarm_event_key===key&&a.status!=='closed')||ALARM_JOBS.find(a=>a.alarm_event_key===key);if(!j)return;const active=ALARM_DATA.some(a=>alarmEventKey(a)===key);let st=document.getElementById('jmStatus').value;if(st==='technician_completed'&&active)st='waiting_alarm_clear';if(st==='closed'&&active){showInfoToast('⚠️ ยังปิด Job ไม่ได้','Alarm ยัง Active อยู่ใน AMS');return;}j.job_no=document.getElementById('jmNo').value.trim()||j.job_no;j.assigned_to=document.getElementById('jmAssigned').value.trim();j.note=document.getElementById('jmNote').value.trim();j.status=st;j.last_update=new Date().toISOString();if(st==='closed')j.closed_at=j.last_update;saveAlarmJobs();document.getElementById('jobModal')?.remove();renderAlarmTable();showInfoToast('✅ บันทึก Job แล้ว',`${j.job_no} · ${jobStatusLabel(j.status)}`);}
+loadAlarmJobs();
+
+
 
 // ══ ANALYSIS ══
 // ══ CHART INSTANCES (destroy before recreate) ══
@@ -3734,6 +3975,7 @@ function exportHistoryAll(){
 
 // ══ EXPORT MODAL ══
 function openExportModal(){
+  if(!MODULE_ACCESS.isPatt){showInfoToast('🔒 จำกัดสิทธิ์การใช้งาน','อนุญาตเฉพาะ user: patt');return;}
   // Set default dates
   const today = new Date().toISOString().slice(0,10);
   document.getElementById('exportDateTo').value = today;
@@ -4828,29 +5070,19 @@ function saveTokenAndLoad(){
 
 
 function mergeLiveNetworkWithSnapshot(liveRows){
-  // SHARED NETWORK DISPLAY:
-  // Use the GitHub embedded Network snapshot as the common station/error universe
-  // for every Dashboard machine. A user's AMS account may expose only a subset,
-  // so Local Client data may enrich matching rows but must never shrink the shared list.
+  // STRICT SHARED NETWORK DISPLAY:
+  // Every Dashboard user must see identical Network rows and identical KPI age buckets.
+  // Therefore the GitHub embedded Network snapshot is the display source of truth.
+  // Local Client data is NOT allowed to override timestamps/status fields used by Network KPI.
   const snapshotRows=(EMBEDDED_DATA&&Array.isArray(EMBEDDED_DATA.data))
     ? EMBEDDED_DATA.data
     : [];
   const live=Array.isArray(liveRows)?liveRows:[];
 
-  // If no shared snapshot exists, fall back to the Local Client data.
+  // Fallback only when the shared snapshot is unavailable.
   if(!snapshotRows.length) return live;
 
-  const getId=r=>String(
-    r?.['รหัสสถานี'] ?? r?.['Station ID'] ?? r?.site_id ?? r?.sta_id ?? ''
-  ).trim();
-
-  const liveMap=new Map(live.map(r=>[getId(r),r]).filter(([id])=>id));
-
-  return snapshotRows.map(base=>{
-    const id=getId(base);
-    const liveRow=liveMap.get(id);
-    return liveRow ? {...base,...liveRow} : base;
-  });
+  return snapshotRows.map(r=>({...r}));
 }
 
 function mergeLiveAutoWithSnapshot(liveRows){
@@ -5200,6 +5432,7 @@ function reportBarRows(entries,total,maxRows=5){
   return arr.map(([name,n])=>`<div class="report-bar-row"><span title="${reportEsc(name)}">${reportEsc(shortName(name,16))}</span><div class="report-bar-track"><div class="report-bar-fill" style="width:${Math.max(5,n/max*100)}%"></div></div><b>${n}</b></div>`).join('')||'<div style="font-size:9px;color:#8994a4">ไม่มีข้อมูล</div>';
 }
 function openSummaryReport(){
+  if(!MODULE_ACCESS.isPatt){showInfoToast('🔒 จำกัดสิทธิ์การใช้งาน','อนุญาตเฉพาะ user: patt');return;}
   const modal=document.getElementById('reportModal');
   if(modal) modal.classList.add('open');
 
@@ -5399,6 +5632,13 @@ function printSummaryReport(){
  #alarmPage .dashboard-hero-top,#contractPage .dashboard-hero-top{flex-direction:column!important}
  #alarmPage .dashboard-hero-title,#contractPage .dashboard-hero-title{font-size:25px!important}
 }
+
+/* === ALARM JOB TRACKING V1 === */
+.job-status{display:inline-flex;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap;background:rgba(90,108,128,.12);color:#526276}
+.job-status.open{background:rgba(104,200,255,.15);color:#2674a8}.job-status.waiting{background:rgba(255,177,59,.16);color:#a96300}.job-status.completed{background:rgba(82,227,164,.15);color:#16834a}.job-status.clearwait{background:rgba(255,122,69,.15);color:#c54f1d}.job-status.closed{background:rgba(90,108,128,.12);color:#617085}
+.job-btn{border:1px solid #d7dfec;background:#fff;border-radius:8px;padding:5px 8px;font:800 10px var(--sans);cursor:pointer;color:#3157d5;white-space:nowrap}.job-btn:hover{background:#f2f6ff}.job-btn.primary{background:#3157d5;color:#fff;border-color:#3157d5}
+.job-modal-backdrop{position:fixed;inset:0;background:rgba(10,20,38,.58);z-index:9998;display:flex;align-items:center;justify-content:center;padding:18px}.job-modal{width:min(680px,96vw);max-height:88vh;overflow:auto;background:#fff;border-radius:18px;box-shadow:0 24px 80px rgba(0,0,0,.3);padding:20px}.job-modal h3{margin:0 0 6px}.job-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.job-field label{display:block;font-size:10px;font-weight:800;color:#617085;margin-bottom:4px}.job-field input,.job-field select,.job-field textarea{width:100%;box-sizing:border-box;border:1px solid #d7dfec;border-radius:8px;padding:8px;font:12px var(--sans)}.job-field textarea{min-height:80px;resize:vertical}.job-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}@media(max-width:700px){.job-grid{grid-template-columns:1fr}}
+
 </style>
 </head><body>${sheet.outerHTML}</body></html>`);
   w.document.close();
@@ -5518,6 +5758,106 @@ function exportRemarkAuditCSV(){
   const rows=[['Saved At','Username','UID','Site ID','Machine','Source','Remark'],...events.map(ev=>[formatAuditTime(ev.saved_at||ev.received_at||''),auditEventUser(ev),auditEventUid(ev),ev.site_id||'',ev.origin_machine||'',auditSourceLabel(ev.source),ev.note||''])];
   const csv='\ufeff'+rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`AMS_Remark_Audit_${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(a.href);
 }
+
+
+
+// ===== ALARM MONTHLY CUSTOMER REPORT V2 =====
+async function openAlarmMonthlyReport(){
+  if(!requirePattAccess('Monthly Alarm Report')) return;
+  if(!document.getElementById('alarmReportModal')){
+    const d=document.createElement('div'); d.id='alarmReportModal'; d.className='job-modal-backdrop';
+    d.innerHTML=`<div class="job-modal" style="width:min(96vw,1450px);max-height:92vh;overflow:auto">
+      <h3>📊 Monthly Alarm Report</h3>
+      <div style="display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin:12px 0">
+        <div class="job-field"><label>เดือน</label><input id="alarmReportMonth" type="month"></div>
+        <button class="job-btn primary" onclick="loadAlarmMonthlyReport()">โหลดรายงาน</button>
+        <button class="job-btn" onclick="exportAlarmMonthlyCSV()">Export CSV</button>
+        <button class="job-btn" onclick="printAlarmMonthlyReport()">Print</button>
+        <button class="job-btn" onclick="document.getElementById('alarmReportModal').remove()">ปิด</button>
+      </div>
+      <div id="alarmReportStatus" style="font-size:11px;color:#617085;margin-bottom:10px">เลือกเดือนแล้วกด โหลดรายงาน</div>
+      <div id="alarmReportResult"></div>
+    </div>`; document.body.appendChild(d);
+    const now=new Date(); document.getElementById('alarmReportMonth').value=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  }
+  await loadAlarmMonthlyReport();
+}
+let ALARM_MONTHLY_REPORT={rows:[],names:[],matrix:[]};
+async function loadAlarmMonthlyReport(){
+  const ym=document.getElementById('alarmReportMonth')?.value; if(!ym)return;
+  const [y,m]=ym.split('-').map(Number); const last=new Date(y,m,0).getDate();
+  const range=`${ym}-01::${ym}-${String(last).padStart(2,'0')}`;
+  const st=document.getElementById('alarmReportStatus'); st.textContent='กำลังโหลดประวัติ Alarm จาก AMS...';
+  try{
+    const r=await fetch('http://127.0.0.1:8765/api/alarm-history',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({date:range,typeload:'AUTO'})});
+    const j=await r.json(); if(!r.ok||!j.success)throw new Error(j.message||`HTTP ${r.status}`);
+    const rows=Array.isArray(j.data)?j.data:[];
+    const names=[...new Set(rows.map(x=>String(x.alarmname||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+    const sites=new Map(); rows.forEach(x=>{const id=String(x.sta_id||'').trim(), name=String(x.sta_name||'').trim(); if(!id)return; const k=id; if(!sites.has(k))sites.set(k,{site_id:id,sta_name:name,counts:{},total:0}); const z=sites.get(k), an=String(x.alarmname||'').trim()||'ไม่ระบุ'; z.counts[an]=(z.counts[an]||0)+1; z.total++;});
+    const matrix=[...sites.values()].sort((a,b)=>a.site_id.localeCompare(b.site_id)); ALARM_MONTHLY_REPORT={rows,names,matrix,ym};
+    st.textContent=`AMS History ${rows.length.toLocaleString()} events • ${matrix.length.toLocaleString()} สถานี • ${names.length.toLocaleString()} Alarm Types • ${j.updated_at||''}`;
+    const head=`<th>Site ID</th><th>ชื่อสถานี</th>${names.map(n=>`<th>${alarmEscape(n)}</th>`).join('')}<th>Total</th>`;
+    const body=matrix.map(z=>`<tr><td>${alarmEscape(z.site_id)}</td><td style="min-width:220px">${alarmEscape(z.sta_name)}</td>${names.map(n=>`<td style="text-align:center">${z.counts[n]||0}</td>`).join('')}<td style="text-align:center;font-weight:800">${z.total}</td></tr>`).join('');
+    document.getElementById('alarmReportResult').innerHTML=`<div class="table-wrap"><table class="alarm-table"><thead><tr>${head}</tr></thead><tbody>${body||'<tr><td>ไม่พบข้อมูล</td></tr>'}</tbody></table></div>`;
+  }catch(e){st.textContent='โหลดรายงานไม่สำเร็จ: '+(e.message||e); document.getElementById('alarmReportResult').innerHTML='';}
+}
+function exportAlarmMonthlyCSV(){const r=ALARM_MONTHLY_REPORT;if(!r.matrix.length)return alert('ยังไม่มีข้อมูลรายงาน');const q=v=>'"'+String(v??'').replaceAll('"','""')+'"';const lines=[["Site ID","Station Name",...r.names,"Total"].map(q).join(',')];r.matrix.forEach(z=>lines.push([z.site_id,z.sta_name,...r.names.map(n=>z.counts[n]||0),z.total].map(q).join(',')));const blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`AMS_Alarm_Report_${r.ym}.csv`;a.click();URL.revokeObjectURL(a.href);}
+function printAlarmMonthlyReport(){const el=document.getElementById('alarmReportResult');if(!el||!ALARM_MONTHLY_REPORT.matrix.length)return alert('ยังไม่มีข้อมูลรายงาน');const w=window.open('','_blank');w.document.write(`<html><head><meta charset="utf-8"><title>AMS Alarm Report ${ALARM_MONTHLY_REPORT.ym}</title><style>body{font-family:Arial,sans-serif;padding:20px}table{border-collapse:collapse;width:100%;font-size:10px}th,td{border:1px solid #bbb;padding:5px}th{background:#17356d;color:white}
+/* === ALARM JOB TRACKING V5: ALWAYS-VISIBLE ACTION COLUMN === */
+#alarmPage .alarm-table th:last-child,
+#alarmPage .alarm-table td:last-child{
+  position:sticky;
+  right:0;
+  z-index:3;
+  min-width:132px;
+  text-align:center;
+  border-left:2px solid rgba(82,132,255,.28);
+}
+#alarmPage .alarm-table th:last-child{
+  z-index:5;
+  background:var(--panel,#fff);
+}
+#alarmPage .alarm-table td:last-child{
+  background:var(--panel,#fff);
+}
+#alarmPage .job-open-btn{
+  white-space:nowrap;
+  min-width:108px;
+  font-weight:800;
+}
+
+</style></head><body><h2>AMS Monthly Alarm Report — ${ALARM_MONTHLY_REPORT.ym}</h2>${el.innerHTML}</body></html>`);w.document.close();w.print();}
+
+
+// ===== ROBUST ALARM ACTION CLICK BINDINGS V3 =====
+document.addEventListener('click', async function(e){
+  const monthlyBtn=e.target.closest('#monthlyAlarmBtn');
+  if(monthlyBtn){
+    e.preventDefault();
+    e.stopPropagation();
+    try{
+      await openAlarmMonthlyReport();
+    }catch(err){
+      console.error('Monthly Alarm Report error:',err);
+      showInfoToast('⚠️ Monthly Alarm Report เปิดไม่ได้', String(err?.message||err));
+    }
+    return;
+  }
+
+  const jobBtn=e.target.closest('.job-open-btn');
+  if(jobBtn){
+    e.preventDefault();
+    e.stopPropagation();
+    try{
+      const key=decodeURIComponent(jobBtn.dataset.jobKey||'');
+      if(!key) throw new Error('ไม่พบ Alarm Event Key');
+      openJobModal(key);
+    }catch(err){
+      console.error('Job Tracking error:',err);
+      showInfoToast('⚠️ Job Tracking เปิดไม่ได้', String(err?.message||err));
+    }
+  }
+});
 
 </script>
 </body>
