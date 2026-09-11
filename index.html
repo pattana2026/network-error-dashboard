@@ -1604,7 +1604,14 @@ header .header-right{display:flex!important;flex-direction:column!important;alig
 .amr-trend{height:150px;display:flex;align-items:flex-end;gap:4px;padding:14px 14px 8px;overflow-x:auto}.amr-day{flex:1;min-width:24px;text-align:center;display:grid;grid-template-rows:16px 100px 14px;align-items:end}.amr-day b{font:700 8px var(--mono);color:#4b5b73}.amr-day>div{height:100px;display:flex;align-items:flex-end;justify-content:center;border-bottom:1px solid #dce2ea}.amr-day i{display:block;width:70%;max-width:20px;min-height:4px;background:linear-gradient(180deg,#7b5cf5,#3157d5);border-radius:4px 4px 0 0}.amr-day span{font:8px var(--mono);color:#8190a4;padding-top:3px}.amr-foot{font-size:8px;color:#8b96a6;padding:3px 2px 0}.amr-empty{padding:20px;text-align:center;color:#8a95a5}.amr-error{padding:18px;background:#fff3f3;color:#b4232d;border:1px solid #ffd0d4;border-radius:12px}.amr-loading{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.amr-skeleton{height:100px;border-radius:13px;background:linear-gradient(90deg,#eef1f5,#f8f9fb,#eef1f5);background-size:200% 100%;animation:amrsk 1.3s infinite}@keyframes amrsk{to{background-position:-200% 0}}.amr-progress-card{background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:16px}.amr-progress-text{display:flex;justify-content:space-between;font-size:12px}.amr-progress{height:9px;background:#edf0f5;border-radius:99px;overflow:hidden;margin:10px 0}.amr-progress i{display:block;height:100%;background:linear-gradient(90deg,#3157d5,#7b5cf5,#20b4b4);transition:width .4s}.amr-progress-card small{color:#7d8999}
 @media(max-width:1050px){.amr-kpis{grid-template-columns:repeat(3,1fr)}.amr-grid-main{grid-template-columns:1fr}.amr-toolbar{top:74px}.amr-modal{width:98vw!important}}@media(max-width:650px){.amr-kpis{grid-template-columns:1fr 1fr}.amr-report-title{flex-direction:column}.amr-generated{text-align:left}.amr-type-row{grid-template-columns:1fr 80px 40px}.amr-type-sites{display:none}}
 </style>
+
+<style id="dashboard-version-badge-style">
+#dashboardVersionBadge{position:fixed;right:14px;bottom:10px;z-index:9997;font-size:11px;line-height:1.25;padding:5px 8px;border-radius:8px;background:rgba(255,255,255,.92);border:1px solid rgba(15,23,42,.14);box-shadow:0 2px 8px rgba(15,23,42,.10);color:#475569;backdrop-filter:blur(4px);pointer-events:none;white-space:nowrap}
+@media(max-width:700px){#dashboardVersionBadge{right:8px;bottom:8px;font-size:10px;padding:4px 6px}}
+</style>
+
 </head>
+<!-- DASHBOARD VERSION: V2.10.0 | BUILD: 2026.09.11 -->
 <body>
 <header>
   <div style="display:flex;align-items:center;gap:12px">
@@ -5684,7 +5691,10 @@ function printSummaryReport(){
 .job-modal-backdrop{position:fixed;inset:0;background:rgba(10,20,38,.58);z-index:9998;display:flex;align-items:center;justify-content:center;padding:18px}.job-modal{width:min(680px,96vw);max-height:88vh;overflow:auto;background:#fff;border-radius:18px;box-shadow:0 24px 80px rgba(0,0,0,.3);padding:20px}.job-modal h3{margin:0 0 6px}.job-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.job-field label{display:block;font-size:10px;font-weight:800;color:#617085;margin-bottom:4px}.job-field input,.job-field select,.job-field textarea{width:100%;box-sizing:border-box;border:1px solid #d7dfec;border-radius:8px;padding:8px;font:12px var(--sans)}.job-field textarea{min-height:80px;resize:vertical}.job-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}@media(max-width:700px){.job-grid{grid-template-columns:1fr}}
 
 </style>
-</head><body>${sheet.outerHTML}</body></html>`);
+</head><body>${sheet.outerHTML}
+<div id="dashboardVersionBadge" title="AMS Service Intelligence Center">Dashboard V2.10.0 · Build 2026.09.11</div>
+
+</body></html>`);
   w.document.close();
   const go=()=>{w.focus();w.print()};
   if(w.document.fonts&&w.document.fonts.ready)w.document.fonts.ready.then(()=>setTimeout(go,250));else setTimeout(go,500);
