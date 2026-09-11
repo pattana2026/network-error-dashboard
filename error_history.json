@@ -7,12 +7,12 @@
     "errors": [
       {
         "start": "2026-08-25 15:18",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 24382
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10012583": {
@@ -77,11 +77,11 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10007900": {
     "site_id": "10007900",
-    "site_name": "PTT อภิสิทธิ์รุ่งรัตน์ (2008) บ้านดอนไพล \"ปิดปรับปรุง\"",
+    "site_name": "PTT เกณิกา (สาขา 7) บ้านดอนไพล",
     "atgmodel": "TLS4",
     "province": "นครราชสีมา",
     "errors": [
@@ -125,7 +125,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10001773": {
     "site_id": "10001773",
@@ -151,12 +151,12 @@
     "errors": [
       {
         "start": "2026-08-25 15:18",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 24382
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10000925": {
@@ -173,7 +173,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10004027": {
     "site_id": "10004027",
@@ -189,7 +189,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10005357": {
     "site_id": "10005357",
@@ -226,7 +226,7 @@
     ],
     "total": 2,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10003398": {
     "site_id": "10003398",
@@ -247,7 +247,7 @@
     ],
     "total": 2,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10007187": {
     "site_id": "10007187",
@@ -263,7 +263,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10002005": {
     "site_id": "10002005",
@@ -295,7 +295,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10014190": {
     "site_id": "10014190",
@@ -311,7 +311,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10014194": {
     "site_id": "10014194",
@@ -327,7 +327,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10001004": {
     "site_id": "10001004",
@@ -337,12 +337,12 @@
     "errors": [
       {
         "start": "2026-08-25 15:18",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 24382
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10001650": {
@@ -353,12 +353,12 @@
     "errors": [
       {
         "start": "2026-08-25 15:18",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 24382
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10011085": {
@@ -380,7 +380,7 @@
     ],
     "total": 2,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10011039": {
     "site_id": "10011039",
@@ -423,11 +423,16 @@
         "start": "2026-08-27 16:14",
         "end": "2026-08-27 16:47",
         "duration_min": 33
+      },
+      {
+        "start": "2026-09-11 13:40",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 3,
-    "active": false,
-    "last_seen": "2026-08-27 16:14"
+    "total": 4,
+    "active": true,
+    "last_seen": "2026-09-11 13:40"
   },
   "10002514": {
     "site_id": "10002514",
@@ -443,7 +448,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10014717": {
     "site_id": "10014717",
@@ -459,7 +464,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10000963": {
     "site_id": "10000963",
@@ -530,12 +535,12 @@
       },
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 10,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10007251": {
@@ -552,7 +557,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10013564": {
     "site_id": "10013564",
@@ -568,7 +573,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10000189": {
     "site_id": "10000189",
@@ -619,12 +624,12 @@
       },
       {
         "start": "2026-08-27 11:40",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 21720
       }
     ],
     "total": 5,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10001923": {
@@ -662,7 +667,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10013897": {
     "site_id": "10013897",
@@ -765,11 +770,16 @@
         "start": "2026-09-07 09:44",
         "end": "2026-09-09 09:01",
         "duration_min": 2837
+      },
+      {
+        "start": "2026-09-11 13:40",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 11,
-    "active": false,
-    "last_seen": "2026-09-07 11:33"
+    "total": 12,
+    "active": true,
+    "last_seen": "2026-09-11 13:40"
   },
   "10011246": {
     "site_id": "10011246",
@@ -805,11 +815,11 @@
     ],
     "total": 5,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10009950": {
     "site_id": "10009950",
-    "site_name": "PTT ทีพีบีออยล์ สาขา 00001",
+    "site_name": "PTT ทีพีบี ออยล์ สาขา 00001",
     "atgmodel": "TLS4",
     "province": "นครราชสีมา",
     "errors": [
@@ -856,7 +866,7 @@
     ],
     "total": 8,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10011506": {
     "site_id": "10011506",
@@ -897,12 +907,12 @@
       },
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 4,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10008814": {
@@ -1006,12 +1016,12 @@
       },
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 3,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10009805": {
@@ -1096,12 +1106,12 @@
       },
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 2,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10012089": {
@@ -1159,12 +1169,12 @@
       },
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 3,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10000050": {
@@ -1202,7 +1212,7 @@
     ],
     "total": 2,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10005689": {
     "site_id": "10005689",
@@ -1246,11 +1256,16 @@
         "start": "2026-08-26 08:56",
         "end": "2026-08-27 09:06",
         "duration_min": 1450
+      },
+      {
+        "start": "2026-09-11 13:40",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 1,
-    "active": false,
-    "last_seen": "2026-08-26 17:12"
+    "total": 2,
+    "active": true,
+    "last_seen": "2026-09-11 13:40"
   },
   "10011189": {
     "site_id": "10011189",
@@ -1430,12 +1445,12 @@
       },
       {
         "start": "2026-09-07 09:44",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 5996
       }
     ],
     "total": 2,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10010233": {
@@ -1472,7 +1487,7 @@
     ],
     "total": 5,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10013522": {
     "site_id": "10013522",
@@ -1914,11 +1929,16 @@
         "start": "2026-08-27 11:37",
         "end": "2026-08-27 11:40",
         "duration_min": 3
+      },
+      {
+        "start": "2026-09-11 13:40",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 1,
-    "active": false,
-    "last_seen": "2026-08-27 11:37"
+    "total": 2,
+    "active": true,
+    "last_seen": "2026-09-11 13:40"
   },
   "10012734": {
     "site_id": "10012734",
@@ -2010,11 +2030,16 @@
         "start": "2026-08-27 15:32",
         "end": "2026-08-27 16:14",
         "duration_min": 42
+      },
+      {
+        "start": "2026-09-11 13:40",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 1,
-    "active": false,
-    "last_seen": "2026-08-27 15:41"
+    "total": 2,
+    "active": true,
+    "last_seen": "2026-09-11 13:40"
   },
   "10013868": {
     "site_id": "10013868",
@@ -2191,11 +2216,16 @@
         "start": "2026-08-28 14:59",
         "end": "2026-09-04 11:29",
         "duration_min": 9870
+      },
+      {
+        "start": "2026-09-11 13:40",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 1,
-    "active": false,
-    "last_seen": "2026-08-28 14:59"
+    "total": 2,
+    "active": true,
+    "last_seen": "2026-09-11 13:40"
   },
   "10013631": {
     "site_id": "10013631",
@@ -2243,7 +2273,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10001666": {
     "site_id": "10001666",
@@ -2287,11 +2317,16 @@
         "start": "2026-09-04 11:29",
         "end": "2026-09-07 09:44",
         "duration_min": 4215
+      },
+      {
+        "start": "2026-09-11 13:40",
+        "end": null,
+        "duration_min": null
       }
     ],
-    "total": 1,
-    "active": false,
-    "last_seen": "2026-09-04 16:33"
+    "total": 2,
+    "active": true,
+    "last_seen": "2026-09-11 13:40"
   },
   "10014884": {
     "site_id": "10014884",
@@ -2323,7 +2358,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "0000F001": {
     "site_id": "0000F001",
@@ -2413,7 +2448,7 @@
     ],
     "total": 2,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10011164": {
     "site_id": "10011164",
@@ -2428,12 +2463,12 @@
       },
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 2,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10007188": {
@@ -2738,7 +2773,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10006978": {
     "site_id": "10006978",
@@ -2764,12 +2799,12 @@
     "errors": [
       {
         "start": "2026-09-07 09:44",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 5996
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10008713": {
@@ -2796,12 +2831,12 @@
     "errors": [
       {
         "start": "2026-09-07 09:44",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 5996
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10013452": {
@@ -2866,7 +2901,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10009448": {
     "site_id": "10009448",
@@ -2924,12 +2959,12 @@
     "errors": [
       {
         "start": "2026-09-07 11:25",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 5895
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10011059": {
@@ -2940,12 +2975,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10014117": {
@@ -2956,12 +2991,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10007881": {
@@ -2972,12 +3007,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10004395": {
@@ -2988,12 +3023,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10010200": {
@@ -3004,12 +3039,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10008648": {
@@ -3020,12 +3055,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10000104": {
@@ -3036,12 +3071,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10010493": {
@@ -3052,12 +3087,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10002670": {
@@ -3068,12 +3103,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10013578": {
@@ -3084,12 +3119,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10004201": {
@@ -3100,12 +3135,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10003223": {
@@ -3116,12 +3151,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10005508": {
@@ -3138,7 +3173,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10009050": {
     "site_id": "10009050",
@@ -3154,7 +3189,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10007993": {
     "site_id": "10007993",
@@ -3164,12 +3199,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10013246": {
@@ -3180,12 +3215,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10012509": {
@@ -3196,12 +3231,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10009348": {
@@ -3218,7 +3253,7 @@
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
   },
   "10015214": {
     "site_id": "10015214",
@@ -3228,12 +3263,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10011561": {
@@ -3244,12 +3279,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10001953": {
@@ -3260,12 +3295,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10009388": {
@@ -3276,12 +3311,12 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
-        "end": null,
-        "duration_min": null
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
       }
     ],
     "total": 1,
-    "active": true,
+    "active": false,
     "last_seen": "2026-09-09 09:01"
   },
   "10004553": {
@@ -3292,12 +3327,124 @@
     "errors": [
       {
         "start": "2026-09-09 09:01",
+        "end": "2026-09-11 13:40",
+        "duration_min": 3159
+      }
+    ],
+    "total": 1,
+    "active": false,
+    "last_seen": "2026-09-09 09:01"
+  },
+  "10001897": {
+    "site_id": "10001897",
+    "site_name": "PTT พี โอ ออยล์ จำกัด สาขา 26 (พิมาย)",
+    "atgmodel": "TLS4",
+    "province": "นครราชสีมา",
+    "errors": [
+      {
+        "start": "2026-09-11 13:40",
         "end": null,
         "duration_min": null
       }
     ],
     "total": 1,
     "active": true,
-    "last_seen": "2026-09-09 09:01"
+    "last_seen": "2026-09-11 13:40"
+  },
+  "10002541": {
+    "site_id": "10002541",
+    "site_name": "PTT พิภัทรพล ปิโตรเลียม",
+    "atgmodel": "TLS4",
+    "province": "พระนครศรีอยุธยา",
+    "errors": [
+      {
+        "start": "2026-09-11 13:40",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-11 13:40"
+  },
+  "10000733": {
+    "site_id": "10000733",
+    "site_name": "PBL 106940 - BSRC ทุ่งทองภูเก็ต (สาขา 3)",
+    "atgmodel": "TLS450P",
+    "province": "ภูเก็ต",
+    "errors": [
+      {
+        "start": "2026-09-11 13:40",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-11 13:40"
+  },
+  "10005643": {
+    "site_id": "10005643",
+    "site_name": "PTT เอ.บี ปิโตรเลียม (สาขา 2)",
+    "atgmodel": "TLS4",
+    "province": "บุรีรัมย์",
+    "errors": [
+      {
+        "start": "2026-09-11 13:40",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-11 13:40"
+  },
+  "10009514": {
+    "site_id": "10009514",
+    "site_name": "PTT ประเสริฐชัย ปิโตร",
+    "atgmodel": "TLS4",
+    "province": "นครปฐม",
+    "errors": [
+      {
+        "start": "2026-09-11 13:40",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-11 13:40"
+  },
+  "10010280": {
+    "site_id": "10010280",
+    "site_name": "PTT นันทิพร ปิโตรเลียม",
+    "atgmodel": "TLS4",
+    "province": "ลพบุรี",
+    "errors": [
+      {
+        "start": "2026-09-11 13:40",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-11 13:40"
+  },
+  "10013198": {
+    "site_id": "10013198",
+    "site_name": "เพียว สาขา 115 R3009 แหลมฉบัง",
+    "atgmodel": "TLS4",
+    "province": "ชลบุรี",
+    "errors": [
+      {
+        "start": "2026-09-11 13:40",
+        "end": null,
+        "duration_min": null
+      }
+    ],
+    "total": 1,
+    "active": true,
+    "last_seen": "2026-09-11 13:40"
   }
 }
