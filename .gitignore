@@ -1,0 +1,23 @@
+# ไม่ต้องขึ้น Git
+atg_site.xlsx
+*.xlsx
+*.xls
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# ห้ามขึ้น GitHub: มีรหัสผ่าน / ข้อมูลภายใน
+auto_update.py
+manager_audit_server.py
+manager_discovery_*.py
+*.csv
+PAIRING_INFO*.txt
+Archive/
+index[0-9]*.html
+_syntax_check.js
+ams_station_master_cache.json
