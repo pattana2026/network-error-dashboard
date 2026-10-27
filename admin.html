@@ -34,7 +34,8 @@ function editPermissions(u){
  const grid=$('permissionGrid');grid.replaceChildren();
  modules.forEach(module=>{const box=document.createElement('div');box.className='perm';const h=document.createElement('b');h.textContent=module;box.appendChild(h);
  actions.forEach(([key,label])=>{const l=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.dataset.module=module;cb.dataset.action=key;cb.disabled=u.role==='admin';l.append(cb,' '+label);box.appendChild(l)});grid.appendChild(box)});
- const perms=u.permissions||u.module_permissions||[];
+ const perms=u.permissions||u.module_permissions||null;
+ if(u.role!=='admin' && !Array.isArray(perms)){msg('ไม่พบข้อมูลสิทธิ์ปัจจุบันจาก API — ปิดการบันทึกเพื่อป้องกันการลบสิทธิ์เดิมโดยไม่ตั้งใจ',true);$('permissionForm').querySelector('button[type="submit"]').disabled=true;}else{$('permissionForm').querySelector('button[type="submit"]').disabled=u.role==='admin';}
  if(Array.isArray(perms))perms.forEach(p=>actions.forEach(([key])=>{const cb=[...grid.querySelectorAll('input')].find(x=>x.dataset.module===p.module_key&&x.dataset.action===key);if(cb)cb.checked=p[key]===true||Number(p[key])===1}));
  $('permissionCard').scrollIntoView({behavior:'smooth'});
 }
