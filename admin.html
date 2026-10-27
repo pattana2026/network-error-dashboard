@@ -1,0 +1,57 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AMS User Management — Test</title><style>
+:root{font-family:system-ui,"Tahoma",sans-serif;color:#17243a;background:#f3f6fb}*{box-sizing:border-box}body{margin:0}header{background:#18356b;color:white;padding:20px 5vw}h1{margin:0;font-size:22px}main{max-width:1120px;margin:24px auto;padding:0 16px}.card{background:white;border:1px solid #dce5f2;border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 3px 14px #102b5310}input,select,button{font:inherit;padding:10px;border:1px solid #cbd5e1;border-radius:8px}button{background:#2453ba;color:white;border:0;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}.muted{color:#617089;font-size:13px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.field{display:grid;gap:5px}label{font-size:13px;font-weight:600}.hidden{display:none!important}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:690px}td,th{padding:11px;border-bottom:1px solid #e6edf6;text-align:left}th{background:#f4f7fc}td button{padding:6px 10px}.permissions{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.perm{border:1px solid #dce5f2;border-radius:10px;padding:12px}.perm label{display:block;font-weight:400;margin:7px 0}#message{white-space:pre-wrap;margin:12px 0;font-size:13px}#message.error{color:#bb2536}#message.ok{color:#167145}</style></head>
+<body><header><h1>AMS Network — User Management</h1><div style="font-size:13px;opacity:.8">Cloudflare D1 · Test branch · Admin only</div></header><main>
+<section id="loginCard" class="card"><h2>เข้าสู่ระบบ Admin</h2><form id="loginForm" class="grid"><div class="field"><label>Username</label><input id="username" autocomplete="username" required></div><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password" required></div><div class="field" style="justify-content:end"><button type="submit">เข้าสู่ระบบ</button></div></form></section>
+<section id="app" class="hidden"><div class="card toolbar"><div><b id="identity"></b><div class="muted">ผู้ดูแลระบบสามารถเพิ่มผู้ใช้และกำหนดสิทธิ์ราย Module</div></div><button id="logout">ออกจากระบบ</button></div>
+<section class="card"><h2>เพิ่มผู้ใช้งาน</h2><form id="createForm"><div class="grid"><div class="field"><label>Username</label><input id="newUsername" required maxlength="60"></div><div class="field"><label>ชื่อที่แสดง</label><input id="displayName" required maxlength="120"></div><div class="field"><label>รหัสผ่านเริ่มต้น</label><input id="newPassword" type="password" required minlength="10" autocomplete="new-password"></div><div class="field"><label>Role</label><select id="newRole"><option value="viewer">Viewer</option><option value="staff">Staff</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option></select></div></div><p class="muted">รหัสผ่านส่งไปยัง API ผ่าน HTTPS และไม่ถูกเก็บใน GitHub หรือ Browser Storage</p><button type="submit">สร้างผู้ใช้งาน</button></form></section>
+<section class="card"><div class="toolbar"><h2>รายชื่อผู้ใช้งาน</h2><button id="refresh">รีเฟรช</button></div><div class="tablewrap"><table><thead><tr><th>Username</th><th>ชื่อ</th><th>Role</th><th>สถานะ</th><th>จัดการสิทธิ์</th></tr></thead><tbody id="users"></tbody></table></div></section>
+<section class="card hidden" id="permissionCard"><div class="toolbar"><h2 id="permissionTitle">กำหนดสิทธิ์</h2><button id="closePermission" type="button">ปิด</button></div><p class="muted">Admin ได้รับสิทธิ์ทุก Module อัตโนมัติจาก Server · สิทธิ์ของผู้ใช้อื่นต้องกำหนดแยก</p><form id="permissionForm"><div id="permissionGrid" class="permissions"></div><p><button type="submit">บันทึกสิทธิ์</button></p></form></section></section>
+<div id="message" role="status" aria-live="polite"></div></main><script>
+(()=>{'use strict';
+const API='https://ams-dashboard-api.pchancheam.workers.dev';
+const modules=['network','alarm','contract','reports','analysis','errhistory'];
+const actions=[['can_view','View'],['can_comment','Comment'],['can_operate','Operate'],['can_manage','Manage']];
+const $=id=>document.getElementById(id);
+let token=null,selected=null,users=[];
+const msg=(s,error=false)=>{const e=$('message');e.textContent=s;e.className=error?'error':'ok'};
+async function request(path,method='GET',body){
+ const res=await fetch(API+path,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:body===undefined?undefined:JSON.stringify(body),cache:'no-store'});
+ const data=await res.json().catch(()=>({}));if(!res.ok)throw Error(data.error||data.message||'HTTP '+res.status);return data;
+}
+function safe(v){return String(v??'')}
+function setLoggedIn(on){$('loginCard').classList.toggle('hidden',on);$('app').classList.toggle('hidden',!on)}
+async function refresh(){
+ const result=await request('/users');users=Array.isArray(result)?result:(result.users||result.data||[]);
+ const body=$('users');body.replaceChildren();
+ users.forEach(u=>{const tr=document.createElement('tr');
+ [u.username,u.display_name,u.role,u.is_active===0||u.is_active===false?'Disabled':'Active'].forEach(v=>{const td=document.createElement('td');td.textContent=safe(v);tr.appendChild(td)});
+ const td=document.createElement('td'),b=document.createElement('button');b.textContent='สิทธิ์';b.onclick=()=>editPermissions(u);td.appendChild(b);tr.appendChild(td);body.appendChild(tr);
+ });msg('โหลดข้อมูลผู้ใช้ '+users.length+' รายการ');
+}
+function editPermissions(u){
+ selected=u;$('permissionTitle').textContent='กำหนดสิทธิ์: '+safe(u.username);$('permissionCard').classList.remove('hidden');
+ const grid=$('permissionGrid');grid.replaceChildren();
+ modules.forEach(module=>{const box=document.createElement('div');box.className='perm';const h=document.createElement('b');h.textContent=module;box.appendChild(h);
+ actions.forEach(([key,label])=>{const l=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.dataset.module=module;cb.dataset.action=key;cb.disabled=u.role==='admin';l.append(cb,' '+label);box.appendChild(l)});grid.appendChild(box)});
+ const perms=u.permissions||u.module_permissions||[];
+ if(Array.isArray(perms))perms.forEach(p=>actions.forEach(([key])=>{const cb=[...grid.querySelectorAll('input')].find(x=>x.dataset.module===p.module_key&&x.dataset.action===key);if(cb)cb.checked=p[key]===true||Number(p[key])===1}));
+ $('permissionCard').scrollIntoView({behavior:'smooth'});
+}
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();try{
+ const r=await request('/auth/login','POST',{username:$('username').value.trim(),password:$('password').value});token=r.token;
+ const me=await request('/auth/me');if(me.user?.role!=='admin')throw Error('เฉพาะ Admin เท่านั้น');
+ $('identity').textContent=(me.user.display_name||me.user.username)+' · Admin';$('password').value='';setLoggedIn(true);await refresh();
+ }catch(err){token=null;setLoggedIn(false);msg(err.message,true)}});
+$('createForm').addEventListener('submit',async e=>{e.preventDefault();try{
+ await request('/users','POST',{username:$('newUsername').value.trim(),display_name:$('displayName').value.trim(),password:$('newPassword').value,role:$('newRole').value});
+ $('createForm').reset();await refresh();msg('สร้างบัญชีสำเร็จ — โปรดกำหนดสิทธิ์ Module ต่อ');
+ }catch(err){msg(err.message,true)}});
+$('permissionForm').addEventListener('submit',async e=>{e.preventDefault();if(!selected)return;
+ const permissions=modules.map(module=>({module_key:module,...Object.fromEntries(actions.map(([key])=>[key,Number(!![...$('permissionGrid').querySelectorAll('input')].find(x=>x.dataset.module===module&&x.dataset.action===key)?.checked)]))}));
+ try{await request('/users/'+encodeURIComponent(selected.id)+'/permissions','PUT',{permissions});msg('บันทึกสิทธิ์สำเร็จ');$('permissionCard').classList.add('hidden');await refresh()}catch(err){msg(err.message,true)}
+});
+$('refresh').onclick=()=>refresh().catch(e=>msg(e.message,true));
+$('closePermission').onclick=()=>$('permissionCard').classList.add('hidden');
+$('logout').onclick=async()=>{try{await request('/auth/logout','POST')}catch(e){}token=null;selected=null;setLoggedIn(false);msg('ออกจากระบบแล้ว')};
+})();
+</script></body></html>
