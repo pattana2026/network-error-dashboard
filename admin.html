@@ -29,14 +29,18 @@ async function refresh(){
  const td=document.createElement('td'),b=document.createElement('button');b.textContent='สิทธิ์';b.onclick=()=>editPermissions(u);td.appendChild(b);tr.appendChild(td);body.appendChild(tr);
  });msg('โหลดข้อมูลผู้ใช้ '+users.length+' รายการ');
 }
-function editPermissions(u){
+async function editPermissions(u){
  selected=u;$('permissionTitle').textContent='กำหนดสิทธิ์: '+safe(u.username);$('permissionCard').classList.remove('hidden');
  const grid=$('permissionGrid');grid.replaceChildren();
+ const save=$('permissionForm').querySelector('button[type="submit"]');save.disabled=true;
  modules.forEach(module=>{const box=document.createElement('div');box.className='perm';const h=document.createElement('b');h.textContent=module;box.appendChild(h);
  actions.forEach(([key,label])=>{const l=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.dataset.module=module;cb.dataset.action=key;cb.disabled=u.role==='admin';l.append(cb,' '+label);box.appendChild(l)});grid.appendChild(box)});
- const perms=u.permissions||u.module_permissions||null;
- if(u.role!=='admin' && !Array.isArray(perms)){msg('ไม่พบข้อมูลสิทธิ์ปัจจุบันจาก API — ปิดการบันทึกเพื่อป้องกันการลบสิทธิ์เดิมโดยไม่ตั้งใจ',true);$('permissionForm').querySelector('button[type="submit"]').disabled=true;}else{$('permissionForm').querySelector('button[type="submit"]').disabled=u.role==='admin';}
- if(Array.isArray(perms))perms.forEach(p=>actions.forEach(([key])=>{const cb=[...grid.querySelectorAll('input')].find(x=>x.dataset.module===p.module_key&&x.dataset.action===key);if(cb)cb.checked=p[key]===true||Number(p[key])===1}));
+ if(u.role==='admin'){msg('Admin ได้รับสิทธิ์ทุก Module โดยอัตโนมัติ');return}
+ try{const result=await request('/users/'+encodeURIComponent(u.id)+'/permissions');const perms=result.permissions;
+ if(!Array.isArray(perms))throw Error('API ไม่ส่งรายการสิทธิ์');
+ perms.forEach(p=>actions.forEach(([key])=>{const cb=[...grid.querySelectorAll('input')].find(x=>x.dataset.module===p.module_key&&x.dataset.action===key);if(cb)cb.checked=p[key]===true||Number(p[key])===1}));
+ save.disabled=false;msg('โหลดสิทธิ์ปัจจุบันแล้ว');
+ }catch(err){msg('ไม่สามารถโหลดสิทธิ์ปัจจุบัน: '+err.message+' — ต้องอัปเดต Worker ก่อนจึงจะบันทึกได้',true)}
  $('permissionCard').scrollIntoView({behavior:'smooth'});
 }
 $('loginForm').addEventListener('submit',async e=>{e.preventDefault();try{
@@ -48,9 +52,12 @@ $('createForm').addEventListener('submit',async e=>{e.preventDefault();try{
  await request('/users','POST',{username:$('newUsername').value.trim(),display_name:$('displayName').value.trim(),password:$('newPassword').value,role:$('newRole').value});
  $('createForm').reset();await refresh();msg('สร้างบัญชีสำเร็จ — โปรดกำหนดสิทธิ์ Module ต่อ');
  }catch(err){msg(err.message,true)}});
-$('permissionForm').addEventListener('submit',async e=>{e.preventDefault();if(!selected)return;
- const permissions=modules.map(module=>({module_key:module,...Object.fromEntries(actions.map(([key])=>[key,Number(!![...$('permissionGrid').querySelectorAll('input')].find(x=>x.dataset.module===module&&x.dataset.action===key)?.checked)]))}));
- try{await request('/users/'+encodeURIComponent(selected.id)+'/permissions','PUT',{permissions});msg('บันทึกสิทธิ์สำเร็จ');$('permissionCard').classList.add('hidden');await refresh()}catch(err){msg(err.message,true)}
+$('permissionForm').addEventListener('submit',async e=>{e.preventDefault();if(!selected||selected.role==='admin')return;
+ const button=$('permissionForm').querySelector('button[type="submit"]');button.disabled=true;
+ try{for(const module of modules){const flags=Object.fromEntries(actions.map(([key])=>[key,!![...$('permissionGrid').querySelectorAll('input')].find(x=>x.dataset.module===module&&x.dataset.action===key)?.checked]));
+ await request('/users/'+encodeURIComponent(selected.id)+'/permissions','PUT',{module_key:module,...flags})}
+ msg('บันทึกสิทธิ์สำเร็จ');$('permissionCard').classList.add('hidden');await refresh();
+ }catch(err){msg('บันทึกสิทธิ์ไม่ครบ: '+err.message,true)}finally{button.disabled=false}
 });
 $('changePasswordForm').addEventListener('submit',async e=>{e.preventDefault();try{await request('/auth/change-password','POST',{old_password:$('oldPassword').value,new_password:$('changedPassword').value});$('changePasswordForm').reset();msg('เปลี่ยนรหัสผ่านเรียบร้อยแล้ว')}catch(err){msg(err.message,true)}});
 $('refresh').onclick=()=>refresh().catch(e=>msg(e.message,true));
