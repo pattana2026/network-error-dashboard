@@ -55,7 +55,7 @@ $('createForm').addEventListener('submit',async e=>{e.preventDefault();try{
  }catch(err){msg(err.message,true)}});
 $('permissionForm').addEventListener('submit',async e=>{e.preventDefault();if(!selected||selected.role==='admin')return;
  const button=$('permissionForm').querySelector('button[type="submit"]');button.disabled=true;
- try{for(const module of modules.filter(m => m !== 'alarm'))){const flags=Object.fromEntries(actions.map(([key])=>[key,!![...$('permissionGrid').querySelectorAll('input')].find(x=>x.dataset.module===module&&x.dataset.action===key)?.checked]));
+ try{for(const module of modules.filter(m => m !== 'alarm')){const flags=Object.fromEntries(actions.map(([key])=>[key,!![...$('permissionGrid').querySelectorAll('input')].find(x=>x.dataset.module===module&&x.dataset.action===key)?.checked]));
  await request('/users/'+encodeURIComponent(selected.id)+'/permissions','PUT',{module_key:module,...flags})}
  msg('บันทึกสิทธิ์สำเร็จ');$('permissionCard').classList.add('hidden');await refresh();
  }catch(err){msg('บันทึกสิทธิ์ไม่ครบ: '+err.message,true)}finally{button.disabled=false}
