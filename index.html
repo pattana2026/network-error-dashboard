@@ -6884,26 +6884,6 @@ function printSummaryReport(){
 </style>
 </head><body>${sheet.outerHTML}
 
-
-<script id="ams-header-refresh-status-sync">
-(function(){
-  function init(){
-    const source=document.getElementById('dataTimestamp');
-    const dest=document.getElementById('amsHeaderRefreshStatus');
-    if(!source||!dest)return;
-    function sync(){
-      const value=(source.textContent||'').trim();
-      const parent=dest.closest('.ams-refresh-status');
-      const mode=/SNAPSHOT|Cache/i.test(value)?'snapshot':/error|ผิดพลาด|ไม่สำเร็จ/i.test(value)?'error':/LIVE/i.test(value)?'live':'waiting';
-      if(parent){parent.dataset.mode=mode;parent.title=source.title||'ข้อมูลการ Refresh จาก AMS API';}
-      dest.textContent=value&&value!=='—'?'อัปเดตล่าสุด '+value.replace(/^·\s*/,''):'รอข้อมูล AMS API';
-    }
-    sync();
-    new MutationObserver(sync).observe(source,{childList:true,characterData:true,subtree:true});
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-})();
-</script>
 </body></html>`);
   w.document.close();
   const go=()=>{w.focus();w.print()};
@@ -7392,6 +7372,27 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
 </div>
 
 <div id="dashboardVersionBadge" title="AMS Service Intelligence Center">Dashboard V2.11.1 &middot; Audit Fix 2026.09.17</div>
+
+
+<script id="ams-header-refresh-status-sync">
+(function(){
+  function init(){
+    const source=document.getElementById('dataTimestamp');
+    const dest=document.getElementById('amsHeaderRefreshStatus');
+    if(!source||!dest)return;
+    function sync(){
+      const value=(source.textContent||'').trim();
+      const parent=dest.closest('.ams-refresh-status');
+      const mode=/SNAPSHOT|Cache/i.test(value)?'snapshot':/error|ผิดพลาด|ไม่สำเร็จ/i.test(value)?'error':/LIVE/i.test(value)?'live':'waiting';
+      if(parent){parent.dataset.mode=mode;parent.title=source.title||'ข้อมูลการ Refresh จาก AMS API';}
+      dest.textContent=value&&value!=='—'?'อัปเดตล่าสุด '+value.replace(/^·\s*/,''):'รอข้อมูล AMS API';
+    }
+    sync();
+    new MutationObserver(sync).observe(source,{childList:true,characterData:true,subtree:true});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
 
 <script id="ams-central-auth-script">
 (function(){
