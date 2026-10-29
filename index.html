@@ -7486,19 +7486,19 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
     const dest=document.getElementById('amsPasswordChangeError'),button=document.getElementById('amsChangePasswordBtn');
     const pw=document.getElementById('amsNewPassword').value,confirmPw=document.getElementById('amsConfirmPassword').value;
     dest.textContent='';
-    if(pw.length<10){dest.textContent='รหัสผ่านใหม่ต้องมีอย่างน้อย 10 ตัวอักษร';return;}
+    if(pw.length<12||pw.length>128){dest.textContent='รหัสผ่านใหม่ต้องมี 12–128 ตัวอักษร';return;}
     if(pw!==confirmPw){dest.textContent='รหัสผ่านทั้งสองช่องไม่ตรงกัน';return;}
     if(!AMS_AUTH_TOKEN){dest.textContent='Session หมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง';return;}
     button.disabled=true;button.textContent='กำลังบันทึก...';
     try{
-      await api('/auth/change-password',{method:'POST',body:JSON.stringify({current_password:document.getElementById('amsLoginPassword').value,new_password:pw})});
+      await api('/auth/change-password',{method:'POST',body:JSON.stringify({old_password:document.getElementById('amsLoginPassword').value,new_password:pw})});
       document.getElementById('amsPasswordChangePanel').hidden=true;
       document.getElementById('amsLoginButton').hidden=false;
       document.getElementById('amsNewPassword').value='';document.getElementById('amsConfirmPassword').value='';
       AMS_AUTH_TOKEN=null;AMS_AUTH_USER=null;AMS_AUTH_PERMISSIONS=[];
       document.getElementById('amsLoginPassword').value='';
       document.getElementById('amsAuthError').textContent='เปลี่ยนรหัสผ่านสำเร็จ กรุณาเข้าสู่ระบบด้วยรหัสผ่านใหม่';
-    }catch(err){dest.textContent='ไม่สามารถเปลี่ยนรหัสผ่านได้: '+err.message+' — ต้องตรวจสอบว่า Worker รองรับ /auth/change-password';}
+    }catch(err){dest.textContent='ไม่สามารถเปลี่ยนรหัสผ่านได้: '+err.message+(err.message==='Invalid password'?' (ตรวจสอบรหัสผ่านเดิมและความยาวรหัสผ่านใหม่ 12–128 ตัวอักษร)':'');}
     finally{button.disabled=false;button.textContent='บันทึกรหัสผ่านใหม่';}
   });
   form.addEventListener('submit',async e=>{
