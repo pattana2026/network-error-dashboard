@@ -7513,7 +7513,9 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
     try{
       const result=await api('/auth/login',{method:'POST',body:JSON.stringify({username:document.getElementById('amsLoginUsername').value.trim(),password:document.getElementById('amsLoginPassword').value})});
       await activate(result.token,result.user);
-      document.getElementById('amsLoginPassword').value='';
+      // Keep the original password only while first-login password change is pending.
+      // The Worker verifies old_password against the original credential.
+      if (!AMS_AUTH_USER?.must_change_password) document.getElementById('amsLoginPassword').value='';
     }catch(err){AMS_AUTH_TOKEN=null;AMS_AUTH_USER=null;AMS_AUTH_PERMISSIONS=[];error.textContent='เข้าสู่ระบบไม่สำเร็จ: '+err.message;}
     finally{button.disabled=false;button.textContent='เข้าสู่ระบบ';}
   });
