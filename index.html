@@ -1983,6 +1983,17 @@ html.ams-authenticated #amsAuthGate{display:none}
 html.ams-authenticated #amsAccountBar{display:flex}
 #amsLogoutBtn{padding:6px 10px;border:1px solid #d8e1ff;border-radius:7px;background:#eef3ff;color:#3157d5;cursor:pointer}
 </style>
+<style id="ams-account-kpi-layout-fix">
+header .header-right{position:relative!important;padding-top:38px!important}
+#amsAccountBar{position:absolute!important;top:0;right:0;max-width:100%;display:none;align-items:center;justify-content:flex-end;gap:10px;z-index:5}
+html.ams-authenticated #amsAccountBar{display:flex!important}
+#amsAccountName{display:inline-block;max-width:min(340px,38vw);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;font-size:12px;color:#244b9a}
+#amsLogoutBtn{white-space:nowrap;border-radius:9px;padding:8px 12px;font-weight:700}
+#dashboardPage #kpiGrid .kpi-card[data-filter]{cursor:pointer!important}
+#dashboardPage #kpiGrid .kpi-card[data-filter]:focus-visible{outline:3px solid #66c5ff;outline-offset:2px}
+@media(max-width:1250px){header .header-right{padding-top:42px!important}#amsAccountBar{right:0}}
+@media(max-width:650px){#amsAccountName{max-width:180px}#amsLogoutBtn{padding:7px 9px}}
+</style>
 </head>
 <!-- DASHBOARD VERSION: V2.11.0 | BUILD: 2026.09.12 | INVESTIGATION WORKFLOW PHASE 2 -->
 <body>
@@ -2976,6 +2987,13 @@ function getFiltered(){
       if(sub==='today')return r.ageLabel==='today';
       if(sub==='13')return r.ageLabel==='days13';
       if(sub==='crisis')return r.ageLabel==='crisis';
+      if(sub==='remarked')return r.status!=='resolved' && Boolean(String(r.note||'').trim());
+      if(sub==='unremarked')return r.status!=='resolved' && !String(r.note||'').trim();
+      if(sub==='recovery'||sub==='pending'){
+        const recovery=recoveryStore();
+        const inWorkflow=Object.keys(recovery||{}).some(k=>k===String(r.siteId)+'::network');
+        return r.status!=='resolved' && (sub==='recovery'?inWorkflow:!inWorkflow&&!String(r.note||'').trim());
+      }
     }
     if(!searchQuery)return true;
     const q=searchQuery;
@@ -3037,16 +3055,16 @@ function updateKPI(){
   const grid=document.getElementById('kpiGrid');
   if(grid){
     grid.innerHTML=
-      kpiCard('blue','🏢 AUTO ทั้งหมด',totalAuto,'ฐานสถานีที่ติดตามทั้งหมด',null)+
+      kpiCard('blue','🏢 AUTO ทั้งหมด',totalAuto,'ฐานสถานีที่ติดตามทั้งหมด','master-all')+
       kpiCard('red','📡 Network Error',tot,'สถานีที่ต้องดำเนินการ','network-all')+
       kpiCard('amber','⚡ เกิดใหม่วันนี้',tod,'งานใหม่ที่ต้องตรวจสอบ','network-today')+
       kpiCard('orange','⏳ ค้าง 1–3 วัน',d13,'งานที่ต้องติดตามต่อ','network-13')+
       kpiCard('crisis','🚨 เกิน 3 วัน',cris,'ต้อง Escalate / เร่งติดตาม','network-crisis')+
-      kpiCard('green','📝 มี Remark',remarked,tot?`${((remarked/tot)*100).toFixed(1)}% ของ Network Error`:'0% ของ Network Error',null)+
-      kpiCard('amber','📌 ยังไม่มี Remark',noRemark,'ต้องบันทึกผลการตรวจสอบ',null)+
-      kpiCard('blue','🛠 อยู่ระหว่างดำเนินการ',recoveryActive,'Recovery / Investigation',null)+
-      kpiCard('red','🎯 ต้องดำเนินการ',pending,'ไม่มี Remark และ Workflow',null)+
-      kpiCard('green','💚 Network Health',rate.toFixed(1)+'%',totalAuto?`${Math.max(0,totalAuto-tot)} / ${totalAuto} สถานีปกติ`:'รอข้อมูล AUTO',null);
+      kpiCard('green','📝 มี Remark',remarked,tot?`${((remarked/tot)*100).toFixed(1)}% ของ Network Error`:'0% ของ Network Error','network-remarked')+
+      kpiCard('amber','📌 ยังไม่มี Remark',noRemark,'ต้องบันทึกผลการตรวจสอบ','network-unremarked')+
+      kpiCard('blue','🛠 อยู่ระหว่างดำเนินการ',recoveryActive,'Recovery / Investigation','network-recovery')+
+      kpiCard('red','🎯 ต้องดำเนินการ',pending,'ไม่มี Remark และ Workflow','network-pending')+
+      kpiCard('green','💚 Network Health',rate.toFixed(1)+'%',totalAuto?`${Math.max(0,totalAuto-tot)} / ${totalAuto} สถานีปกติ`:'รอข้อมูล AUTO','master-online');
   }
   document.querySelectorAll('#kpiGrid .kpi-card[data-filter]').forEach(el=>{
     if(el.dataset.filter===kpiFilter)el.classList.add('kpi-active');
@@ -3436,7 +3454,24 @@ function switchTab(el,tab){
 function onSearch(q){searchQuery=q.toLowerCase();currentPage=1;renderTable();}
 function goPage(p){currentPage=p;renderTable();}
 function applySort(col){if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=1;}currentPage=1;renderTable();}
-function kpiClick(filterKey){if(kpiFilter===filterKey){kpiFilter=null;}else{kpiFilter=filterKey;}currentPage=1;renderAll();}
+function kpiClick(filterKey){
+  const isMaster=filterKey.startsWith('master-');
+  const nextTab=isMaster?(filterKey==='master-online'?'online':'all'):'network';
+  const nextFilter=isMaster?null:filterKey;
+  const same=currentTab===nextTab && kpiFilter===nextFilter;
+  currentTab=nextTab;kpiFilter=same?null:nextFilter;
+  searchQuery='';currentPage=1;
+  const input=document.querySelector('#panelActions .search-box');if(input)input.value='';
+  document.querySelectorAll('#dashboardPage .tab').forEach(t=>t.className='tab');
+  const tabOrder=['all','online','network','closeday','resolved'];
+  const tabIndex=tabOrder.indexOf(currentTab);
+  const tabEls=document.querySelectorAll('#dashboardPage .tab-nav .tab');
+  if(tabIndex>=0&&tabEls[tabIndex])tabEls[tabIndex].classList.add(currentTab==='online'||currentTab==='resolved'?'t-green':currentTab==='network'?'t-red':'t-blue');
+  renderAll();
+  const titleByFilter={'network-all':'รายการ Network Error ทั้งหมด','network-today':'รายการ Network Error เกิดใหม่วันนี้','network-13':'รายการ Network Error ค้าง 1–3 วัน','network-crisis':'รายการ Network Error เกิน 3 วัน','network-remarked':'รายการ Network Error ที่มี Remark','network-unremarked':'รายการ Network Error ที่ยังไม่มี Remark','network-recovery':'รายการที่อยู่ระหว่างดำเนินการ','network-pending':'รายการที่ต้องดำเนินการ'};
+  if(nextFilter&&document.getElementById('panelTitle'))document.getElementById('panelTitle').textContent=titleByFilter[nextFilter]||'รายการ Network Error';
+  document.getElementById('panelTitle')?.closest('.panel')?.scrollIntoView({behavior:'smooth',block:'start'});
+}
 
 // ══ RESOLVE ══
 function openResolveModal(idx){
