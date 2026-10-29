@@ -7462,8 +7462,14 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
   async function api(path,options={}){
     const headers={'Content-Type':'application/json',...(AMS_AUTH_TOKEN?{Authorization:'Bearer '+AMS_AUTH_TOKEN}:{})};
     const res=await fetch(AMS_AUTH_API+path,{...options,headers:{...headers,...options.headers},cache:'no-store'});
-    const data=await res.json().catch(()=>({}));
-    if(!res.ok)throw Error(data.error||'HTTP '+res.status);
+    const raw=await res.text();
+    let data={};try{data=raw?JSON.parse(raw):{}}catch(e){data={};}
+    if(!res.ok){
+      const reason=data.error||data.message||data.detail||'Request failed';
+      const requestId=res.headers.get('cf-ray')||res.headers.get('x-request-id');
+      throw Error(reason+' (HTTP '+res.status+(requestId?', ID '+requestId:'')+')');
+    }
+    if(data && (data.success===false || data.ok===false))throw Error((data.error||data.message||'Request failed')+' (HTTP '+res.status+')');
     return data;
   }
   async function activate(token,user){
@@ -7498,7 +7504,7 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
       AMS_AUTH_TOKEN=null;AMS_AUTH_USER=null;AMS_AUTH_PERMISSIONS=[];
       document.getElementById('amsLoginPassword').value='';
       document.getElementById('amsAuthError').textContent='เปลี่ยนรหัสผ่านสำเร็จ กรุณาเข้าสู่ระบบด้วยรหัสผ่านใหม่';
-    }catch(err){dest.textContent='ไม่สามารถเปลี่ยนรหัสผ่านได้: '+err.message+(err.message==='Invalid password'?' (ตรวจสอบรหัสผ่านเดิมและความยาวรหัสผ่านใหม่ 12–128 ตัวอักษร)':'');}
+    }catch(err){dest.textContent='ไม่สามารถเปลี่ยนรหัสผ่านได้: '+err.message+ (err.message.includes('Invalid password')?' (โปรดตรวจสอบรหัสผ่านเดิม)':'');}
     finally{button.disabled=false;button.textContent='บันทึกรหัสผ่านใหม่';}
   });
   form.addEventListener('submit',async e=>{
