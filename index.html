@@ -2054,6 +2054,14 @@ html.ams-authenticated #amsManageUsersBtn{display:inline-flex}
 #amsUsersModal table{width:100%;border-collapse:collapse;font-size:13px}
 #amsUsersModal th,#amsUsersModal td{padding:10px 6px;border-bottom:1px solid #e1e8f2;text-align:left}
 #amsUsersModal .um-note{font-size:12px;color:#66758c}
+</style><style id="ams-user-admin-controls-v4">
+#amsUsersModal .um-pill{display:inline-block;white-space:nowrap;font-size:12px;font-weight:700;padding:5px 9px;border-radius:20px}
+#amsUsersModal .um-enabled{background:#e7f7ee;color:#087447}
+#amsUsersModal .um-disabled{background:#fff0ed;color:#a83b2a}
+#amsUsersModal .um-danger{color:#b42334;border-color:#f1bec5;background:#fff5f6}
+#amsUsersModal button:disabled{opacity:.35;cursor:not-allowed}
+#amsUsersModal #umAuditPanel{margin-top:20px;border-top:1px solid #dbe5f2;padding-top:15px}
+#amsUsersModal td:last-child{min-width:390px}
 </style></head>
 <!-- DASHBOARD VERSION: V2.11.0 | BUILD: 2026.09.12 | INVESTIGATION WORKFLOW PHASE 2 -->
 <body>
@@ -7507,7 +7515,7 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
  function notify(msg,bad=false){el('umStatus').textContent=msg;el('umStatus').style.color=bad?'#ba2437':'#17754c'}
  async function load(){
   const data=await req('/users');users=data.users||[];
-  el('umRows').innerHTML=users.map(u=>`<tr><td><b>${escape(u.username)}</b><div class="um-note">${escape(u.display_name)}</div></td><td>${escape(u.role)}</td><td>${u.is_active?'เปิด':'ปิด'}</td><td><button data-id="${escape(u.id)}" data-action="permissions">สิทธิ์</button> <button data-id="${escape(u.id)}" data-action="edit">แก้ไข</button> <button data-id="${escape(u.id)}" data-action="reset">Reset Password</button></td></tr>`).join('');
+  el('umRows').innerHTML=users.map(u=>`<tr><td><b>${escape(u.username)}</b><div class="um-note">${escape(u.display_name)}</div></td><td>${escape(u.role)}</td><td><span class="um-pill ${u.is_active?'um-enabled':'um-disabled'}">${u.is_active?'● เปิดใช้งาน':'● ระงับบัญชี'}</span></td><td><button data-id="${escape(u.id)}" data-action="permissions">สิทธิ์</button> <button data-id="${escape(u.id)}" data-action="edit">แก้ไข</button> <button data-id="${escape(u.id)}" data-action="reset">Reset Password</button> <button data-id="${escape(u.id)}" data-action="toggle" ${u.username?.toLowerCase()==='amsnetwork_admin'?'disabled title="ไม่อนุญาตให้ระงับบัญชีหลัก"':''}>${u.is_active?'ระงับบัญชี':'เปิดใช้งาน'}</button> <button class="um-danger" data-id="${escape(u.id)}" data-action="delete" ${u.username?.toLowerCase()==='amsnetwork_admin'?'disabled title="ไม่อนุญาตให้ลบบัญชีหลัก"':''}>ลบ</button> <button data-id="${escape(u.id)}" data-action="audit">Audit</button></td></tr>`).join('');
   notify('พบผู้ใช้ '+users.length+' บัญชี');
  }
  function open(){if(!owner())return;el('amsUsersModal').classList.add('open');load().catch(e=>notify(e.message,true))}
@@ -7525,16 +7533,36 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
   try{
    if(b.dataset.action==='edit'){
     const display_name=prompt('ชื่อที่แสดง',u.display_name||'');if(display_name===null)return;
-    const is_active=confirm('เปิดใช้งานบัญชีนี้? กด Cancel เพื่อระงับบัญชี');
-    if(!confirm('ยืนยันแก้ไขบัญชี '+u.username+' ?'))return;
-    await req('/users/'+encodeURIComponent(u.id),'PATCH',{display_name,is_active});
-    await load();
+    await req('/users/'+encodeURIComponent(u.id),'PATCH',{display_name});
+    await load();notify('แก้ไขข้อมูลผู้ใช้สำเร็จ');
    }else if(b.dataset.action==='reset'){
     const password=prompt('รหัสผ่านชั่วคราวใหม่สำหรับ '+u.username+' (อย่าส่งรหัสผ่านในแชต)');
     if(!password)return;
     if(!confirm('ยืนยัน Reset Password ของ '+u.username+' ?'))return;
     await req('/users/'+encodeURIComponent(u.id)+'/reset-password','POST',{new_password:password});
     notify('รีเซ็ตรหัสผ่านแล้ว ระบบบังคับเปลี่ยนรหัสผ่านเมื่อเข้าสู่ระบบ');
+   }else if(b.dataset.action==='toggle'){
+    if(u.username?.toLowerCase()==='amsnetwork_admin')throw Error('ไม่อนุญาตให้เปลี่ยนสถานะบัญชี Admin หลัก');
+    const next=!Boolean(u.is_active);
+    if(!confirm((next?'เปิดใช้งาน':'ระงับบัญชี')+' '+u.username+' ?'))return;
+    await req('/users/'+encodeURIComponent(u.id),'PATCH',{is_active:next});
+    await load();notify('เปลี่ยนสถานะบัญชีสำเร็จ');
+   }else if(b.dataset.action==='delete'){
+    if(u.username?.toLowerCase()==='amsnetwork_admin')throw Error('ไม่อนุญาตให้ลบบัญชี Admin หลัก');
+    const check=prompt('ลบบัญชี '+u.username+' อย่างถาวร\nพิมพ์ชื่อบัญชีเพื่อยืนยัน (การลบอาจกระทบ Audit เดิม):');
+    if(check!==u.username)return;
+    await req('/users/'+encodeURIComponent(u.id),'DELETE');
+    await load();notify('ลบบัญชี '+u.username+' สำเร็จ');
+   }else if(b.dataset.action==='audit'){
+    el('umAuditTitle').textContent='Audit: '+u.username;
+    el('umAuditRows').innerHTML='<tr><td colspan="4">กำลังโหลดประวัติ…</td></tr>';
+    el('umAuditPanel').hidden=false;
+    try{
+      const data=await req('/audit-logs?user_id='+encodeURIComponent(u.id)+'&limit=100');
+      const logs=data.logs||data.audit_logs||data.items||[];
+      el('umAuditRows').innerHTML=logs.length?logs.map(x=>`<tr><td>${escape(x.created_at||x.timestamp||x.time)}</td><td>${escape(x.action||x.event_type||x.event)}</td><td>${escape(x.module||x.module_key||'—')}</td><td>${escape(x.details||x.detail||x.description||'—')}</td></tr>`).join(''):'<tr><td colspan="4">ไม่พบประวัติการใช้งาน</td></tr>';
+      notify('โหลด Audit '+logs.length+' รายการ');
+    }catch(err){el('umAuditRows').innerHTML='<tr><td colspan="4">ไม่สามารถโหลด Audit: '+escape(err.message)+'</td></tr>';notify('Audit API ไม่พร้อมใช้งาน: '+err.message,true)}
    }else if(b.dataset.action==='permissions'){
     const data=await req('/users/'+encodeURIComponent(u.id)+'/permissions');
     const rows=data.permissions||[];
@@ -7561,7 +7589,10 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
    <p class="um-note">เฉพาะ AMSNetwork_Admin · การจัดการผู้ใช้ผ่าน Cloudflare Worker</p>
    <form id="umCreate" class="um-row"><input name="username" placeholder="Username" required minlength="3"><input name="display_name" placeholder="ชื่อที่แสดง" required><input name="password" type="password" placeholder="รหัสผ่านเริ่มต้น" required><select name="role"><option value="staff">Staff</option><option value="supervisor">Supervisor</option><option value="viewer">Viewer</option></select><button class="um-primary" type="submit">+ สร้าง User</button></form>
    <p id="umStatus" aria-live="polite"></p><div style="overflow-x:auto"><table><thead><tr><th>ผู้ใช้งาน</th><th>Role</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="umRows"></tbody></table></div><div id="umPermissions"></div>
+   <section id="umAuditPanel" hidden><div class="um-row" style="justify-content:space-between"><h3 id="umAuditTitle">Audit</h3><button type="button" id="umAuditClose">ปิด Audit</button></div>
+   <div style="overflow-x:auto"><table><thead><tr><th>วันเวลา</th><th>เหตุการณ์</th><th>Module</th><th>รายละเอียด</th></tr></thead><tbody id="umAuditRows"></tbody></table></div></section>
   </div></div>`);
+  el('umAuditClose').onclick=()=>el('umAuditPanel').hidden=true;
   el('umClose').onclick=()=>el('amsUsersModal').classList.remove('open');
   el('umCreate').onsubmit=create;
   el('umRows').onclick=handleClick;
