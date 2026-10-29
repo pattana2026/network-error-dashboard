@@ -6927,90 +6927,7 @@ function printSummaryReport(){
 </style>
 </head><body>${sheet.outerHTML}
 
-<script id="ams-user-management-script">
-(function(){
- const API='https://ams-dashboard-api.pchancheam.workers.dev';
- const owner=()=>AMS_AUTH_USER?.role==='admin'&&AMS_AUTH_USER?.username?.toLowerCase()==='amsnetwork_admin';
- const el=(id)=>document.getElementById(id);
- const escape=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- async function req(path,method='GET',body){
-  if(!AMS_AUTH_TOKEN)throw Error('กรุณา Login ใหม่');
-  const r=await fetch(API+path,{method,headers:{'Authorization':'Bearer '+AMS_AUTH_TOKEN,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,cache:'no-store'});
-  const j=await r.json().catch(()=>({}));
-  if(!r.ok)throw Error(j.error||'HTTP '+r.status);
-  return j;
- }
- let users=[];
- const modules=['network_error','contract','station_master','remark','analysis'];
- function notify(msg,bad=false){el('umStatus').textContent=msg;el('umStatus').style.color=bad?'#ba2437':'#17754c'}
- async function load(){
-  const data=await req('/users');users=data.users||[];
-  el('umRows').innerHTML=users.map(u=>`<tr><td><b>${escape(u.username)}</b><div class="um-note">${escape(u.display_name)}</div></td><td>${escape(u.role)}</td><td>${u.is_active?'เปิด':'ปิด'}</td><td><button data-id="${escape(u.id)}" data-action="permissions">สิทธิ์</button> <button data-id="${escape(u.id)}" data-action="edit">แก้ไข</button> <button data-id="${escape(u.id)}" data-action="reset">Reset Password</button></td></tr>`).join('');
-  notify('พบผู้ใช้ '+users.length+' บัญชี');
- }
- function open(){if(!owner())return;el('amsUsersModal').classList.add('open');load().catch(e=>notify(e.message,true))}
- async function create(e){
-  e.preventDefault();
-  const form=e.target;
-  try{
-   await req('/users','POST',{username:form.elements.namedItem("username").value.trim(),display_name:form.elements.namedItem("display_name").value.trim(),password:form.elements.namedItem("password").value,role:form.elements.namedItem("role").value});
-   form.reset();await load();notify('สร้างผู้ใช้สำเร็จ — กรุณากำหนดสิทธิ์ให้เหมาะสม');
-  }catch(e){notify(e.message,true)}
- }
- async function handleClick(e){
-  const b=e.target.closest('button[data-action]');if(!b)return;
-  const u=users.find(x=>x.id===b.dataset.id);if(!u)return;
-  try{
-   if(b.dataset.action==='edit'){
-    const display_name=prompt('ชื่อที่แสดง',u.display_name||'');if(display_name===null)return;
-    const is_active=confirm('เปิดใช้งานบัญชีนี้? กด Cancel เพื่อระงับบัญชี');
-    if(!confirm('ยืนยันแก้ไขบัญชี '+u.username+' ?'))return;
-    await req('/users/'+encodeURIComponent(u.id),'PATCH',{display_name,is_active});
-    await load();
-   }else if(b.dataset.action==='reset'){
-    const password=prompt('รหัสผ่านชั่วคราวใหม่สำหรับ '+u.username+' (อย่าส่งรหัสผ่านในแชต)');
-    if(!password)return;
-    if(!confirm('ยืนยัน Reset Password ของ '+u.username+' ?'))return;
-    await req('/users/'+encodeURIComponent(u.id)+'/reset-password','POST',{new_password:password});
-    notify('รีเซ็ตรหัสผ่านแล้ว ระบบบังคับเปลี่ยนรหัสผ่านเมื่อเข้าสู่ระบบ');
-   }else if(b.dataset.action==='permissions'){
-    const data=await req('/users/'+encodeURIComponent(u.id)+'/permissions');
-    const rows=data.permissions||[];
-    const current=Object.fromEntries(rows.map(p=>[p.module_key,p]));
-    el('umPermissions').innerHTML='<h4>สิทธิ์: '+escape(u.username)+'</h4>'+modules.map(m=>{
-      const p=current[m]||{};
-      return `<div class="um-row"><strong style="min-width:135px">${escape(m)}</strong>${['can_view','can_comment','can_operate','can_manage'].map(k=>`<label><input type="checkbox" data-module="${m}" data-flag="${k}" ${p[k]?'checked':''}> ${k.replace('can_','')}</label>`).join('')}<button data-save="${m}">บันทึก</button></div>`;
-    }).join('')+'<p class="um-note">สิทธิ์ Alarm จำกัดเฉพาะ Owner ตามข้อกำหนด Worker</p>';
-    el('umPermissions').dataset.userId=u.id;
-   }
-  }catch(err){notify(err.message,true)}
- }
- async function savePermission(e){
-  const b=e.target.closest('button[data-save]');if(!b)return;
-  const module_key=b.dataset.save, id=el('umPermissions').dataset.userId;
-  const flags={};for(const k of ['can_view','can_comment','can_operate','can_manage'])flags[k]=!!el('umPermissions').querySelector(`input[data-module="${module_key}"][data-flag="${k}"]`)?.checked;
-  try{await req('/users/'+encodeURIComponent(id)+'/permissions','PUT',{module_key,...flags});notify('บันทึกสิทธิ์ '+module_key+' สำเร็จ')}catch(err){notify(err.message,true)}
- }
- function init(){
-  const btn=document.createElement('button');btn.id='amsManageUsersBtn';btn.type='button';btn.textContent='👥 จัดการผู้ใช้';btn.onclick=open;
-  el('amsLogoutBtn')?.before(btn);
-  document.body.insertAdjacentHTML('beforeend',`<div id="amsUsersModal" role="dialog" aria-modal="true" aria-label="User Management"><div class="um-card">
-   <div class="um-row" style="justify-content:space-between"><h2>👥 User Management</h2><button id="umClose">✕ ปิด</button></div>
-   <p class="um-note">เฉพาะ AMSNetwork_Admin · การจัดการผู้ใช้ผ่าน Cloudflare Worker</p>
-   <form id="umCreate" class="um-row"><input name="username" placeholder="Username" required minlength="3"><input name="display_name" placeholder="ชื่อที่แสดง" required><input name="password" type="password" placeholder="รหัสผ่านเริ่มต้น" required><select name="role"><option value="staff">Staff</option><option value="supervisor">Supervisor</option><option value="viewer">Viewer</option></select><button class="um-primary" type="submit">+ สร้าง User</button></form>
-   <p id="umStatus" aria-live="polite"></p><div style="overflow-x:auto"><table><thead><tr><th>ผู้ใช้งาน</th><th>Role</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="umRows"></tbody></table></div><div id="umPermissions"></div>
-  </div></div>`);
-  el('umClose').onclick=()=>el('amsUsersModal').classList.remove('open');
-  el('umCreate').onsubmit=create;
-  el('umRows').onclick=handleClick;
-  el('umPermissions').onclick=savePermission;
-  el('amsUsersModal').addEventListener('click',e=>{if(e.target===el('amsUsersModal'))el('amsUsersModal').classList.remove('open')});
-  // Avoid showing management to other users, even after logout or account switching.
-  new MutationObserver(()=>{btn.style.display=owner()&&document.documentElement.classList.contains('ams-authenticated')?'inline-flex':'none';}).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-})();
-</script></body></html>`);
+</body></html>`);
   w.document.close();
   const go=()=>{w.focus();w.print()};
   if(w.document.fonts&&w.document.fonts.ready)w.document.fonts.ready.then(()=>setTimeout(go,250));else setTimeout(go,500);
@@ -7570,6 +7487,90 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
     document.getElementById('amsLoginPassword').value='';
     await checkModuleAccess();
   });
+})();
+</script>
+<script id="ams-user-management-script">
+(function(){
+ const API='https://ams-dashboard-api.pchancheam.workers.dev';
+ const owner=()=>AMS_AUTH_USER?.role==='admin'&&AMS_AUTH_USER?.username?.toLowerCase()==='amsnetwork_admin';
+ const el=(id)=>document.getElementById(id);
+ const escape=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ async function req(path,method='GET',body){
+  if(!AMS_AUTH_TOKEN)throw Error('กรุณา Login ใหม่');
+  const r=await fetch(API+path,{method,headers:{'Authorization':'Bearer '+AMS_AUTH_TOKEN,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,cache:'no-store'});
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok)throw Error(j.error||'HTTP '+r.status);
+  return j;
+ }
+ let users=[];
+ const modules=['network_error','contract','station_master','remark','analysis'];
+ function notify(msg,bad=false){el('umStatus').textContent=msg;el('umStatus').style.color=bad?'#ba2437':'#17754c'}
+ async function load(){
+  const data=await req('/users');users=data.users||[];
+  el('umRows').innerHTML=users.map(u=>`<tr><td><b>${escape(u.username)}</b><div class="um-note">${escape(u.display_name)}</div></td><td>${escape(u.role)}</td><td>${u.is_active?'เปิด':'ปิด'}</td><td><button data-id="${escape(u.id)}" data-action="permissions">สิทธิ์</button> <button data-id="${escape(u.id)}" data-action="edit">แก้ไข</button> <button data-id="${escape(u.id)}" data-action="reset">Reset Password</button></td></tr>`).join('');
+  notify('พบผู้ใช้ '+users.length+' บัญชี');
+ }
+ function open(){if(!owner())return;el('amsUsersModal').classList.add('open');load().catch(e=>notify(e.message,true))}
+ async function create(e){
+  e.preventDefault();
+  const form=e.target;
+  try{
+   await req('/users','POST',{username:form.elements.namedItem("username").value.trim(),display_name:form.elements.namedItem("display_name").value.trim(),password:form.elements.namedItem("password").value,role:form.elements.namedItem("role").value});
+   form.reset();await load();notify('สร้างผู้ใช้สำเร็จ — กรุณากำหนดสิทธิ์ให้เหมาะสม');
+  }catch(e){notify(e.message,true)}
+ }
+ async function handleClick(e){
+  const b=e.target.closest('button[data-action]');if(!b)return;
+  const u=users.find(x=>x.id===b.dataset.id);if(!u)return;
+  try{
+   if(b.dataset.action==='edit'){
+    const display_name=prompt('ชื่อที่แสดง',u.display_name||'');if(display_name===null)return;
+    const is_active=confirm('เปิดใช้งานบัญชีนี้? กด Cancel เพื่อระงับบัญชี');
+    if(!confirm('ยืนยันแก้ไขบัญชี '+u.username+' ?'))return;
+    await req('/users/'+encodeURIComponent(u.id),'PATCH',{display_name,is_active});
+    await load();
+   }else if(b.dataset.action==='reset'){
+    const password=prompt('รหัสผ่านชั่วคราวใหม่สำหรับ '+u.username+' (อย่าส่งรหัสผ่านในแชต)');
+    if(!password)return;
+    if(!confirm('ยืนยัน Reset Password ของ '+u.username+' ?'))return;
+    await req('/users/'+encodeURIComponent(u.id)+'/reset-password','POST',{new_password:password});
+    notify('รีเซ็ตรหัสผ่านแล้ว ระบบบังคับเปลี่ยนรหัสผ่านเมื่อเข้าสู่ระบบ');
+   }else if(b.dataset.action==='permissions'){
+    const data=await req('/users/'+encodeURIComponent(u.id)+'/permissions');
+    const rows=data.permissions||[];
+    const current=Object.fromEntries(rows.map(p=>[p.module_key,p]));
+    el('umPermissions').innerHTML='<h4>สิทธิ์: '+escape(u.username)+'</h4>'+modules.map(m=>{
+      const p=current[m]||{};
+      return `<div class="um-row"><strong style="min-width:135px">${escape(m)}</strong>${['can_view','can_comment','can_operate','can_manage'].map(k=>`<label><input type="checkbox" data-module="${m}" data-flag="${k}" ${p[k]?'checked':''}> ${k.replace('can_','')}</label>`).join('')}<button data-save="${m}">บันทึก</button></div>`;
+    }).join('')+'<p class="um-note">สิทธิ์ Alarm จำกัดเฉพาะ Owner ตามข้อกำหนด Worker</p>';
+    el('umPermissions').dataset.userId=u.id;
+   }
+  }catch(err){notify(err.message,true)}
+ }
+ async function savePermission(e){
+  const b=e.target.closest('button[data-save]');if(!b)return;
+  const module_key=b.dataset.save, id=el('umPermissions').dataset.userId;
+  const flags={};for(const k of ['can_view','can_comment','can_operate','can_manage'])flags[k]=!!el('umPermissions').querySelector(`input[data-module="${module_key}"][data-flag="${k}"]`)?.checked;
+  try{await req('/users/'+encodeURIComponent(id)+'/permissions','PUT',{module_key,...flags});notify('บันทึกสิทธิ์ '+module_key+' สำเร็จ')}catch(err){notify(err.message,true)}
+ }
+ function init(){
+  const btn=document.createElement('button');btn.id='amsManageUsersBtn';btn.type='button';btn.textContent='👥 จัดการผู้ใช้';btn.onclick=open;
+  el('amsLogoutBtn')?.before(btn);
+  document.body.insertAdjacentHTML('beforeend',`<div id="amsUsersModal" role="dialog" aria-modal="true" aria-label="User Management"><div class="um-card">
+   <div class="um-row" style="justify-content:space-between"><h2>👥 User Management</h2><button id="umClose">✕ ปิด</button></div>
+   <p class="um-note">เฉพาะ AMSNetwork_Admin · การจัดการผู้ใช้ผ่าน Cloudflare Worker</p>
+   <form id="umCreate" class="um-row"><input name="username" placeholder="Username" required minlength="3"><input name="display_name" placeholder="ชื่อที่แสดง" required><input name="password" type="password" placeholder="รหัสผ่านเริ่มต้น" required><select name="role"><option value="staff">Staff</option><option value="supervisor">Supervisor</option><option value="viewer">Viewer</option></select><button class="um-primary" type="submit">+ สร้าง User</button></form>
+   <p id="umStatus" aria-live="polite"></p><div style="overflow-x:auto"><table><thead><tr><th>ผู้ใช้งาน</th><th>Role</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="umRows"></tbody></table></div><div id="umPermissions"></div>
+  </div></div>`);
+  el('umClose').onclick=()=>el('amsUsersModal').classList.remove('open');
+  el('umCreate').onsubmit=create;
+  el('umRows').onclick=handleClick;
+  el('umPermissions').onclick=savePermission;
+  el('amsUsersModal').addEventListener('click',e=>{if(e.target===el('amsUsersModal'))el('amsUsersModal').classList.remove('open')});
+  // Avoid showing management to other users, even after logout or account switching.
+  new MutationObserver(()=>{btn.style.display=owner()&&document.documentElement.classList.contains('ams-authenticated')?'inline-flex':'none';}).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 </script>
 </body>
