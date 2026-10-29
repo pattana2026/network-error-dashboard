@@ -2011,7 +2011,37 @@ header .settings-nav{border-radius:10px!important;min-width:40px!important;min-h
 @media(max-width:1250px){header .header-right{padding-top:44px!important}header .utility-nav-row{justify-content:flex-start!important}header .ams-refresh-status{max-width:100%}}
 @media(max-width:650px){header .ams-refresh-status{flex-basis:100%;max-width:100%}header #amsLoadBtn{flex:1}}
 </style>
-</head>
+
+<style id="ams-polished-header-layout-v3">
+/* Presentation-only: keep existing login, reload, status and module handlers intact. */
+body > header{height:auto!important;min-height:116px!important;display:grid!important;grid-template-columns:minmax(290px,1fr) minmax(560px,auto)!important;grid-template-rows:auto!important;align-items:center!important;column-gap:24px!important;row-gap:8px!important;padding:12px 22px!important;box-sizing:border-box!important;overflow:visible!important}
+body > header > .logo{align-self:center!important;min-width:0!important}
+body > header > .header-right{display:grid!important;grid-template-columns:1fr!important;grid-template-rows:34px auto auto!important;align-items:stretch!important;justify-items:stretch!important;gap:8px!important;min-width:0!important;width:100%!important;max-width:980px!important;margin:0!important;padding:0!important;position:static!important}
+body > header #amsAccountBar{position:static!important;grid-row:1!important;justify-self:end!important;align-self:center!important;max-width:100%!important;min-height:30px!important;padding:0 2px!important;background:transparent!important;box-shadow:none!important}
+body > header .module-nav-row{grid-row:2!important;display:flex!important;justify-content:flex-end!important;align-items:center!important;gap:7px!important;flex-wrap:wrap!important;min-height:39px!important;padding:0 0 7px!important;margin:0!important;border-bottom:1px solid #e1e8f3!important}
+body > header .module-nav-row .module-nav{min-width:0!important;flex:0 1 auto!important;white-space:nowrap!important}
+body > header .utility-nav-row{grid-row:3!important;display:flex!important;justify-content:flex-end!important;align-items:center!important;gap:8px!important;flex-wrap:nowrap!important;min-height:42px!important;padding:0!important;margin:0!important}
+body > header .ams-refresh-status{display:flex!important;align-items:center!important;gap:9px!important;flex:0 1 330px!important;min-width:150px!important;max-width:330px!important;height:38px!important;box-sizing:border-box!important;padding:0 12px!important;border-radius:10px!important;background:#f4f7fd!important;border:1px solid #dfe7f3!important;box-shadow:none!important;font-size:12px!important}
+body > header #amsHeaderRefreshStatus{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+body > header #amsLoadBtn{height:38px!important;min-height:38px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;padding:0 15px!important;border-radius:10px!important;white-space:nowrap!important;flex-shrink:0!important;box-shadow:none!important}
+body > header .settings-nav{width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;padding:0!important;flex-shrink:0!important;border-radius:10px!important}
+@media(max-width:1320px){body > header{grid-template-columns:1fr!important;gap:10px!important}body > header > .logo{justify-self:start!important}body > header > .header-right{max-width:none!important}body > header .module-nav-row,body > header .utility-nav-row{justify-content:flex-start!important}body > header #amsAccountBar{justify-self:end!important}}
+@media(max-width:700px){body > header{padding:12px!important}body > header > .header-right{grid-template-rows:auto auto auto!important}body > header .module-nav-row{justify-content:flex-start!important}body > header .utility-nav-row{flex-wrap:wrap!important;justify-content:flex-start!important}body > header .ams-refresh-status{flex:1 1 100%!important;max-width:none!important}body > header #amsAccountName{max-width:180px!important}}
+</style>
+<style id="ams-refresh-polish-v3">
+/* The timestamp belongs in the header toolbar, not twice on the page. */
+.dashboard-hero-update{display:none!important}
+body > header .utility-nav-row{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:10px!important;padding:8px 0 2px!important;flex-wrap:wrap!important}
+body > header .ams-refresh-status{display:inline-flex!important;align-items:center!important;gap:9px!important;min-height:40px!important;min-width:0!important;max-width:none!important;width:auto!important;padding:0 13px!important;border:1px solid #dce6f2!important;border-radius:12px!important;background:#f6f9fe!important;color:#273d60!important;font-size:12px!important;line-height:1!important;box-shadow:0 1px 2px rgba(15,32,64,.04)!important;box-sizing:border-box!important}
+body > header .ams-refresh-label{font-weight:700!important;color:#687b99!important;white-space:nowrap!important;padding-right:9px!important;border-right:1px solid #dce6f2!important}
+body > header #amsHeaderRefreshStatus{font-weight:700!important;color:#1e3558!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important}
+body > header .ams-refresh-dot{width:8px!important;height:8px!important;box-shadow:0 0 0 3px rgba(34,197,94,.11)}
+body > header .ams-refresh-status[data-mode="snapshot"] .ams-refresh-dot{background:#f59e0b!important;box-shadow:0 0 0 3px rgba(245,158,11,.12)}
+body > header .ams-refresh-status[data-mode="error"] .ams-refresh-dot{background:#ef4444!important;box-shadow:0 0 0 3px rgba(239,68,68,.12)}
+body > header #amsLoadBtn{height:40px!important;min-height:40px!important;padding:0 16px!important;border-radius:12px!important;font-size:12px!important;font-weight:800!important;box-shadow:none!important}
+body > header .utility-nav-row .settings-nav{height:40px!important;width:40px!important;min-width:40px!important;padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;border-radius:12px!important}
+@media(max-width:700px){body > header .utility-nav-row{justify-content:flex-start!important}body > header .ams-refresh-status{max-width:100%!important}body > header .ams-refresh-label{display:none!important}}
+</style></head>
 <!-- DASHBOARD VERSION: V2.11.0 | BUILD: 2026.09.12 | INVESTIGATION WORKFLOW PHASE 2 -->
 <body>
 <div id="amsAuthGate"><form class="ams-auth-card" id="amsAuthForm" autocomplete="on">
@@ -2036,7 +2066,7 @@ header .settings-nav{border-radius:10px!important;min-width:40px!important;min-h
       <button class="nav-btn module-nav" id="navReports" onclick="showPage('reports')" style="display:none">📊 Reports & Analytics</button>
     </div>
     <div class="utility-nav-row" aria-label="เครื่องมืออัปเดตข้อมูล">
-      <div class="ams-refresh-status" title="สถานะการอัปเดตข้อมูลล่าสุด"><span class="ams-refresh-dot" aria-hidden="true"></span><span id="amsHeaderRefreshStatus">รอข้อมูล AMS API</span></div>
+      <div class="ams-refresh-status" title="สถานะการอัปเดตข้อมูลล่าสุด"><span class="ams-refresh-label">ข้อมูลล่าสุด</span><span class="ams-refresh-dot" aria-hidden="true"></span><span id="amsHeaderRefreshStatus">รอข้อมูล AMS API</span></div>
       <button class="upload-btn utility-reload" id="amsLoadBtn" onclick="loadFromAMS()" title="ดึงข้อมูลล่าสุดจาก AMS Local Client">🔄 รีโหลดข้อมูล</button>
       <button class="nav-btn utility-nav settings-nav" onclick="openTokenModal()" title="ตั้งค่าและข้อมูลการ Refresh" aria-label="ตั้งค่าและข้อมูลการ Refresh">⚙️</button>
     </div>
@@ -7380,17 +7410,23 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
     const source=document.getElementById('dataTimestamp');
     const dest=document.getElementById('amsHeaderRefreshStatus');
     if(!source||!dest)return;
+    const parent=dest.closest('.ams-refresh-status');
     function sync(){
-      const value=(source.textContent||'').trim();
-      const parent=dest.closest('.ams-refresh-status');
-      const mode=/SNAPSHOT|Cache/i.test(value)?'snapshot':/error|ผิดพลาด|ไม่สำเร็จ/i.test(value)?'error':/LIVE/i.test(value)?'live':'waiting';
-      if(parent){parent.dataset.mode=mode;parent.title=source.title||'ข้อมูลการ Refresh จาก AMS API';}
-      dest.textContent=value&&value!=='—'?'อัปเดตล่าสุด '+value.replace(/^·\s*/,''):'รอข้อมูล AMS API';
+      const raw=(source.textContent||'').trim().replace(/^·\\s*/,'');
+      const mode=/SNAPSHOT|Cache/i.test(raw)?'snapshot':/error|ผิดพลาด|ไม่สำเร็จ/i.test(raw)?'error':/LIVE/i.test(raw)?'live':'waiting';
+      if(parent)parent.dataset.mode=mode;
+      const match=raw.match(/(\\d{4})-(\\d{2})-(\\d{2})[ T](\\d{2}:\\d{2}(?::\\d{2})?)/);
+      const time=match?match[4]:(raw.match(/\\b\\d{1,2}:\\d{2}(?::\\d{2})?\\b/)||[])[0];
+      const date=match?`${match[3]}/${match[2]}/${match[1]}`:'';
+      const label=mode==='live'?'LIVE':mode==='snapshot'?'CACHE':mode==='error'?'ERROR':'รอข้อมูล';
+      dest.textContent=time?`${label}  •  ${date?date+'  •  ':''}${time}`:label;
+      if(parent)parent.title=raw||'สถานะการอัปเดตจาก AMS API';
     }
     sync();
     new MutationObserver(sync).observe(source,{childList:true,characterData:true,subtree:true});
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
 })();
 </script>
 
