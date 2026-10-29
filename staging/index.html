@@ -5393,97 +5393,72 @@ function onNoteKeydown(event, el){
   }
 }
 
-function onNoteBlur(el, idx){
-  const r = displayData.find(x => x._idx === idx);
-  if(!r) return;
-
-  const newText = el.textContent.trim();
-
-  if(!newText){
-    // ว่าง — กลับไปแสดง placeholder
-    el.textContent = '🔴 รอดำเนินการ (คลิกเพื่อบันทึกหมายเหตุ)';
-    el.classList.add('placeholder');
-    if(r.note){
-      r.note = '';
-      saveNoteOverride(r.siteId, '');
-    }
+async function onNoteBlur(el, idx){
+  const r=displayData.find(x=>x._idx===idx);
+  if(!r)return;
+  const previous=r.note||'';
+  const note=el.textContent.trim();
+  if(note===previous)return;
+  if(!AMS_AUTH_TOKEN||!AMS_AUTH_USER||!amsAllowed('network_error','can_comment')){
+    el.textContent=previous||'🔴 รอดำเนินการ (คลิกเพื่อบันทึกหมายเหตุ)';
+    el.classList.toggle('placeholder',!previous);
+    showInfoToast('⛔ ไม่มีสิทธิ์บันทึก Remark','ต้องเข้าสู่ระบบ Central Login และมีสิทธิ์ can_comment');
     return;
   }
-
-  // ถ้าข้อความเปลี่ยนจริง ให้บันทึก
-  if(newText !== r.note){
-    r.note = newText;
-    saveNoteOverride(r.siteId, newText);
-
-    // Visual feedback: flash สีเขียวแว้บนึง
-    el.classList.add('note-saved-flash');
-    setTimeout(() => el.classList.remove('note-saved-flash'), 1000);
-  }
-}
-
-async function saveNoteOverride(siteId, note){
-  const overrides = lsLoad(SK_NOTE_OVERRIDES, {});
-  overrides[siteId] = {
-    note,
-    updated_at: new Date().toISOString(),
-    synced: false,
-    sync_status: 'กำลังบันทึก AMS...'
-  };
-  lsSave(SK_NOTE_OVERRIDES, overrides);
-
-  showInfoToast('✏️ กำลังบันทึกหมายเหตุ',
-    `Station ID: ${siteId}\nกำลังส่ง Remark ไป AMS และอ่านค่ากลับเพื่อตรวจสอบ...`);
-
+  el.contentEditable='false';
   try{
-    const res = await fetch(`${AMS_WRITE_PROXY}/api/remark`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({site_id:siteId, note})
-    });
-
-    const j = await res.json().catch(()=>({success:false,message:`HTTP ${res.status}`}));
-    if(!res.ok || !j.success){
-      throw new Error(j.message || `HTTP ${res.status}`);
-    }
-
-    // AMS verified: remove local override so AMS remains the shared source of truth.
-    delete overrides[siteId];
-    lsSave(SK_NOTE_OVERRIDES, overrides);
-
-    // Store last known editor metadata returned by the Local Client.
-    const audits = lsLoad(SK_REMARK_AUDIT, {});
-    audits[String(siteId)] = {
-      note: j.verified_note ?? note,
-      saved_by: j.saved_by || '',
-      saved_by_uid: j.saved_by_uid || '',
-      saved_at: j.saved_at || new Date().toISOString()
-    };
-    lsSave(SK_REMARK_AUDIT, audits);
-    LIVE_REMARK_AUDIT[String(siteId)] = {
-      event:'remark_save', source:'DASHBOARD', site_id:String(siteId),
-      note:j.verified_note ?? note, username:j.saved_by || '', uid:j.saved_by_uid || '',
-      saved_at:j.saved_at || new Date().toISOString()
-    };
-
-    // sync in-memory row too
-    const row = displayData.find(x=>String(x.siteId)===String(siteId));
-    if(row) row.note = j.verified_note ?? note;
-
-    showInfoToast('✅ บันทึก AMS สำเร็จ',
-      `Station ID: ${siteId}\nRemark: ${j.verified_note ?? note}\nผู้บันทึก: ${j.saved_by || 'ไม่ทราบ'}${j.saved_by_uid ? ` (UID ${j.saved_by_uid})` : ''}\nเวลา: ${j.saved_at || ''}\n\nตรวจสอบ Read-back จาก AMS แล้ว`);
-    // Refresh the full live dataset so every table/metric reflects AMS immediately.
-    await refreshFromLocalClient({silent:true});
-    const ap=document.getElementById('alarmPage'); if((ap&&ap.style.display!=='none')||ALARM_DATA.length){ await refreshAlarmDashboard(true); }
+    const saved=await saveNoteOverride(r.siteId,note);
+    if(!saved)throw Error('AMS did not confirm save');
+    r.note=note;
+    el.classList.toggle('placeholder',!note);
+    el.classList.add('note-saved-flash');
+    setTimeout(()=>el.classList.remove('note-saved-flash'),1000);
   }catch(e){
-    overrides[siteId].synced = false;
-    overrides[siteId].sync_status = String(e.message || e);
-    lsSave(SK_NOTE_OVERRIDES, overrides);
-
-    showInfoToast('⚠️ ยังไม่ได้บันทึกเข้า AMS',
-      `Station ID: ${siteId}\nเก็บข้อความไว้ใน Browser แล้ว แต่ Write Proxy ติดต่อไม่ได้หรือ AMS ปฏิเสธ\n\n${e.message || e}\n\nให้รัน ams_write_proxy.py ที่เครื่อง Dashboard`);
-  }
+    el.textContent=previous||'🔴 รอดำเนินการ (คลิกเพื่อบันทึกหมายเหตุ)';
+    el.classList.toggle('placeholder',!previous);
+  }finally{el.contentEditable='true';}
 }
 
+async function saveNoteOverride(siteId,note){
+  if(!AMS_AUTH_TOKEN||!AMS_AUTH_USER||!amsAllowed('network_error','can_comment')){
+    showInfoToast('⛔ ไม่สามารถบันทึก Remark','ไม่มี Central Login หรือสิทธิ์ can_comment');
+    return false;
+  }
+  showInfoToast('✏️ กำลังบันทึกหมายเหตุ',`Station ID: ${siteId}\nกำลังส่ง Remark ไป AMS...`);
+  try{
+    const res=await fetch(`${AMS_WRITE_PROXY}/api/remark`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json',Authorization:'Bearer '+AMS_AUTH_TOKEN},
+      body:JSON.stringify({site_id:siteId,note,module:'network_error'}),cache:'no-store'
+    });
+    const j=await res.json().catch(()=>({success:false,message:`HTTP ${res.status}`}));
+    if(!res.ok||!j.success)throw Error(j.message||j.error||`HTTP ${res.status}`);
+    const verified=j.verified_note??note;
+    const audits=lsLoad(SK_REMARK_AUDIT,{});
+    audits[String(siteId)]={note:verified,saved_by:j.saved_by||'',
+      saved_by_uid:j.saved_by_uid||'',saved_at:j.saved_at||new Date().toISOString()};
+    lsSave(SK_REMARK_AUDIT,audits);
+    LIVE_REMARK_AUDIT[String(siteId)]={event:'remark_save',source:'DASHBOARD',
+      site_id:String(siteId),note:verified,username:j.saved_by||'',
+      uid:j.saved_by_uid||'',saved_at:j.saved_at||new Date().toISOString()};
+    const overrides=lsLoad(SK_NOTE_OVERRIDES,{});
+    delete overrides[siteId];lsSave(SK_NOTE_OVERRIDES,overrides);
+    const row=displayData.find(x=>String(x.siteId)===String(siteId));
+    if(row)row.note=verified;
+    showInfoToast('✅ บันทึก AMS สำเร็จ',
+      `Station ID: ${siteId}\nผู้บันทึก: ${j.saved_by||'ไม่ทราบ'}\nตรวจสอบ Read-back จาก AMS แล้ว`);
+    try{
+      await refreshFromLocalClient({silent:true});
+      const ap=document.getElementById('alarmPage');
+      if((ap&&ap.style.display!=='none')||ALARM_DATA.length)await refreshAlarmDashboard(true);
+    }catch(refreshError){console.warn('Post-save refresh failed:',refreshError);}
+    return true;
+  }catch(e){
+    showInfoToast('⚠️ ยังไม่ได้บันทึกเข้า AMS',
+      `Station ID: ${siteId}\n${e.message||e}\nไม่ถือว่าบันทึกสำเร็จ`);
+    return false;
+  }
+}
 
 function cleanupSyncedNoteOverrides(){
   const overrides=lsLoad(SK_NOTE_OVERRIDES,{});
