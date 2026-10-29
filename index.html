@@ -2415,10 +2415,10 @@ html.ams-authenticated #amsManageUsersBtn{display:inline-flex}
       <div class="dashboard-live-badge"><span class="dashboard-live-dot"></span> CONTRACT DATA VIEW</div>
     </div>
   <div class="kpi-grid module-hero-kpis">
-    <div class="kpi-card blue"><div class="kpi-label">🏢 Contract Scope</div><div class="kpi-value" id="contractKpiAutoTotal">0</div><div class="kpi-sub">สถานีที่อยู่ในขอบเขตสัญญา</div></div>
-    <div class="kpi-card green"><div class="kpi-label">🟢 Contract Active</div><div class="kpi-value" id="contractKpiOnline">0</div><div class="kpi-sub">สถานะสัญญาปกติ</div></div>
-    <div class="kpi-card red"><div class="kpi-label">🔴 ต้องดำเนินการ</div><div class="kpi-value" id="contractKpiNetworkError">0</div><div class="kpi-sub">ใกล้หมดอายุ / หมดอายุ / ข้อมูลไม่ครบ</div></div>
-    <div class="kpi-card green"><div class="kpi-label">💚 Contract Health</div><div class="kpi-value" id="contractKpiNetworkHealth">0%</div><div class="kpi-sub" id="contractKpiNetworkHealthSub">รอข้อมูล Contract</div></div>
+    <div class="kpi-card blue" onclick="filterContract('all')"><div class="kpi-label">🏢 Contract Scope</div><div class="kpi-value" id="contractKpiAutoTotal">0</div><div class="kpi-sub">สถานีที่อยู่ในขอบเขตสัญญา</div></div>
+    <div class="kpi-card green" onclick="filterContract('ok')"><div class="kpi-label">🟢 Contract Active</div><div class="kpi-value" id="contractKpiOnline">0</div><div class="kpi-sub">สถานะสัญญาปกติ</div></div>
+    <div class="kpi-card red" onclick="filterContract('action')"><div class="kpi-label">🔴 ต้องดำเนินการ</div><div class="kpi-value" id="contractKpiNetworkError">0</div><div class="kpi-sub">ใกล้หมดอายุ / หมดอายุ / ข้อมูลไม่ครบ</div></div>
+    <div class="kpi-card green" onclick="filterContract('ok')"><div class="kpi-label">💚 Contract Health</div><div class="kpi-value" id="contractKpiNetworkHealth">0%</div><div class="kpi-sub" id="contractKpiNetworkHealthSub">รอข้อมูล Contract</div></div>
     <div class="kpi-card red" onclick="filterContract('expired')">
       <div class="kpi-label">🔴 หมดอายุแล้ว</div>
       <div class="kpi-value" id="cntExpired">0</div>
@@ -5634,9 +5634,11 @@ function sortContractRows(rows){
 
 function applyContractStatusFilter(rows){
   let out=Array.isArray(rows)?rows:[];
-  if(contractFilter === 'expired') out = out.filter(r => r.status === 'expired');
-  else if(contractFilter === 'soon30') out = out.filter(r => ['expired','soon30'].includes(r.status));
-  else if(contractFilter === 'soon90') out = out.filter(r => ['expired','soon30','soon90'].includes(r.status));
+  if(contractFilter === 'ok') out = out.filter(r => r.status === 'ok');
+  else if(contractFilter === 'action') out = out.filter(r => r.status !== 'ok');
+  else if(contractFilter === 'expired') out = out.filter(r => r.status === 'expired');
+  else if(contractFilter === 'soon30') out = out.filter(r => r.status === 'soon30');
+  else if(contractFilter === 'soon90') out = out.filter(r => r.status === 'soon90');
   else if(contractFilter === 'followup'){
     const tr=lsLoad(SK_CONTRACT_TRACK,{});
     out=out.filter(r=>['prepared','notified','waiting'].includes(tr[r.siteId]?.status));
@@ -5688,8 +5690,9 @@ function renderContractPage(){
 }
 
 function filterContract(f){
-  contractFilter = f;
-  const titles = {expired:'🔴 หมดอายุแล้ว', soon30:'🟡 ใกล้หมด 30 วัน', soon90:'🔵 ใกล้หมด 90 วัน', followup:'🧭 รายการที่ต้องติดตาม', all:'📋 รายการสัญญาทั้งหมด'};
+  contractFilter = contractFilter === f && f !== 'all' ? 'all' : f;
+  f=contractFilter;
+  const titles = {ok:'🟢 Contract Active',action:'🔴 ต้องดำเนินการ',expired:'🔴 หมดอายุแล้ว', soon30:'🟡 ใกล้หมด 30 วัน', soon90:'🔵 ใกล้หมด 90 วัน', followup:'🧭 รายการที่ต้องติดตาม', all:'📋 รายการสัญญาทั้งหมด'};
   setEl('contractPanelTitle', titles[f] || 'รายการสัญญา');
   updatePurchaseTypeCounts(contractData);
   renderContractTable();
