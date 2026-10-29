@@ -1994,6 +1994,23 @@ html.ams-authenticated #amsAccountBar{display:flex!important}
 @media(max-width:1250px){header .header-right{padding-top:42px!important}#amsAccountBar{right:0}}
 @media(max-width:650px){#amsAccountName{max-width:180px}#amsLogoutBtn{padding:7px 9px}}
 </style>
+<style id="ams-refresh-header-layout-v2">
+/* Account on the top-right, module navigation in the middle, refresh tools on their own bottom row. */
+header .header-right{padding-top:39px!important;gap:8px!important}
+header .module-nav-row{min-height:43px!important}
+header .utility-nav-row{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:10px!important;min-height:42px!important;padding:6px 0 0!important;flex-wrap:wrap}
+header .ams-refresh-status{display:flex;align-items:center;gap:7px;max-width:min(390px,42vw);font-size:12px;color:#56657c;background:#f4f7fc;border:1px solid #e1e8f3;border-radius:9px;padding:8px 11px;white-space:nowrap;min-height:18px}
+header #amsHeaderRefreshStatus{display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+header .ams-refresh-dot{width:8px;height:8px;border-radius:50%;background:#9ca9bb;flex:none}
+header .ams-refresh-status[data-mode="live"] .ams-refresh-dot{background:#2cc88a}
+header .ams-refresh-status[data-mode="snapshot"] .ams-refresh-dot{background:#f59e0b}
+header .ams-refresh-status[data-mode="error"] .ams-refresh-dot{background:#ef476f}
+header #amsLoadBtn{border-radius:10px!important;min-height:38px!important;white-space:nowrap!important;padding:8px 16px!important}
+header .settings-nav{border-radius:10px!important;min-width:40px!important;min-height:38px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
+#dashboardPage .dashboard-hero-update{font-size:12px!important;opacity:.9}
+@media(max-width:1250px){header .header-right{padding-top:44px!important}header .utility-nav-row{justify-content:flex-start!important}header .ams-refresh-status{max-width:100%}}
+@media(max-width:650px){header .ams-refresh-status{flex-basis:100%;max-width:100%}header #amsLoadBtn{flex:1}}
+</style>
 </head>
 <!-- DASHBOARD VERSION: V2.11.0 | BUILD: 2026.09.12 | INVESTIGATION WORKFLOW PHASE 2 -->
 <body>
@@ -2018,9 +2035,10 @@ html.ams-authenticated #amsAccountBar{display:flex!important}
       <button class="nav-btn module-nav" id="navContract" onclick="showPage('contract')" style="display:none">📋 Contract Management</button>
       <button class="nav-btn module-nav" id="navReports" onclick="showPage('reports')" style="display:none">📊 Reports & Analytics</button>
     </div>
-    <div class="utility-nav-row">
-      <button class="upload-btn utility-reload" id="amsLoadBtn" onclick="loadFromAMS()">🔄 รีโหลดข้อมูล</button>
-      <button class="nav-btn utility-nav settings-nav" onclick="openTokenModal()" title="ข้อมูลการ Refresh">⚙️</button>
+    <div class="utility-nav-row" aria-label="เครื่องมืออัปเดตข้อมูล">
+      <div class="ams-refresh-status" title="สถานะการอัปเดตข้อมูลล่าสุด"><span class="ams-refresh-dot" aria-hidden="true"></span><span id="amsHeaderRefreshStatus">รอข้อมูล AMS API</span></div>
+      <button class="upload-btn utility-reload" id="amsLoadBtn" onclick="loadFromAMS()" title="ดึงข้อมูลล่าสุดจาก AMS Local Client">🔄 รีโหลดข้อมูล</button>
+      <button class="nav-btn utility-nav settings-nav" onclick="openTokenModal()" title="ตั้งค่าและข้อมูลการ Refresh" aria-label="ตั้งค่าและข้อมูลการ Refresh">⚙️</button>
     </div>
   </div>
 </header>
@@ -6867,6 +6885,25 @@ function printSummaryReport(){
 </head><body>${sheet.outerHTML}
 
 
+<script id="ams-header-refresh-status-sync">
+(function(){
+  function init(){
+    const source=document.getElementById('dataTimestamp');
+    const dest=document.getElementById('amsHeaderRefreshStatus');
+    if(!source||!dest)return;
+    function sync(){
+      const value=(source.textContent||'').trim();
+      const parent=dest.closest('.ams-refresh-status');
+      const mode=/SNAPSHOT|Cache/i.test(value)?'snapshot':/error|ผิดพลาด|ไม่สำเร็จ/i.test(value)?'error':/LIVE/i.test(value)?'live':'waiting';
+      if(parent){parent.dataset.mode=mode;parent.title=source.title||'ข้อมูลการ Refresh จาก AMS API';}
+      dest.textContent=value&&value!=='—'?'อัปเดตล่าสุด '+value.replace(/^·\s*/,''):'รอข้อมูล AMS API';
+    }
+    sync();
+    new MutationObserver(sync).observe(source,{childList:true,characterData:true,subtree:true});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
 </body></html>`);
   w.document.close();
   const go=()=>{w.focus();w.print()};
