@@ -4339,7 +4339,7 @@ async function refreshAlarmDashboard(silent=false){
         cache:'no-store'
       });
     } finally {
-      clearTimeout(timer);
+      if(timer)clearTimeout(timer);
     }
 
     const j=await r.json();
@@ -5188,7 +5188,7 @@ async function getExportRemarkAuditEvents(){
         return j.events;
       }
     } finally {
-      clearTimeout(timer);
+      if(timer)clearTimeout(timer);
     }
   }catch(e){
     console.warn('Export Audit: Manager Audit unavailable, using fallback',e?.message||e);
@@ -6419,25 +6419,45 @@ document.addEventListener('click',function(e){
     showInfoToast('🔒 Snapshot · ดูข้อมูลอย่างเดียว','คำสั่งแก้ไขต้องใช้ AMS Local Client และสิทธิ์ที่ได้รับอนุญาต');
   }
 },true);
+// Central D1 snapshot transport. Read-only data retrieval; local operational actions remain unchanged.
+async function amsCentralRequest(path,method='GET'){
+  if(!AMS_AUTH_TOKEN)throw new Error('กรุณา Login ก่อน Reload ข้อมูล');
+  const response=await fetch(AMS_AUTH_API+path,{
+    method,headers:{'Authorization':'Bearer '+AMS_AUTH_TOKEN,'Content-Type':'application/json'},
+    cache:'no-store',body:method==='POST'?'{}':undefined
+  });
+  const result=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(result.error||`Central API HTTP ${response.status}`);
+  return result;
+}
+async function amsCentralSnapshot(reload){
+  if(reload){
+    const started=await amsCentralRequest('/central/network/reload','POST');
+    if(!started.job_id)throw new Error('Central API ไม่ส่ง Job ID');
+    const deadline=Date.now()+20*60*1000;
+    while(Date.now()<deadline){
+      await new Promise(resolve=>setTimeout(resolve,2500));
+      const status=await amsCentralRequest('/central/network/jobs/'+encodeURIComponent(started.job_id));
+      if(status.job?.status==='done')break;
+      if(status.job?.status==='failed')throw new Error(status.job.error||'Central Sync failed');
+      if(Date.now()+2500>=deadline)throw new Error('Central Sync timeout (20 นาที)');
+    }
+  }
+  return amsCentralRequest('/central/network/snapshot');
+}
 async function refreshFromLocalClient(options={}){
   const silent=!!options.silent;
   if(silent && _amsCacheRefreshPromise)return _amsCacheRefreshPromise;
   const btn=document.getElementById('amsLoadBtn');
   const controller=new AbortController();
-  const timer=setTimeout(()=>controller.abort(),65000);
+  const timer=null; // Central reload can take up to 20 minutes
 
-  if(btn&&!silent){btn.textContent='⏳ ดึง AMS Live...';btn.disabled=true;}
+  if(btn&&!silent){btn.textContent='⏳ Sync ผ่าน Central D1...';btn.disabled=true;}
 
   try{
-    const res=await fetch(`${AMS_WRITE_PROXY}/api/refresh`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:'{}',
-      cache:'no-store',
-      signal:controller.signal
-    });
-    const j=await res.json().catch(()=>({success:false,message:`HTTP ${res.status}`}));
-    if(!res.ok||!j.success)throw new Error(j.message||`HTTP ${res.status}`);
+    // Background refresh reads existing D1 snapshot; manual Reload queues a new Central job.
+    const j=await amsCentralSnapshot(!silent);
+    if(!j.success)throw new Error(j.message||'Central snapshot ไม่สำเร็จ');
 
     if(!Array.isArray(j.all_auto_data))throw new Error('API response ไม่มี all_auto_data: ไม่อัปเดตฐานสถานี');
     const nextMaster=mergeLiveAutoWithSnapshot(j.all_auto_data);
@@ -6453,13 +6473,11 @@ async function refreshFromLocalClient(options={}){
     allData=buildNetworkErrorRowsFromMaster(liveNetworkRows);
     if(j.remark_audit && typeof j.remark_audit==='object'){
       LIVE_REMARK_AUDIT=j.remark_audit;
-    }else{
-      await refreshRemarkAuditFromClient();
     }
 
     // Pull shared audit from Manager Central BEFORE rendering User under each Remark.
     // If 8766 is unavailable, existing Local Client / browser fallback continues unchanged.
-    await refreshCentralRemarkAuditCache();
+    // Audit retrieval is handled separately; do not block Central snapshot on localhost.
 
     saveProvinceCacheFromRows(AUTO_MASTER_DATA);
     saveProvinceCacheFromRows(allData);
@@ -6479,22 +6497,22 @@ async function refreshFromLocalClient(options={}){
     const ts=document.getElementById('dataTimestamp');
     if(ts){
       ts.textContent=`· LIVE ${j.updated_at||new Date().toLocaleString('th-TH')}`;
-      ts.title='Station Master และ Network จาก AMS API ผ่าน Local Client';
+      ts.title='Station Master และ Network จาก Central Cloudflare D1 Snapshot';
     }
 
-    if(!silent)showInfoToast('✅ AMS Live อัปเดตแล้ว',
+    if(!silent)showInfoToast('✅ Central D1 อัปเดตแล้ว',
       `Station Master API: ${AUTO_MASTER_DATA.length} สถานี\nNetwork Error: ${allData.length} สถานี\nเวลา: ${j.updated_at||'ล่าสุด'}\nไม่มีการรวม Snapshot เก่า`);
     return true;
   }catch(e){
     if(!AUTO_MASTER_DATA.length)amsLoadEmbeddedSnapshot();
     if(AMS_VIEW_MODE!=='snapshot')updateLiveStationMasterStatus('error','โหลด AMS API ไม่สำเร็จ · '+(e.message||e));
     if(!silent){
-      showInfoToast('⚠️ ไม่สามารถดึง AMS Live',
+      showInfoToast('⚠️ ไม่สามารถดึง Central Snapshot',
         `${e.name==='AbortError'?'หมดเวลารอ AMS':(e.message||e)}\n\nไม่ใช้ Snapshot แทน AMS API`);
     }
     return false;
   }finally{
-    clearTimeout(timer);
+    if(timer)clearTimeout(timer);
     if(btn){btn.textContent='🔄 Reload ข้อมูล';btn.disabled=false;}
   }
 }
@@ -7010,7 +7028,7 @@ async function refreshCentralRemarkAuditCache(){
         return true;
       }
     } finally {
-      clearTimeout(timer);
+      if(timer)clearTimeout(timer);
     }
   }catch(e){
     console.warn('Central Remark Audit unavailable; Local Audit fallback remains active',e?.message||e);
