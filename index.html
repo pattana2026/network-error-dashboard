@@ -6445,6 +6445,24 @@ async function amsCentralSnapshot(reload){
   }
   return amsCentralRequest('/central/network/snapshot');
 }
+
+// AMS DIRECT PRODUCTION (manual reload only). Existing Central Agent and silent snapshot path remain unchanged.
+async function amsDirectProductionSnapshot(){
+  const j=await amsCentralRequest('/ams-direct/stations');
+  if(!j.ok||!Array.isArray(j.sites)||!j.sites.length||j.sites.length!==j.auto_total)
+    throw new Error('AMS Direct Station Master ไม่ครบถ้วน');
+  const prior=new Map((AUTO_MASTER_DATA||[]).map(r=>[stationIdKey(r?.['รหัสสถานี']||r?.site_id),r]));
+  const master=j.sites.map(s=>{
+    const old=prior.get(stationIdKey(s.site_id))||{};
+    return {...old,'รหัสสถานี':s.site_id,'ชื่อ':s.site_name||old['ชื่อ']||'',
+      'คงเหลือล่าสุด':s.last_inventory,'ปิดวันล่าสุด':s.last_closeday,
+      iserror:s.iserror};
+  });
+  const errors=master.filter(r=>r.iserror==='Y');
+  return {success:true,source:j.source,updated_at:j.checked_at,auto_total:j.auto_total,
+    all_auto_data:master,data:errors,unknown_inventory_time:j.unknown_inventory_time};
+}
+
 async function refreshFromLocalClient(options={}){
   const silent=!!options.silent;
   if(silent && _amsCacheRefreshPromise)return _amsCacheRefreshPromise;
@@ -6452,11 +6470,11 @@ async function refreshFromLocalClient(options={}){
   const controller=new AbortController();
   const timer=null; // Central reload can take up to 20 minutes
 
-  if(btn&&!silent){btn.textContent='⏳ Sync ผ่าน Central D1...';btn.disabled=true;}
+  if(btn&&!silent){btn.textContent='⏳ โหลด AMS Direct...';btn.disabled=true;}
 
   try{
     // Background refresh reads existing D1 snapshot; manual Reload queues a new Central job.
-    const j=await amsCentralSnapshot(!silent);
+    const j=silent ? await amsCentralSnapshot(false) : await amsDirectProductionSnapshot();
     if(!j.success)throw new Error(j.message||'Central snapshot ไม่สำเร็จ');
 
     if(!Array.isArray(j.all_auto_data))throw new Error('API response ไม่มี all_auto_data: ไม่อัปเดตฐานสถานี');
@@ -6497,17 +6515,17 @@ async function refreshFromLocalClient(options={}){
     const ts=document.getElementById('dataTimestamp');
     if(ts){
       ts.textContent=`· LIVE ${j.updated_at||new Date().toLocaleString('th-TH')}`;
-      ts.title='Station Master และ Network จาก Central Cloudflare D1 Snapshot';
+      ts.title=silent?'Station Master และ Network จาก Central Cloudflare D1 Snapshot':'Station Master และ Network จาก AMS API Direct';
     }
 
-    if(!silent)showInfoToast('✅ Central D1 อัปเดตแล้ว',
+    if(!silent)showInfoToast('✅ AMS Direct อัปเดตแล้ว',
       `Station Master API: ${AUTO_MASTER_DATA.length} สถานี\nNetwork Error: ${allData.length} สถานี\nเวลา: ${j.updated_at||'ล่าสุด'}\nไม่มีการรวม Snapshot เก่า`);
     return true;
   }catch(e){
     if(!AUTO_MASTER_DATA.length)amsLoadEmbeddedSnapshot();
     if(AMS_VIEW_MODE!=='snapshot')updateLiveStationMasterStatus('error','โหลด AMS API ไม่สำเร็จ · '+(e.message||e));
     if(!silent){
-      showInfoToast('⚠️ ไม่สามารถดึง Central Snapshot',
+      showInfoToast('⚠️ ไม่สามารถดึง AMS Direct / Central Snapshot',
         `${e.name==='AbortError'?'หมดเวลารอ AMS':(e.message||e)}\n\nไม่ใช้ Snapshot แทน AMS API`);
     }
     return false;
