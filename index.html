@@ -2103,7 +2103,7 @@ body > header > .header-right .utility-nav-row{display:flex!important;align-item
 .ams-history-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 14px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;margin-bottom:14px}.ams-history-toolbar button,.ams-history-toolbar input{border:1px solid var(--border2);background:var(--surface);color:var(--text);border-radius:7px;padding:7px 10px}.ams-history-toolbar button.active{background:#315bd7;color:#fff}.ams-drill-row{cursor:pointer}.ams-drill-row:hover{background:rgba(72,120,225,.10)}.ams-history-note{font-size:11px;color:var(--text-muted);margin:6px 0 10px}
 </style>
 </head>
-<!-- DASHBOARD VERSION: V2.11.13 | BUILD: 2026.11.03 | APPROVED HEADER MOCKUP -->
+<!-- DASHBOARD VERSION: V2.11.15 | BUILD: 2026.11.03 | APPROVED HEADER MOCKUP -->
 <body>
 <div id="amsAuthGate"><form class="ams-auth-card" id="amsAuthForm" autocomplete="on">
 <h2>AMS Service Intelligence Center</h2><p>เข้าสู่ระบบด้วยบัญชี AMS Dashboard</p>
@@ -2192,7 +2192,7 @@ body > header > .header-right .utility-nav-row{display:flex!important;align-item
           <div class="side-action-list">
             <div class="storage-badge side-action-btn" id="storageBadge" hidden style="display:none!important" aria-hidden="true">💾 —</div>
             <button class="nav-btn side-action-btn" id="navAnalysis" onclick="showPage('analysis')" style="display:none">📊 วิเคราะห์ &amp; แนวทางแก้ไข</button>
-            <button class="nav-btn side-action-btn" id="navErrHistory" onclick="showPage('errhistory')" style="display:none">📈 ประวัติ Error</button>
+            
             <button class="nav-btn side-action-btn" id="exportBtn" onclick="openExportModal()" style="display:none">📄 Export Report</button>
           </div>
         </div>
@@ -4236,6 +4236,7 @@ function requirePattAccess(featureName='ฟังก์ชันนี้'){
 function isPattOnlyPage(page){return !amsAllowed(AMS_PAGE_MODULE[page]||'network_error');}
 // ══ PAGE NAV ══
 function showPage(page){
+  if(page==='errhistory') page='analysis'; // legacy links route to consolidated Analytics
   if(isPattOnlyPage(page)){
     showInfoToast('🔒 จำกัดสิทธิ์การใช้งาน','บัญชีนี้ไม่มีสิทธิ์เข้าถึง Module ดังกล่าว');
     return;
@@ -4247,7 +4248,6 @@ function showPage(page){
     analysis:  document.getElementById('analysisPage'),
     alarm:     document.getElementById('alarmPage'),
     contract:  document.getElementById('contractPage'),
-    errhistory:document.getElementById('errHistoryPage'),
     reports:   document.getElementById('reportsPage'),
   };
   const navs={
@@ -4266,7 +4266,7 @@ function showPage(page){
   if(nb) nb.classList.add('active');
 
   if(page!=='alarm') stopAlarmAutoRefresh();
-  if(page==='analysis') renderAnalysis();
+  if(page==='analysis'){renderAnalysis();renderErrHistoryKPIs();renderErrHistory();amsRenderTopRecurring();}
   if(page==='alarm'){
     if(!ALARM_DATA.length) loadAlarmLiveCache();
     renderAlarmKPIs();
@@ -6614,7 +6614,7 @@ async function loadFromAMS(){
   await refreshFromLocalClient({silent:false});
 }
 
-// V2.11.13 · REPORTS DRILL-DOWN · no changes to AMS API, login, module permissions.
+// V2.11.15 · REPORTS DRILL-DOWN · no changes to AMS API, login, module permissions.
 let AMS_HISTORY_DAYS=0;
 function amsHistoryDate(value){if(!value)return NaN;const t=new Date(String(value).trim().replace(' ','T')).getTime();return Number.isFinite(t)?t:NaN;}
 function amsHistoryRows(){
@@ -6627,7 +6627,7 @@ function amsHistoryRows(){
    return {...h,site_id:String(h.site_id||''),site_name:String(h.site_name||''),errors:events,total:events.length,pending:events.filter(e=>!e.end).length,resolved:completed.length,active:events.some(e=>!e.end),avg_dur_min:avg,last_start:events.length?events.reduce((a,e)=>amsHistoryDate(e.start)>amsHistoryDate(a)?e.start:a,events[0].start):null};
  }).filter(h=>h.total>0);
 }
-function amsSetHistoryRange(days){AMS_HISTORY_DAYS=days;document.querySelectorAll('.ams-history-toolbar [data-days]').forEach(b=>b.classList.toggle('active',Number(b.dataset.days)===days));renderErrHistoryKPIs();renderErrHistory();renderReportTopRecurring();}
+function amsSetHistoryRange(days){AMS_HISTORY_DAYS=days;document.querySelectorAll('.ams-history-toolbar [data-days]').forEach(b=>b.classList.toggle('active',Number(b.dataset.days)===days));renderErrHistoryKPIs();renderErrHistory();renderReportTopRecurring();amsRenderTopRecurring();}
 function amsHistoryKpi(kind){
  const rows=amsHistoryRows();let result=rows;let title='สถานีที่เคย Error';
  if(kind==='active'){result=rows.filter(r=>r.active);title='สถานีที่ยังมีเหตุการณ์เปิดอยู่ในประวัติ';}
@@ -6635,7 +6635,7 @@ function amsHistoryKpi(kind){
  if(kind==='top'){const mx=Math.max(0,...rows.map(r=>r.total));result=rows.filter(r=>r.total===mx&&mx>0);title='สถานีที่ Error บ่อยที่สุด ('+mx+' ครั้ง)';}
  amsShowDrill(title,result.map(r=>({id:r.site_id,name:r.site_name,detail:r.total+' ครั้ง · '+r.resolved+' ปิดแล้ว · '+r.pending+' ค้าง'})),true);
 }
-function amsOpenHistoryStation(id){showPage('errhistory');const row=(ERROR_HISTORY||[]).find(h=>String(h.site_id)===String(id));if(!row)return;const filtered=amsHistoryRows().find(h=>h.site_id===String(id));if(!filtered){showInfoToast('ไม่พบประวัติในช่วงที่เลือก','ลองเลือกทั้งหมดที่บันทึก');return;}openErrDetail(id);}
+function amsOpenHistoryStation(id){showPage('analysis');const row=(ERROR_HISTORY||[]).find(h=>String(h.site_id)===String(id));if(!row)return;const filtered=amsHistoryRows().find(h=>h.site_id===String(id));if(!filtered){showInfoToast('ไม่พบประวัติในช่วงที่เลือก','ลองเลือกทั้งหมดที่บันทึก');return;}openErrDetail(id);}
 function amsAnalysisKpi(kind){
  const rows=(displayData||[]);const active=rows.filter(r=>r.status!=='resolved');let result=active,title='Network Error LIVE';
  if(kind==='crisis'){result=active.filter(r=>Number(r.ageDays)>3);title='สถานีวิกฤติ ค้างเกิน 3 วัน';}
@@ -7093,6 +7093,34 @@ function printSummaryReport(){
 </style>
 </head><body>${sheet.outerHTML}
 
+<script>
+
+// V2.11.15: consolidate Error History into Analysis without modifying the event dataset.
+function amsInitConsolidatedAnalytics(){
+ const analysis=document.getElementById('analysisPage'),history=document.getElementById('errHistoryPage');
+ if(!analysis||!history||history.parentElement===analysis)return;
+ const section=document.createElement('section');section.id='amsConsolidatedHistory';
+ section.style.cssText='margin-top:22px;padding-top:18px;border-top:1px solid var(--border2)';
+ section.innerHTML='<div class="panel" style="padding:16px;margin-bottom:14px"><div class="panel-title">📈 Error History &amp; Top Recurring Stations</div><div style="font-size:12px;color:var(--text-muted);margin-top:5px">ข้อมูลประวัติที่บันทึกไว้ ไม่ใช่สถานะ LIVE · คลิก KPI หรือสถานีเพื่อดูรายละเอียด</div><div id="amsTopRecurringInAnalysis" style="margin-top:12px"></div></div>';
+ analysis.appendChild(section);section.appendChild(history);history.style.display='block';
+ amsRenderTopRecurring();
+}
+function amsRenderTopRecurring(){
+ const host=document.getElementById('amsTopRecurringInAnalysis');if(!host)return;
+ const rows=amsHistoryRows().slice().sort((a,b)=>b.total-a.total||String(a.site_id).localeCompare(String(b.site_id))).slice(0,10);
+ if(!rows.length){host.textContent='ยังไม่มีเหตุการณ์ Error ที่บันทึกไว้ในช่วงเวลาที่เลือก';return;}
+ const table=document.createElement('table');table.style.width='100%';
+ const head=document.createElement('thead');head.innerHTML='<tr><th>#</th><th>Station ID</th><th>ชื่อสถานี</th><th>จำนวนครั้ง</th></tr>';table.appendChild(head);
+ const body=document.createElement('tbody');rows.forEach((r,i)=>{
+  const tr=document.createElement('tr');tr.style.cursor='pointer';tr.title='คลิกดู Timeline สถานี';
+  [String(i+1),r.site_id,r.site_name,String(r.total)].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td);});
+  tr.addEventListener('click',()=>amsOpenHistoryStation(r.site_id));body.appendChild(tr);
+ });table.appendChild(body);host.replaceChildren(table);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',amsInitConsolidatedAnalytics);
+else amsInitConsolidatedAnalytics();
+
+</script>
 </body></html>`);
   w.document.close();
   const go=()=>{w.focus();w.print()};
@@ -7585,7 +7613,7 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
   </div>
 </div>
 
-<div id="dashboardVersionBadge" title="AMS Service Intelligence Center">Dashboard V2.11.13 &middot; Updated 03/11/2026</div>
+<div id="dashboardVersionBadge" title="AMS Service Intelligence Center">Dashboard V2.11.15 &middot; Updated 03/11/2026</div>
 
 
 <script id="ams-header-refresh-status-sync">
@@ -7676,7 +7704,8 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
       void refreshFromLocalClient({silent:true});
     },5*60*1000);
   }
-  document.getElementById('amsBackToLoginBtn').addEventListener('click',()=>{document.getElementById('amsPasswordChangePanel').hidden=true;document.getElementById('amsLoginButton').hidden=false;document.getElementById('amsPasswordChangeError').textContent='';AMS_AUTH_TOKEN=null;AMS_AUTH_USER=null;AMS_AUTH_PERMISSIONS=[];});
+  document.getElementById('amsBackToLoginBtn').addEventListener('click',()=>{amsPendingLoginPassword=null;document.getElementById('amsPasswordChangePanel').hidden=true;document.getElementById('amsLoginButton').hidden=false;document.getElementById('amsPasswordChangeError').textContent='';AMS_AUTH_TOKEN=null;AMS_AUTH_USER=null;AMS_AUTH_PERMISSIONS=[];});
+  let amsPendingLoginPassword = null; // Memory only; never persist a password.
   document.getElementById('amsChangePasswordBtn').addEventListener('click',async()=>{
     const dest=document.getElementById('amsPasswordChangeError'),button=document.getElementById('amsChangePasswordBtn');
     const pw=document.getElementById('amsNewPassword').value,confirmPw=document.getElementById('amsConfirmPassword').value;
@@ -7686,26 +7715,30 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
     if(!AMS_AUTH_TOKEN){dest.textContent='Session หมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง';return;}
     button.disabled=true;button.textContent='กำลังบันทึก...';
     try{
-      await api('/auth/change-password',{method:'POST',body:JSON.stringify({old_password:document.getElementById('amsLoginPassword').value,new_password:pw})});
+      await api('/auth/change-password',{method:'POST',body:JSON.stringify({old_password:amsPendingLoginPassword ?? document.getElementById('amsLoginPassword').value,new_password:pw})});
       document.getElementById('amsPasswordChangePanel').hidden=true;
       document.getElementById('amsLoginButton').hidden=false;
       document.getElementById('amsNewPassword').value='';document.getElementById('amsConfirmPassword').value='';
       AMS_AUTH_TOKEN=null;AMS_AUTH_USER=null;AMS_AUTH_PERMISSIONS=[];
+      amsPendingLoginPassword=null;
       document.getElementById('amsLoginPassword').value='';
       document.getElementById('amsAuthError').textContent='เปลี่ยนรหัสผ่านสำเร็จ กรุณาเข้าสู่ระบบด้วยรหัสผ่านใหม่';
-    }catch(err){dest.textContent='ไม่สามารถเปลี่ยนรหัสผ่านได้: '+err.message+ (err.message.includes('Invalid password')?' (โปรดตรวจสอบรหัสผ่านเดิม)':'');}
+    }catch(err){dest.textContent='ไม่สามารถเปลี่ยนรหัสผ่านได้: '+err.message+ ;}
     finally{button.disabled=false;button.textContent='บันทึกรหัสผ่านใหม่';}
   });
   form.addEventListener('submit',async e=>{
     e.preventDefault();error.textContent='';
     const button=document.getElementById('amsLoginButton');button.disabled=true;button.textContent='กำลังตรวจสอบ...';
     try{
-      const result=await api('/auth/login',{method:'POST',body:JSON.stringify({username:document.getElementById('amsLoginUsername').value.trim(),password:document.getElementById('amsLoginPassword').value})});
+      const loginPassword = document.getElementById('amsLoginPassword').value;
+      const result=await api('/auth/login',{method:'POST',body:JSON.stringify({username:document.getElementById('amsLoginUsername').value.trim(),password:loginPassword})});
+      amsPendingLoginPassword = result.user?.must_change_password ? loginPassword : null;
       await activate(result.token,result.user);
+      if (!AMS_AUTH_USER?.must_change_password) amsPendingLoginPassword=null;
       // Keep the original password only while first-login password change is pending.
       // The Worker verifies old_password against the original credential.
       if (!AMS_AUTH_USER?.must_change_password) document.getElementById('amsLoginPassword').value='';
-    }catch(err){AMS_AUTH_TOKEN=null;AMS_AUTH_USER=null;AMS_AUTH_PERMISSIONS=[];error.textContent='เข้าสู่ระบบไม่สำเร็จ: '+err.message;}
+    }catch(err){AMS_AUTH_TOKEN=null;AMS_AUTH_USER=null;AMS_AUTH_PERMISSIONS=[];amsPendingLoginPassword=null;error.textContent='เข้าสู่ระบบไม่สำเร็จ: '+err.message;}
     finally{button.disabled=false;button.textContent='เข้าสู่ระบบ';}
   });
   document.getElementById('amsLogoutBtn').addEventListener('click',async()=>{
