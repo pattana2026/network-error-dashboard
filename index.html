@@ -2062,7 +2062,27 @@ html.ams-authenticated #amsManageUsersBtn{display:inline-flex}
 #amsUsersModal button:disabled{opacity:.35;cursor:not-allowed}
 #amsUsersModal #umAuditPanel{margin-top:20px;border-top:1px solid #dbe5f2;padding-top:15px}
 #amsUsersModal td:last-child{min-width:390px}
-</style></head>
+</style><style id="ams-production-header-compact-20261103">
+/* Header typography and live timestamp: presentation only */
+body > header > div:first-child{flex:0 1 480px!important;min-width:0!important;gap:12px!important}
+body > header > div:first-child > div{min-width:0!important;max-width:100%!important}
+body > header .logo-text{font-size:clamp(14px,1.05vw,17px)!important;line-height:1.35!important;white-space:normal!important;overflow-wrap:normal!important}
+body > header .logo-sub{font-size:clamp(10px,.74vw,11.5px)!important;line-height:1.5!important;white-space:normal!important;overflow-wrap:anywhere!important;letter-spacing:-.1px!important}
+body > header .header-right{flex:1 1 auto!important;min-width:0!important}
+body > header .ams-refresh-status{min-width:285px!important;max-width:100%!important;white-space:nowrap!important}
+body > header #amsHeaderRefreshStatus{overflow:visible!important;text-overflow:clip!important;font-variant-numeric:tabular-nums!important;font-size:12px!important}
+@media(max-width:1250px){
+ body > header > div:first-child{flex-basis:350px!important}
+ body > header .logo-text{font-size:14px!important}
+ body > header .logo-sub{font-size:10px!important}
+ body > header .ams-refresh-status{min-width:0!important}
+}
+@media(max-width:850px){
+ body > header > div:first-child{flex-basis:auto!important}
+ body > header .ams-refresh-status{white-space:normal!important}
+}
+</style>
+</head>
 <!-- DASHBOARD VERSION: V2.11.0 | BUILD: 2026.09.12 | INVESTIGATION WORKFLOW PHASE 2 -->
 <body>
 <div id="amsAuthGate"><form class="ams-auth-card" id="amsAuthForm" autocomplete="on">
@@ -6370,6 +6390,8 @@ async function amsCacheHydrate(){
   // Verify access via /api/health first; no cross-user cache fallback.
   await checkModuleAccess();
   const cached=await amsCacheRead();if(!cached)return false;
+  // Do not hydrate historical (e.g. September) station snapshots on a new login.
+  if(Date.now()-Number(cached.storedAt||0)>AMS_BROWSER_CACHE_TTL)return false;
   if(AUTO_MASTER_DATA.length)return false; // live data won the race
   amsSetViewMode('cache');
   AUTO_MASTER_DATA=mergeLiveAutoWithSnapshot(cached.master);
@@ -6463,9 +6485,17 @@ async function amsDirectProductionSnapshot(){
     all_auto_data:master,data:errors,unknown_inventory_time:j.unknown_inventory_time};
 }
 
+// Single-flight AMS Direct request: login, manual Reload and 5-minute refresh never overlap.
 async function refreshFromLocalClient(options={}){
+  if(_amsCacheRefreshPromise)return _amsCacheRefreshPromise;
+  const request=_amsRefreshFromDirectCore(options);
+  _amsCacheRefreshPromise=request;
+  try{return await request;}finally{if(_amsCacheRefreshPromise===request)_amsCacheRefreshPromise=null;}
+}
+async function _amsRefreshFromDirectCore(options={}){
   const silent=!!options.silent;
-  if(silent && _amsCacheRefreshPromise)return _amsCacheRefreshPromise;
+  const authTokenAtStart=AMS_AUTH_TOKEN;
+  if(!authTokenAtStart)return false;
   const btn=document.getElementById('amsLoadBtn');
   const controller=new AbortController();
   const timer=null; // Central reload can take up to 20 minutes
@@ -6474,7 +6504,8 @@ async function refreshFromLocalClient(options={}){
 
   try{
     // Background refresh reads existing D1 snapshot; manual Reload queues a new Central job.
-    const j=silent ? await amsCentralSnapshot(false) : await amsDirectProductionSnapshot();
+    const j=await amsDirectProductionSnapshot(); // AMS Direct is authoritative for both login and manual reload
+    if(!AMS_AUTH_TOKEN || AMS_AUTH_TOKEN!==authTokenAtStart)return false; // discard response after logout/account switch
     if(!j.success)throw new Error(j.message||'Central snapshot ไม่สำเร็จ');
 
     if(!Array.isArray(j.all_auto_data))throw new Error('API response ไม่มี all_auto_data: ไม่อัปเดตฐานสถานี');
@@ -6514,16 +6545,19 @@ async function refreshFromLocalClient(options={}){
 
     const ts=document.getElementById('dataTimestamp');
     if(ts){
-      ts.textContent=`· LIVE ${j.updated_at||new Date().toLocaleString('th-TH')}`;
-      ts.title=silent?'Station Master และ Network จาก Central Cloudflare D1 Snapshot':'Station Master และ Network จาก AMS API Direct';
+      ts.textContent=`· LIVE ${j.updated_at||'ไม่ระบุเวลา API'}`;
+      ts.title='Station Master และ Network จาก AMS API Direct';
     }
 
     if(!silent)showInfoToast('✅ AMS Direct อัปเดตแล้ว',
       `Station Master API: ${AUTO_MASTER_DATA.length} สถานี\nNetwork Error: ${allData.length} สถานี\nเวลา: ${j.updated_at||'ล่าสุด'}\nไม่มีการรวม Snapshot เก่า`);
     return true;
   }catch(e){
-    if(!AUTO_MASTER_DATA.length)amsLoadEmbeddedSnapshot();
-    if(AMS_VIEW_MODE!=='snapshot')updateLiveStationMasterStatus('error','โหลด AMS API ไม่สำเร็จ · '+(e.message||e));
+    // Keep any existing data as non-live cache, but never load the embedded historical snapshot.
+    amsSetViewMode('cache');
+    const ts=document.getElementById('dataTimestamp');
+    if(ts){ts.textContent='· API ERROR · ข้อมูลไม่อัปเดต';ts.title=String(e.message||e);}
+    updateLiveStationMasterStatus('error','โหลด AMS API ไม่สำเร็จ · '+(e.message||e));
     if(!silent){
       showInfoToast('⚠️ ไม่สามารถดึง AMS Direct / Central Snapshot',
         `${e.name==='AbortError'?'หมดเวลารอ AMS':(e.message||e)}\n\nไม่ใช้ Snapshot แทน AMS API`);
@@ -6720,10 +6754,10 @@ window.addEventListener('DOMContentLoaded', ()=>{
     if(await refreshCentralRemarkAuditCache()) renderAll();
   },150);
 
-  // Paint verified per-user cached AMS data first; refresh from API in background.
-  void amsCacheHydrate().then(loaded=>{if(!loaded)amsLoadEmbeddedSnapshot();}).finally(()=>setTimeout(runAutoLiveRefresh,100));
-  if(window._amsRefreshTimer) clearInterval(window._amsRefreshTimer);
-  window._amsRefreshTimer = setInterval(runAutoLiveRefresh,AUTO_REFRESH_MS);
+  // Login performs initial AMS Direct load; timer starts only after authentication.
+  // No legacy embedded snapshot or anonymous periodic refresh.
+  if(window._amsRefreshTimer)clearInterval(window._amsRefreshTimer);
+  window._amsRefreshTimer=null;
 });
 
 function reportEsc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
@@ -7472,14 +7506,29 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
     if(!source||!dest)return;
     const parent=dest.closest('.ams-refresh-status');
     function sync(){
-      const raw=(source.textContent||'').trim().replace(/^·\\s*/,'');
+      const raw=(source.textContent||'').trim().replace(/^·\s*/,'');
       const mode=/SNAPSHOT|Cache/i.test(raw)?'snapshot':/error|ผิดพลาด|ไม่สำเร็จ/i.test(raw)?'error':/LIVE/i.test(raw)?'live':'waiting';
       if(parent)parent.dataset.mode=mode;
-      const match=raw.match(/(\\d{4})-(\\d{2})-(\\d{2})[ T](\\d{2}:\\d{2}(?::\\d{2})?)/);
-      const time=match?match[4]:(raw.match(/\\b\\d{1,2}:\\d{2}(?::\\d{2})?\\b/)||[])[0];
-      const date=match?`${match[3]}/${match[2]}/${match[1]}`:'';
+      const iso=raw.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})/i);
+      let dateTime='';
+      if(iso){
+        const d=new Date(iso[0]);
+        if(!Number.isNaN(d.getTime())){
+          dateTime=new Intl.DateTimeFormat('th-TH-u-ca-gregory',{
+            timeZone:'Asia/Bangkok',day:'2-digit',month:'2-digit',year:'numeric',
+            hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'
+          }).format(d);
+        }
+      }else{
+        const local=raw.match(/(\d{1,2}\/\d{1,2}\/\d{4}),?\s+(\d{1,2}:\d{2}(?::\d{2})?)/);
+        if(local) dateTime=local[1]+' '+local[2];
+        else {
+          const plain=raw.match(/(\d{4})-(\d{2})-(\d{2})[ T](\d{2}:\d{2}(?::\d{2})?)/);
+          if(plain)dateTime=`${plain[3]}/${plain[2]}/${plain[1]} ${plain[4]}`;
+        }
+      }
       const label=mode==='live'?'LIVE':mode==='snapshot'?'CACHE':mode==='error'?'ERROR':'รอข้อมูล';
-      dest.textContent=time?`${label}  •  ${date?date+'  •  ':''}${time}`:label;
+      dest.textContent=dateTime?`${label} · ${dateTime}`:label;
       if(parent)parent.title=raw||'สถานะการอัปเดตจาก AMS API';
     }
     sync();
@@ -7522,6 +7571,20 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
     const current=typeof currentPage2==='string'?currentPage2:'dashboard';
     const allowed=amsAllowed(AMS_PAGE_MODULE[current]||'network_error')?current:['dashboard','contract','alarm','reports'].find(p=>amsAllowed(AMS_PAGE_MODULE[p]));
     if(allowed && typeof showPage==='function')showPage(allowed);
+    // Fresh read once per successful login; never fall back to September snapshots.
+    if(typeof refreshFromLocalClient==='function'){
+      const ts=document.getElementById('dataTimestamp');
+      if(ts){ts.textContent='· กำลังโหลด AMS Direct...';ts.title='กำลังอ่านข้อมูลจาก AMS API';}
+      await refreshFromLocalClient({silent:true});
+    }
+    // 5-minute live monitoring, one request at a time, authenticated sessions only.
+    // The timer is intentionally not started until the first login fetch has finished.
+    if(window._amsRefreshTimer)clearInterval(window._amsRefreshTimer);
+    window._amsRefreshTimer=setInterval(()=>{
+      if(!AMS_AUTH_TOKEN || !document.documentElement.classList.contains('ams-authenticated'))return;
+      if(document.visibilityState==='hidden')return; // resume on tab visibility
+      void refreshFromLocalClient({silent:true});
+    },5*60*1000);
   }
   document.getElementById('amsBackToLoginBtn').addEventListener('click',()=>{document.getElementById('amsPasswordChangePanel').hidden=true;document.getElementById('amsLoginButton').hidden=false;document.getElementById('amsPasswordChangeError').textContent='';AMS_AUTH_TOKEN=null;AMS_AUTH_USER=null;AMS_AUTH_PERMISSIONS=[];});
   document.getElementById('amsChangePasswordBtn').addEventListener('click',async()=>{
@@ -7557,6 +7620,8 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
   });
   document.getElementById('amsLogoutBtn').addEventListener('click',async()=>{
     try{await api('/auth/logout',{method:'POST'});}catch(e){}
+    if(window._amsRefreshTimer)clearInterval(window._amsRefreshTimer);
+    window._amsRefreshTimer=null;
     AMS_AUTH_TOKEN=null;AMS_AUTH_USER=null;AMS_AUTH_PERMISSIONS=[];
     document.documentElement.classList.remove('ams-authenticated');
     document.getElementById('amsLoginPassword').value='';
