@@ -2099,7 +2099,7 @@ body > header > .header-right .utility-nav-row{display:flex!important;align-item
 @media(max-width:650px){body > header > .header-right .utility-nav-row{flex-wrap:wrap!important}body > header > .header-right #amsAccountBar{flex-wrap:wrap!important;justify-content:flex-end!important}}
 </style>
 </head>
-<!-- DASHBOARD VERSION: V2.11.8 | BUILD: 2026.11.03 | APPROVED HEADER MOCKUP -->
+<!-- DASHBOARD VERSION: V2.11.10 | BUILD: 2026.11.03 | APPROVED HEADER MOCKUP -->
 <body>
 <div id="amsAuthGate"><form class="ams-auth-card" id="amsAuthForm" autocomplete="on">
 <h2>AMS Service Intelligence Center</h2><p>เข้าสู่ระบบด้วยบัญชี AMS Dashboard</p>
@@ -3917,14 +3917,33 @@ function open3CXCallDialog(idx){
 function getStationMasterRecord(siteId){
   const sid=stationIdKey(siteId);
   if(!sid) return null;
-  // Station Master is the single source of truth for Profile data used by all modules.
-  // Fallback to embedded Master protects Alarm/Contract/3CX when a live merge is temporarily incomplete.
-  const sources=[AUTO_MASTER_DATA||[], (EMBEDDED_DATA&&Array.isArray(EMBEDDED_DATA.all_auto_data)?EMBEDDED_DATA.all_auto_data:[])];
-  for(const rows of sources){
-    const hit=rows.find(raw=>stationIdKey(raw['รหัสสถานี']||raw['Station ID']||raw.site_id||raw.sta_id||raw.siteId)===sid);
-    if(hit) return hit;
+  const findById=(rows)=>Array.isArray(rows)?rows.find(raw=>stationIdKey(raw?.['รหัสสถานี']||raw?.['Station ID']||raw?.site_id||raw?.sta_id||raw?.siteId)===sid):null;
+  const live=findById(AUTO_MASTER_DATA);
+  const embedded=findById(EMBEDDED_DATA?.all_auto_data);
+  const currentRow=findById(allData);
+  if(!live&&!embedded&&!currentRow)return null;
+  // Live station identity and status are authoritative. Old embedded rows are
+  // used ONLY to fill missing contact/equipment profile metadata.
+  const out={...(embedded||{}),...(currentRow||{}),...(live||{})};
+  const sources=[live,currentRow,embedded].filter(Boolean);
+  const pick=(keys,rawIndex)=>{
+    for(const source of sources){
+      for(const key of keys){const value=source[key];if(value!==undefined&&value!==null&&String(value).trim()&&String(value).trim()!=='—')return value;}
+      if(rawIndex!==undefined){const value=source._raw?.['field_'+rawIndex];if(value!==undefined&&value!==null&&String(value).trim())return value;}
+    }
+    return '';
+  };
+  out['ATG Model']=pick(['ATG Model','atgmodel','atg_model'],5);
+  out['ID Link']=pick(['ID Link','id_link','ลิงก์'],6);
+  out['โทร']=pick(['โทร','Phone','phone','Tel','tel','Telephone','telephone'],7);
+  out['จังหวัด']=pick(['จังหวัด','Province','province']);
+  // Never use snapshot network status when a LIVE station is available.
+  if(live){
+    const flag=live.iserror??live['iserror']??live._raw?.field_15;
+    out.iserror=flag??'';
+    out._raw={...(out._raw||{}),field_15:flag??''};
   }
-  return null;
+  return out;
 }
 function get3CXSiteRecord(siteId){ return getStationMasterRecord(siteId); }
 function stationNetworkFlag(raw){
@@ -4177,7 +4196,13 @@ let MODULE_ACCESS={checked:false,isPatt:false,username:'',rawUser:null};
 const AMS_PAGE_MODULE={dashboard:'network_error',analysis:'analysis',errhistory:'network_error',alarm:'alarm',contract:'contract',reports:'analysis'};
 function amsAllowed(module,action='can_view'){
   if(!AMS_AUTH_USER)return false;
-  if(AMS_AUTH_USER.role==='admin')return true;
+  // Match the existing Cloudflare Worker authorization policy:
+  // Alarm is reserved for the named Owner; admin role alone is insufficient.
+  const isOwner=AMS_AUTH_USER.role==='admin' &&
+    String(AMS_AUTH_USER.username||'').toLowerCase()==='amsnetwork_admin';
+  if(module==='alarm')return isOwner;
+  if(isOwner)return true;
+  // Other modules continue to honor their existing D1 module_permissions.
   return AMS_AUTH_PERMISSIONS.some(p=>p.module_key===module && Number(p[action])===1);
 }
 function applyModuleNavVisibility(){
@@ -7498,7 +7523,7 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
   </div>
 </div>
 
-<div id="dashboardVersionBadge" title="AMS Service Intelligence Center">Dashboard V2.11.8 &middot; Updated 03/11/2026</div>
+<div id="dashboardVersionBadge" title="AMS Service Intelligence Center">Dashboard V2.11.10 &middot; Updated 03/11/2026</div>
 
 
 <script id="ams-header-refresh-status-sync">
