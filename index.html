@@ -6478,6 +6478,8 @@ async function amsDirectProductionSnapshot(){
     const old=prior.get(stationIdKey(s.site_id))||{};
     return {...old,'รหัสสถานี':s.site_id,'ชื่อ':s.site_name||old['ชื่อ']||'',
       'คงเหลือล่าสุด':s.last_inventory,'ปิดวันล่าสุด':s.last_closeday,
+      // Never inherit stale embedded Remark; AMS API is authoritative.
+      'หมายเหตุ':String(s.remark??''),'Remark':String(s.remark??''),
       iserror:s.iserror};
   });
   const errors=master.filter(r=>r.iserror==='Y');
