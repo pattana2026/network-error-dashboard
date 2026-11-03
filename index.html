@@ -2098,8 +2098,12 @@ body > header > .header-right .utility-nav-row{display:flex!important;align-item
 @media(max-width:1450px){body > header{flex-wrap:wrap!important;gap:14px!important}body > header > .ams-left-header{flex-basis:100%!important}body > header > .header-right{flex-basis:100%!important;align-items:flex-end!important}body > header > .ams-left-header .module-nav-row{flex-wrap:wrap!important;width:auto!important;max-width:100%!important}}
 @media(max-width:650px){body > header > .header-right .utility-nav-row{flex-wrap:wrap!important}body > header > .header-right #amsAccountBar{flex-wrap:wrap!important;justify-content:flex-end!important}}
 </style>
+<style id="amsReportDrillV21113">
+.ams-drill{cursor:pointer;transition:box-shadow .15s,transform .15s}.ams-drill:hover,.ams-drill:focus-visible{outline:2px solid #4f83e6;outline-offset:2px;box-shadow:0 3px 14px #315bd71c}.ams-drill:focus-visible{transform:translateY(-1px)}
+.ams-history-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 14px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;margin-bottom:14px}.ams-history-toolbar button,.ams-history-toolbar input{border:1px solid var(--border2);background:var(--surface);color:var(--text);border-radius:7px;padding:7px 10px}.ams-history-toolbar button.active{background:#315bd7;color:#fff}.ams-drill-row{cursor:pointer}.ams-drill-row:hover{background:rgba(72,120,225,.10)}.ams-history-note{font-size:11px;color:var(--text-muted);margin:6px 0 10px}
+</style>
 </head>
-<!-- DASHBOARD VERSION: V2.11.12 | BUILD: 2026.11.03 | APPROVED HEADER MOCKUP -->
+<!-- DASHBOARD VERSION: V2.11.13 | BUILD: 2026.11.03 | APPROVED HEADER MOCKUP -->
 <body>
 <div id="amsAuthGate"><form class="ams-auth-card" id="amsAuthForm" autocomplete="on">
 <h2>AMS Service Intelligence Center</h2><p>เข้าสู่ระบบด้วยบัญชี AMS Dashboard</p>
@@ -2251,11 +2255,11 @@ body > header > .header-right .utility-nav-row{display:flex!important;align-item
 
     <!-- KPI Row -->
     <div class="kpi-grid" style="margin-bottom:14px" id="aKpiGrid">
-      <div class="kpi-card red"><div class="kpi-label">🔴 Network Error</div><div class="kpi-value" id="aTot">—</div><div class="kpi-sub">สถานีทั้งหมด</div></div>
-      <div class="kpi-card amber"><div class="kpi-label">⚡ วิกฤติ &gt;3 วัน</div><div class="kpi-value" id="aCrisis">—</div><div class="kpi-sub">ต้องแก้ด่วน</div></div>
-      <div class="kpi-card blue"><div class="kpi-label">⏱ เฉลี่ยค้าง</div><div class="kpi-value" id="aAvgDay">—</div><div class="kpi-sub">วัน/สถานี</div></div>
-      <div class="kpi-card green"><div class="kpi-label">✅ Resolved วันนี้</div><div class="kpi-value" id="aResolved">—</div><div class="kpi-sub">แก้ไขแล้ว</div></div>
-      <div class="kpi-card amber"><div class="kpi-label">📍 Crisis Rate</div><div class="kpi-value" id="aCrisisRate">—</div><div class="kpi-sub">% วิกฤติจากทั้งหมด</div></div>
+      <div class="kpi-card ams-drill" role="button" tabindex="0" onclick="amsAnalysisKpi('all')" onkeydown="if(event.key==='Enter'){amsAnalysisKpi('all')}" title="คลิกดูรายละเอียด" red"><div class="kpi-label">🔴 Network Error</div><div class="kpi-value" id="aTot">—</div><div class="kpi-sub">สถานีทั้งหมด</div></div>
+      <div class="kpi-card ams-drill" role="button" tabindex="0" onclick="amsAnalysisKpi('crisis')" onkeydown="if(event.key==='Enter'){amsAnalysisKpi('crisis')}" title="คลิกดูรายละเอียด" amber"><div class="kpi-label">⚡ วิกฤติ &gt;3 วัน</div><div class="kpi-value" id="aCrisis">—</div><div class="kpi-sub">ต้องแก้ด่วน</div></div>
+      <div class="kpi-card ams-drill" role="button" tabindex="0" onclick="amsAnalysisKpi('avg')" onkeydown="if(event.key==='Enter'){amsAnalysisKpi('avg')}" title="คลิกดูรายละเอียด" blue"><div class="kpi-label">⏱ เฉลี่ยค้าง</div><div class="kpi-value" id="aAvgDay">—</div><div class="kpi-sub">วัน/สถานี</div></div>
+      <div class="kpi-card ams-drill" role="button" tabindex="0" onclick="amsAnalysisKpi('resolved')" onkeydown="if(event.key==='Enter'){amsAnalysisKpi('resolved')}" title="คลิกดูรายละเอียด" green"><div class="kpi-label">✅ Resolved วันนี้</div><div class="kpi-value" id="aResolved">—</div><div class="kpi-sub">แก้ไขแล้ว</div></div>
+      <div class="kpi-card ams-drill" role="button" tabindex="0" onclick="amsAnalysisKpi('crisis')" onkeydown="if(event.key==='Enter'){amsAnalysisKpi('crisis')}" title="คลิกดูรายละเอียด" amber"><div class="kpi-label">📍 Crisis Rate</div><div class="kpi-value" id="aCrisisRate">—</div><div class="kpi-sub">% วิกฤติจากทั้งหมด</div></div>
     </div>
 
     <div class="decision-board">
@@ -2613,23 +2617,24 @@ body > header > .header-right .utility-nav-row{display:flex!important;align-item
 
 <!-- ERROR HISTORY PAGE -->
 <div id="errHistoryPage" style="display:none">
+<div class="ams-history-toolbar" aria-label="ตัวกรองประวัติ Error"><b>ช่วงเวลาที่เกิด Error:</b><button type="button" data-days="7" onclick="amsSetHistoryRange(7)">7 วัน</button><button type="button" data-days="30" onclick="amsSetHistoryRange(30)">30 วัน</button><button type="button" data-days="90" onclick="amsSetHistoryRange(90)">90 วัน</button><button type="button" data-days="0" onclick="amsSetHistoryRange(0)" class="active">ทั้งหมดที่บันทึก</button><button type="button" onclick="amsExportHistoryCSV()">⬇ Export CSV</button></div><div class="ams-history-note" id="amsHistorySource">ประวัติที่มีในไฟล์ Dashboard เท่านั้น · ไม่ใช่ข้อมูล LIVE · จะไม่สร้างเหตุการณ์จากการ Refresh</div>
   <div class="kpi-grid" style="margin-bottom:16px">
-    <div class="kpi-card red">
+    <div class="kpi-card ams-drill" role="button" tabindex="0" onclick="amsHistoryKpi('all')" onkeydown="if(event.key==='Enter'||event.key===' ' ){event.preventDefault();amsHistoryKpi('all')}" title="คลิกดูรายการสถานี" red">
       <div class="kpi-label">🔴 Error ทั้งหมดในฐานข้อมูล</div>
       <div class="kpi-value" id="ehTotalSites">0</div>
       <div class="kpi-sub">สถานีที่เคย error</div>
     </div>
-    <div class="kpi-card amber">
+    <div class="kpi-card ams-drill" role="button" tabindex="0" onclick="amsHistoryKpi('active')" onkeydown="if(event.key==='Enter'||event.key===' ' ){event.preventDefault();amsHistoryKpi('active')}" title="คลิกดูรายการสถานี" amber">
       <div class="kpi-label">⚠️ ยังค้างอยู่</div>
       <div class="kpi-value" id="ehActiveSites">0</div>
       <div class="kpi-sub">ยังไม่ได้แก้ไข</div>
     </div>
-    <div class="kpi-card green">
+    <div class="kpi-card ams-drill" role="button" tabindex="0" onclick="amsHistoryKpi('resolved')" onkeydown="if(event.key==='Enter'||event.key===' ' ){event.preventDefault();amsHistoryKpi('resolved')}" title="คลิกดูรายการสถานี" green">
       <div class="kpi-label">✅ แก้ไขแล้ว</div>
       <div class="kpi-value" id="ehResolvedSites">0</div>
       <div class="kpi-sub">แก้ไขเรียบร้อย</div>
     </div>
-    <div class="kpi-card blue">
+    <div class="kpi-card ams-drill" role="button" tabindex="0" onclick="amsHistoryKpi('top')" onkeydown="if(event.key==='Enter'||event.key===' ' ){event.preventDefault();amsHistoryKpi('top')}" title="คลิกดูรายการสถานี" blue">
       <div class="kpi-label">🔁 Error บ่อยที่สุด</div>
       <div class="kpi-value" id="ehMostErrors">0</div>
       <div class="kpi-sub">ครั้ง (สถานีอันดับ 1)</div>
@@ -2662,6 +2667,7 @@ body > header > .header-right .utility-nav-row{display:flex!important;align-item
   </div>
 </div>
 
+<div class="modal-overlay" id="amsDrillModal"><div class="modal" style="width:min(900px,94vw);max-height:82vh;overflow:auto"><h3 id="amsDrillTitle">รายละเอียด KPI</h3><div class="ams-history-note" id="amsDrillSub"></div><div id="amsDrillBody" class="table-wrap"></div><div class="modal-actions"><button class="modal-cancel" onclick="closeModal('amsDrillModal')">ปิด</button></div></div></div>
 <!-- ERROR DETAIL MODAL -->
 <div class="modal-overlay" id="errDetailModal">
   <div class="modal" style="width:560px;max-height:80vh;overflow-y:auto">
@@ -2856,7 +2862,7 @@ body > header > .header-right .utility-nav-row{display:flex!important;align-item
   </div>
 
   <div class="report-section-grid">
-    <div class="report-panel"><div class="report-panel-head"><div><div class="report-panel-title">🔥 Top Recurring Issues</div><div class="report-panel-sub">Network Error History · เรียงสถานีที่เกิดปัญหาซ้ำมากที่สุด</div></div></div><div class="report-panel-body" style="padding:0"><table class="report-top-table"><thead><tr><th>#</th><th>Station</th><th>Error ครั้ง</th><th>สถานะปัจจุบัน</th></tr></thead><tbody id="reportTopRecurringBody"></tbody></table></div></div>
+    <div class="report-panel"><div class="report-panel-head"><div><div class="report-panel-title">🔥 Top Recurring Issues · คลิกสถานีเพื่อดู Timeline</div><div class="report-panel-sub">ข้อมูลประวัติที่บันทึกไว้ ไม่ใช่ LIVE · <button type="button" onclick="showPage('errhistory')" class="icon-btn">ดูประวัติและกรอง 7/30/90 วัน →</button></div></div></div><div class="report-panel-body" style="padding:0"><table class="report-top-table"><thead><tr><th>#</th><th>Station</th><th>Error ครั้ง</th><th>สถานะปัจจุบัน</th></tr></thead><tbody id="reportTopRecurringBody"></tbody></table></div></div>
     <div class="report-panel"><div class="report-panel-head"><div><div class="report-panel-title">🧾 Activity Log</div><div class="report-panel-sub">Central Audit · Remark / Recovery actions</div></div></div><div class="report-panel-body" style="padding:0;max-height:320px;overflow:auto"><table class="report-activity-table"><thead><tr><th>Time</th><th>User</th><th>Action</th><th>Station</th></tr></thead><tbody id="reportActivityBody"></tbody></table></div></div>
   </div>
 </div>
@@ -4865,12 +4871,12 @@ function renderTopSites(){
   const hist = ERROR_HISTORY || [];
   const tbody= document.getElementById('aTopSites');
   if(!tbody) return;
-  const top5 = hist.slice(0,5);
+  const top5 = amsHistoryRows().sort((a,b)=>b.total-a.total).slice(0,10);
   if(!top5.length){
     tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text-muted);font-size:12px">ยังไม่มีข้อมูล Error History — รัน auto_update.py เพื่อเริ่มบันทึก</td></tr>`;
     return;
   }
-  const medals=['🥇','🥈','🥉','#4','#5'];
+  const medals=['🥇','🥈','🥉','#4','#5','#6','#7','#8','#9','#10'];
   tbody.innerHTML = top5.map((s,i)=>{
     const dur = s.avg_dur_min != null
       ? (s.avg_dur_min>=1440?Math.round(s.avg_dur_min/1440)+'วัน'
@@ -6607,8 +6613,52 @@ async function _amsRefreshFromDirectCore(options={}){
 async function loadFromAMS(){
   await refreshFromLocalClient({silent:false});
 }
+
+// V2.11.13 · REPORTS DRILL-DOWN · no changes to AMS API, login, module permissions.
+let AMS_HISTORY_DAYS=0;
+function amsHistoryDate(value){if(!value)return NaN;const t=new Date(String(value).trim().replace(' ','T')).getTime();return Number.isFinite(t)?t:NaN;}
+function amsHistoryRows(){
+ const base=Array.isArray(ERROR_HISTORY)?ERROR_HISTORY:[];
+ const cutoff=AMS_HISTORY_DAYS?Date.now()-AMS_HISTORY_DAYS*86400000:-Infinity;
+ return base.map(h=>{
+   const events=(Array.isArray(h.errors)?h.errors:[]).filter(e=>{const t=amsHistoryDate(e.start);return Number.isFinite(t)&&t>=cutoff&&t<=Date.now();});
+   const completed=events.filter(e=>e.end&&Number.isFinite(amsHistoryDate(e.end)));
+   const avg=completed.length?Math.round(completed.reduce((n,e)=>n+(Number(e.duration_min)||Math.max(0,(amsHistoryDate(e.end)-amsHistoryDate(e.start))/60000)),0)/completed.length):null;
+   return {...h,site_id:String(h.site_id||''),site_name:String(h.site_name||''),errors:events,total:events.length,pending:events.filter(e=>!e.end).length,resolved:completed.length,active:events.some(e=>!e.end),avg_dur_min:avg,last_start:events.length?events.reduce((a,e)=>amsHistoryDate(e.start)>amsHistoryDate(a)?e.start:a,events[0].start):null};
+ }).filter(h=>h.total>0);
+}
+function amsSetHistoryRange(days){AMS_HISTORY_DAYS=days;document.querySelectorAll('.ams-history-toolbar [data-days]').forEach(b=>b.classList.toggle('active',Number(b.dataset.days)===days));renderErrHistoryKPIs();renderErrHistory();renderReportTopRecurring();}
+function amsHistoryKpi(kind){
+ const rows=amsHistoryRows();let result=rows;let title='สถานีที่เคย Error';
+ if(kind==='active'){result=rows.filter(r=>r.active);title='สถานีที่ยังมีเหตุการณ์เปิดอยู่ในประวัติ';}
+ if(kind==='resolved'){result=rows.filter(r=>!r.active&&r.resolved>0);title='สถานีที่ปิดเหตุการณ์แล้ว';}
+ if(kind==='top'){const mx=Math.max(0,...rows.map(r=>r.total));result=rows.filter(r=>r.total===mx&&mx>0);title='สถานีที่ Error บ่อยที่สุด ('+mx+' ครั้ง)';}
+ amsShowDrill(title,result.map(r=>({id:r.site_id,name:r.site_name,detail:r.total+' ครั้ง · '+r.resolved+' ปิดแล้ว · '+r.pending+' ค้าง'})),true);
+}
+function amsOpenHistoryStation(id){showPage('errhistory');const row=(ERROR_HISTORY||[]).find(h=>String(h.site_id)===String(id));if(!row)return;const filtered=amsHistoryRows().find(h=>h.site_id===String(id));if(!filtered){showInfoToast('ไม่พบประวัติในช่วงที่เลือก','ลองเลือกทั้งหมดที่บันทึก');return;}openErrDetail(id);}
+function amsAnalysisKpi(kind){
+ const rows=(displayData||[]);const active=rows.filter(r=>r.status!=='resolved');let result=active,title='Network Error LIVE';
+ if(kind==='crisis'){result=active.filter(r=>Number(r.ageDays)>3);title='สถานีวิกฤติ ค้างเกิน 3 วัน';}
+ if(kind==='avg'){title='อายุ Error ของสถานีที่ยังค้าง';}
+ if(kind==='resolved'){result=rows.filter(r=>r.status==='resolved');title='Resolved ตามข้อมูลหน้า Dashboard';}
+ amsShowDrill(title,result.map(r=>({id:String(r.siteId||''),name:String(r.siteName||r.name||''),detail:(Number(r.ageDays)||0).toFixed(1)+' วัน · '+String(r.note||'ไม่มี Remark').slice(0,90)})),false);
+}
+function amsShowDrill(title,rows,history){
+ const el=document.getElementById('amsDrillModal');if(!el)return;
+ document.getElementById('amsDrillTitle').textContent=title+' · '+rows.length+' สถานี';
+ document.getElementById('amsDrillSub').textContent=history?'อ้างอิง Error History ที่บันทึกไว้ · ช่วง '+(AMS_HISTORY_DAYS||'ทั้งหมด')+(AMS_HISTORY_DAYS?' วัน':'')+' · คลิกสถานีเพื่อดู Timeline':'อ้างอิงสถานะ Network ที่แสดงอยู่ใน Dashboard · ไม่ใช่ประวัติย้อนหลัง';
+ document.getElementById('amsDrillBody').innerHTML='<table><thead><tr><th>Station ID</th><th>ชื่อสถานี</th><th>รายละเอียด</th></tr></thead><tbody>'+ (rows.length?rows.map(r=>`<tr ${history?'class="ams-drill-row" tabindex="0" role="button"':''} ${history?`onclick="closeModal('amsDrillModal');amsOpenHistoryStation('${escapeHtml(r.id)}')"`:''}><td>${escapeHtml(r.id)}</td><td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.detail)}</td></tr>`).join(''):'<tr><td colspan="3">ไม่มีข้อมูลตามเงื่อนไข</td></tr>')+'</tbody></table>';
+ el.classList.add('open');
+}
+function amsExportHistoryCSV(){
+ const rows=amsHistoryRows();const cells=[['Station ID','Station Name','Error Start','Error End','Duration (min)','Status']];
+ rows.forEach(h=>(h.errors||[]).forEach(e=>cells.push([h.site_id,h.site_name,e.start||'',e.end||'',e.duration_min??'',e.end?'Resolved':'Open'])));
+ const csv='\ufeff'+cells.map(row=>row.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(',')).join('\r\n');
+ const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AMS_Error_History_'+(AMS_HISTORY_DAYS||'all')+'D_'+reportDateKey()+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
 function renderErrHistoryKPIs(){
-  const data = ERROR_HISTORY || [];
+  const data = amsHistoryRows();
   const active   = data.filter(s=>s.active).length;
   const resolved = data.filter(s=>!s.active && s.resolved > 0).length;
   const maxErr   = data.length ? Math.max(...data.map(s=>s.total)) : 0;
@@ -6653,7 +6703,7 @@ function updateErrHistorySortHeaders(){
   });
 }
 function renderErrHistory(){
-  const data   = ERROR_HISTORY || [];
+  const data   = amsHistoryRows();
   const filter = document.getElementById('ehFilter')?.value || 'all';
   const q      = (document.getElementById('ehSearch')?.value || '').toLowerCase();
 
@@ -6707,7 +6757,7 @@ function renderErrHistory(){
 
 function openErrDetail(siteId){
   const data = ERROR_HISTORY || [];
-  const s    = data.find(x => x.site_id === siteId);
+  const s    = amsHistoryRows().find(x => x.site_id === String(siteId));
   if(!s) return;
 
   setEl('errDetailTitle', `📋 ${s.site_id} — ${s.site_name}`);
@@ -7505,7 +7555,12 @@ function renderReportContext(s){if(!s)return;reportSet('reportNetworkHealth',rep
 function renderReportSummary(rows){const body=document.getElementById('reportSummaryBody');if(!body)return;const cur=rows.at(-1)||reportCurrentSnapshot(),prev=rows.length>1?rows.at(-2):null;const mods=[['Network',cur.network,prev?.network],['Alarm',cur.alarm,prev?.alarm],['Contract',cur.contract,prev?.contract]];body.innerHTML=mods.map(([n,x,p])=>`<tr><td><b>${n}</b></td><td class="report-num">${Number(x.scope||0).toLocaleString()}</td><td class="report-num report-good">${Number(x.healthy||0).toLocaleString()}</td><td class="report-num report-bad">${Number(x.issue||0).toLocaleString()}</td><td class="report-num">${reportFmtPct(x.health)}</td><td class="report-num">${reportChange(x,p)}</td></tr>`).join('');}
 function setReportRange(days){REPORT_RANGE_DAYS=days;document.getElementById('reportRange7')?.classList.toggle('active',days===7);document.getElementById('reportRange30')?.classList.toggle('active',days===30);renderReportHealthTrend(reportLoadRecords());}
 function renderReportHealthTrend(rows){const canvas=document.getElementById('reportHealthChart');if(!canvas||typeof Chart==='undefined')return;const data=rows.slice(-REPORT_RANGE_DAYS);if(REPORT_HEALTH_CHART){REPORT_HEALTH_CHART.destroy();REPORT_HEALTH_CHART=null;}REPORT_HEALTH_CHART=new Chart(canvas,{type:'line',data:{labels:data.map(x=>x.date.slice(5)),datasets:[{label:'Network Health',data:data.map(x=>Number(x.network?.health||0)),borderWidth:2,tension:.28},{label:'Alarm Health',data:data.map(x=>Number(x.alarm?.health||0)),borderWidth:2,tension:.28},{label:'Contract Health',data:data.map(x=>Number(x.contract?.health||0)),borderWidth:2,tension:.28}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:'#b9c8dc',boxWidth:10,font:{size:10}}}},scales:{x:{ticks:{color:'#8192aa',font:{size:9}},grid:{color:'rgba(130,150,180,.08)'}},y:{min:0,max:100,ticks:{color:'#8192aa',callback:v=>v+'%',font:{size:9}},grid:{color:'rgba(130,150,180,.10)'}}}}});}
-function renderReportTopRecurring(){const body=document.getElementById('reportTopRecurringBody');if(!body)return;const active=new Set((displayData||[]).filter(r=>r&&r.status!=='resolved').map(r=>String(r.siteId))),hist=Array.isArray(ERROR_HISTORY)?ERROR_HISTORY:[];const rows=hist.map(h=>({id:String(h.site_id||''),name:String(h.site_name||''),count:Number(h.total||((h.errors||[]).length)||0)})).filter(x=>x.count>0).sort((a,b)=>b.count-a.count).slice(0,10);body.innerHTML=rows.length?rows.map((x,i)=>`<tr><td class="report-num">${i+1}</td><td><b>${escapeHtml(x.id)}</b><br><span class="report-muted">${escapeHtml(x.name.slice(0,46))}</span></td><td class="report-num">${x.count}</td><td>${active.has(x.id)?'<span class="report-badge bad">Network Error</span>':'<span class="report-badge good">Online</span>'}</td></tr>`).join(''):'<tr><td colspan="4" class="report-empty">ยังไม่มี Error History</td></tr>';}
+function renderReportTopRecurring(){
+ const body=document.getElementById('reportTopRecurringBody');if(!body)return;
+ const active=new Set((displayData||[]).filter(r=>r&&r.status!=='resolved').map(r=>String(r.siteId)));
+ const rows=amsHistoryRows().filter(x=>x.total>0).sort((a,b)=>b.total-a.total).slice(0,10);
+ body.innerHTML=rows.length?rows.map((x,i)=>`<tr class="ams-drill-row" tabindex="0" role="button" onclick="amsOpenHistoryStation('${escapeHtml(x.site_id)}')" onkeydown="if(event.key==='Enter')amsOpenHistoryStation('${escapeHtml(x.site_id)}')"><td class="report-num">${i+1}</td><td><b>${escapeHtml(x.site_id)}</b><br><span class="report-muted">${escapeHtml(x.site_name.slice(0,46))}</span></td><td class="report-num">${x.total}</td><td>${active.has(x.site_id)?'<span class="report-badge bad">Network Error LIVE</span>':'<span class="report-badge">ไม่พบใน Error LIVE</span>'}</td></tr>`).join(''):'<tr><td colspan="4" class="report-empty">ไม่มีเหตุการณ์ในช่วงที่เลือก</td></tr>';
+}
 function renderReportActivity(){const body=document.getElementById('reportActivityBody');if(!body)return;const evs=(Array.isArray(REMARK_AUDIT_REPORT?.events)?REMARK_AUDIT_REPORT.events:[]).slice().sort((a,b)=>String(opsEventTime(b)).localeCompare(String(opsEventTime(a)))).slice(0,25);body.innerHTML=evs.length?evs.map(ev=>{const typ=String(ev.event||'remark_save'),act=typ==='client_command'?String(ev.action||'command'):typ==='remark_save'?'Remark':typ;return `<tr><td style="white-space:nowrap">${escapeHtml(String(opsEventTime(ev)||'—').replace('T',' ').slice(0,16))}</td><td><b>${escapeHtml(opsUser(ev))}</b></td><td>${escapeHtml(act)}</td><td>${escapeHtml(String(ev.site_id||ev.sta_id||'—'))}</td></tr>`}).join(''):'<tr><td colspan="4" class="report-empty">ยังไม่มี Central Audit Activity</td></tr>';}
 function renderReportsAnalytics(){const rows=reportLoadRecords(),cur=rows.at(-1)||reportCurrentSnapshot();renderReportContext(cur);renderReportSummary(rows);renderReportHealthTrend(rows);renderReportTopRecurring();renderReportActivity();const st=document.getElementById('reportRecordStatus');if(st){const last=rows.at(-1);st.textContent=last?`Daily Record ${rows.length.toLocaleString()} วัน · ล่าสุด ${last.date} ${new Date(last.captured_at).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})} · Phase 1 Browser Record`:'ยังไม่มี Daily Record · กดบันทึก Snapshot วันนี้ หรือรอ Auto Capture';}}
 function exportDailyReportCSV(){const rows=reportLoadRecords();if(!rows.length)return showInfoToast('⚠️ Export','ยังไม่มี Daily Record');const head=['Date','Network Scope','Online','Network Error','Network Health %','Alarm Scope','No Active Alarm','Active Alarm Sites','Alarm Events','Alarm Health %','Contract Scope','Contract Active','Contract Action','Contract Health %'];const lines=[head,...rows.map(r=>[r.date,r.network.scope,r.network.healthy,r.network.issue,Number(r.network.health||0).toFixed(1),r.alarm.scope,r.alarm.healthy,r.alarm.issue,r.alarm.events||0,Number(r.alarm.health||0).toFixed(1),r.contract.scope,r.contract.healthy,r.contract.issue,Number(r.contract.health||0).toFixed(1)])].map(a=>a.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(','));const blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`AMS_Daily_Operations_${reportDateKey()}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
@@ -7530,7 +7585,7 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
   </div>
 </div>
 
-<div id="dashboardVersionBadge" title="AMS Service Intelligence Center">Dashboard V2.11.12 &middot; Updated 03/11/2026</div>
+<div id="dashboardVersionBadge" title="AMS Service Intelligence Center">Dashboard V2.11.13 &middot; Updated 03/11/2026</div>
 
 
 <script id="ams-header-refresh-status-sync">

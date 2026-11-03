@@ -1,17 +1,12 @@
-AMS Dashboard V2.11.12 — Contract dates from AMS API
+AMS Dashboard V2.11.13 — Reports & Analytics Drill-down (STAGING)
 
-Contents:
-- index.html: Dashboard frontend
-- worker_production.js: Cloudflare Worker, based on last available Worker package
+Base: V2.11.12. Frontend-only change. Worker unchanged.
+- Clickable KPI cards on Analysis and Error History
+- History date range 7/30/90/all, search and filters
+- Top 10 recurring stations, station timeline, CSV export
+- Historical data uses existing embedded ERROR_HISTORY only. This is NOT live event history.
+- No backfill, no counting refreshes as events. Date filtering by error START.
+- Browser Daily Record remains localStorage; no central persistence added.
+- No change to network API, contract, alarm, authentication, or Station Tools.
 
-Changes:
-- /ams-direct/stations now returns contract_start, contract_end, purchase_type and installdate mapped from api_sites AUTO response, using the same index offset convention as the original Dashboard.
-- Dashboard reads contract fields ONLY from the live API response. Embedded September contract-date fallback removed.
-- Retains prior layout and authorization checks.
-
-IMPORTANT BEFORE DEPLOYMENT:
-1. Back up current Worker and Dashboard. Worker in this package is based on the latest AVAILABLE uploaded worker, not a verified live Production deployment. Compare with your deployed Worker before replacing.
-2. Validate field mapping against actual AMS api_sites AUTO rows on staging, especially index offset and contract date format. If the upstream schema differs, these fields may be blank or incorrect.
-3. Confirm active/expired KPIs and sample station IDs against authoritative AMS contract records.
-4. Deploy Worker to staging first, then frontend staging. Do NOT deploy directly to Production without verifying.
-5. No changes to AMS API, credentials, database or local client.
+Test on staging first. Historical data completeness/freshness depends on the source ERROR_HISTORY embedded in the existing HTML. For central real-time history, a backend event-store is needed.
