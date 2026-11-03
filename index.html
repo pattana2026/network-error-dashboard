@@ -2082,6 +2082,7 @@ body > header #amsHeaderRefreshStatus{overflow:visible!important;text-overflow:c
  body > header .ams-refresh-status{white-space:normal!important}
 }
 </style>
+<style id="ams-reports-menu-consolidation">#navReports{display:none!important}</style>
 </head>
 <!-- DASHBOARD VERSION: V2.11.0 | BUILD: 2026.09.12 | INVESTIGATION WORKFLOW PHASE 2 -->
 <body>
@@ -2104,7 +2105,7 @@ body > header #amsHeaderRefreshStatus{overflow:visible!important;text-overflow:c
       <button class="nav-btn module-nav active" id="navDashboard" onclick="showPage('dashboard')">📡 Network Monitoring</button>
       <button class="nav-btn module-nav" id="navAlarm" onclick="showPage('alarm')" style="display:none">🚨 Alarm Management</button>
       <button class="nav-btn module-nav" id="navContract" onclick="showPage('contract')" style="display:none">📋 Contract Management</button>
-      <button class="nav-btn module-nav" id="navReports" onclick="showPage('reports')" style="display:none">📊 Reports & Analytics</button>
+      <button class="nav-btn module-nav" id="navReports" onclick="showPage('reports')" style="display:none!important" aria-hidden="true" tabindex="-1">📊 Reports & Analytics</button>
     </div>
     <div class="utility-nav-row" aria-label="เครื่องมืออัปเดตข้อมูล">
       <div class="ams-refresh-status" title="สถานะการอัปเดตข้อมูลล่าสุด"><span class="ams-refresh-label">ข้อมูลล่าสุด</span><span class="ams-refresh-dot" aria-hidden="true"></span><span id="amsHeaderRefreshStatus">รอข้อมูล AMS API</span></div>
@@ -2166,7 +2167,7 @@ body > header #amsHeaderRefreshStatus{overflow:visible!important;text-overflow:c
           <div class="timeline" id="timeline" style="display:none"><div class="empty-state"></div></div>
         </div>
         <div class="mini-panel side-action-panel">
-          <div class="mini-header">🧭 เครื่องมือจัดการ</div>
+          <div class="mini-header">📊 Reports &amp; Analytics</div>
           <div class="side-action-list">
             <div class="storage-badge side-action-btn" id="storageBadge">💾 —</div>
             <button class="nav-btn side-action-btn" id="navAnalysis" onclick="showPage('analysis')" style="display:none">📊 วิเคราะห์ &amp; แนวทางแก้ไข</button>
