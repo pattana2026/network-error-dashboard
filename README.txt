@@ -1,15 +1,16 @@
-AMS Dashboard V2.11.15 — First-login Password Fix (STAGING)
+AMS REMARK CENTRAL — STAGING ONLY — 2026-11-04
 
-Baseline: Dashboard V2.11.14; Worker from V2.11.12 Contract API package.
-Uploaded AMS_Direct_Production_Integration_20261103(1).zip is an older baseline and is NOT used to overwrite newer features.
+Changes from AMS_Complete_Recovery_20261104:
+1. Worker: POST /ams/remark checks session and can_comment, writes AMS Data/update atg_site.statremark, verifies Data/info read-back, records audit.
+2. Frontend: only the Remark save endpoint changes from localhost:8765/api/remark to Worker /ams/remark.
+3. Other local-client endpoints and modules are unchanged. This does NOT remove the Local Client dependency for alarms, commands, or other functions.
 
-Fixes:
-- Preserve the exact password successfully submitted to /auth/login in volatile JavaScript memory for forced password change.
-- Do not read a potentially autofilled/changed password from the login field for /auth/change-password.
-- Clear temporary credential on success, return to login, and login failure. Never store it in localStorage.
-- Distinguish NEW_PASSWORD_INVALID vs CURRENT_PASSWORD_INVALID at Worker API; no secret in response.
-- Update visible Dashboard version V2.11.15.
-
-Deployment: Test index.html and worker_production.js together on staging. Worker file is derived from the available V2.11.12 worker, NOT verified byte-for-byte against currently deployed Worker. Diff against production before replacing; do not deploy blindly.
-Test: reset a test user, login with temporary password, change to a distinct 12+ character password, login again, verify remarks. Do not share passwords/tokens.
-No account, permission, or database changes made.
+DO NOT DEPLOY TO PRODUCTION UNTIL STAGING TESTS PASS.
+In a separate STAGING Worker, configure AMS_UID and AMS_PWD as secrets and AMS_REMARK_WRITE_ENABLED=true.
+Confirm Worker can reach AMS /Auth/login2 and /Data/info from Cloudflare; the existing AMS Direct connector has had transport problems previously.
+Keep AMS_REMARK_WRITE_ENABLED unset/false in Production until validated.
+The frontend file points to the existing production Worker domain; for staging testing, change AMS_AUTH_API to the staging Worker domain and deploy the HTML only to staging.
+Verify: login as authorized user; save a harmless test remark on a test station; compare AMS Web and second browser; verify audit; test unauthorized user, invalid station, and upstream failure.
+The test will write REAL AMS data if enabled. Back up original remark before test.
+If Cloudflare cannot reach AMS API, do not expose local port 8765 to Internet. Use a securely authenticated outbound agent/queue design instead.
+Rollback: restore original index.html and worker_production.js from the Complete Recovery ZIP.
