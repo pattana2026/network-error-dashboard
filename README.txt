@@ -1,15 +1,11 @@
-AMS Dashboard V2.11.15 — First-login Password Fix (STAGING)
+AMS User Delete Fix - 2026-11-04
 
-Baseline: Dashboard V2.11.14; Worker from V2.11.12 Contract API package.
-Uploaded AMS_Direct_Production_Integration_20261103(1).zip is an older baseline and is NOT used to overwrite newer features.
+Based on Dashboard index V2.11.14 and Worker HTTP500 SQL Fix from previous package.
 
-Fixes:
-- Preserve the exact password successfully submitted to /auth/login in volatile JavaScript memory for forced password change.
-- Do not read a potentially autofilled/changed password from the login field for /auth/change-password.
-- Clear temporary credential on success, return to login, and login failure. Never store it in localStorage.
-- Distinguish NEW_PASSWORD_INVALID vs CURRENT_PASSWORD_INVALID at Worker API; no secret in response.
-- Update visible Dashboard version V2.11.15.
+CHANGE: Owner AMSNetwork_Admin can delete a user with one browser confirmation (no typing username). Worker implements DELETE /users/{id} as logical archive, revokes sessions, removes permissions, and hides archived users from user list. Existing audit logs and remarks remain. Username is replaced with deleted_<uuid>; original username becomes available for reuse.
 
-Deployment: Test index.html and worker_production.js together on staging. Worker file is derived from the available V2.11.12 worker, NOT verified byte-for-byte against currently deployed Worker. Diff against production before replacing; do not deploy blindly.
-Test: reset a test user, login with temporary password, change to a distinct 12+ character password, login again, verify remarks. Do not share passwords/tokens.
-No account, permission, or database changes made.
+IMPORTANT: This is a logical deletion, NOT physical database deletion. The archived user row remains to preserve referential integrity.
+
+DEPLOY: Backup both current live index.html and Worker first. Deploy Worker to Staging, then index.html to Staging. Verify admin/test_network_error/vatit logins and remark functionality, then test deletion on a disposable account. Only then promote both files to Production. Do not deploy only one file expecting full functionality.
+
+No live deployment or database modification was performed by this package.
