@@ -2103,7 +2103,7 @@ body > header > .header-right .utility-nav-row{display:flex!important;align-item
 .ams-history-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 14px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;margin-bottom:14px}.ams-history-toolbar button,.ams-history-toolbar input{border:1px solid var(--border2);background:var(--surface);color:var(--text);border-radius:7px;padding:7px 10px}.ams-history-toolbar button.active{background:#315bd7;color:#fff}.ams-drill-row{cursor:pointer}.ams-drill-row:hover{background:rgba(72,120,225,.10)}.ams-history-note{font-size:11px;color:var(--text-muted);margin:6px 0 10px}
 </style>
 </head>
-<!-- DASHBOARD VERSION: V2.11.14 | BUILD: 2026.11.03 | APPROVED HEADER MOCKUP -->
+<!-- DASHBOARD VERSION: V2.11.15 | BUILD: 2026.11.03 | APPROVED HEADER MOCKUP -->
 <body>
 <div id="amsAuthGate"><form class="ams-auth-card" id="amsAuthForm" autocomplete="on">
 <h2>AMS Service Intelligence Center</h2><p>เข้าสู่ระบบด้วยบัญชี AMS Dashboard</p>
@@ -6614,7 +6614,7 @@ async function loadFromAMS(){
   await refreshFromLocalClient({silent:false});
 }
 
-// V2.11.14 · REPORTS DRILL-DOWN · no changes to AMS API, login, module permissions.
+// V2.11.15 · REPORTS DRILL-DOWN · no changes to AMS API, login, module permissions.
 let AMS_HISTORY_DAYS=0;
 function amsHistoryDate(value){if(!value)return NaN;const t=new Date(String(value).trim().replace(' ','T')).getTime();return Number.isFinite(t)?t:NaN;}
 function amsHistoryRows(){
@@ -7095,7 +7095,7 @@ function printSummaryReport(){
 
 <script>
 
-// V2.11.14: consolidate Error History into Analysis without modifying the event dataset.
+// V2.11.15: consolidate Error History into Analysis without modifying the event dataset.
 function amsInitConsolidatedAnalytics(){
  const analysis=document.getElementById('analysisPage'),history=document.getElementById('errHistoryPage');
  if(!analysis||!history||history.parentElement===analysis)return;
@@ -7120,7 +7120,7 @@ function amsRenderTopRecurring(){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',amsInitConsolidatedAnalytics);
 else amsInitConsolidatedAnalytics();
 
-<\/script>
+</script>
 </body></html>`);
   w.document.close();
   const go=()=>{w.focus();w.print()};
@@ -7613,7 +7613,7 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
   </div>
 </div>
 
-<div id="dashboardVersionBadge" title="AMS Service Intelligence Center">Dashboard V2.11.14 &middot; Updated 03/11/2026</div>
+<div id="dashboardVersionBadge" title="AMS Service Intelligence Center">Dashboard V2.11.15 &middot; Updated 03/11/2026</div>
 
 
 <script id="ams-header-refresh-status-sync">
@@ -7704,7 +7704,8 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
       void refreshFromLocalClient({silent:true});
     },5*60*1000);
   }
-  document.getElementById('amsBackToLoginBtn').addEventListener('click',()=>{document.getElementById('amsPasswordChangePanel').hidden=true;document.getElementById('amsLoginButton').hidden=false;document.getElementById('amsPasswordChangeError').textContent='';AMS_AUTH_TOKEN=null;AMS_AUTH_USER=null;AMS_AUTH_PERMISSIONS=[];});
+  document.getElementById('amsBackToLoginBtn').addEventListener('click',()=>{amsPendingLoginPassword=null;document.getElementById('amsPasswordChangePanel').hidden=true;document.getElementById('amsLoginButton').hidden=false;document.getElementById('amsPasswordChangeError').textContent='';AMS_AUTH_TOKEN=null;AMS_AUTH_USER=null;AMS_AUTH_PERMISSIONS=[];});
+  let amsPendingLoginPassword = null; // Memory only; never persist a password.
   document.getElementById('amsChangePasswordBtn').addEventListener('click',async()=>{
     const dest=document.getElementById('amsPasswordChangeError'),button=document.getElementById('amsChangePasswordBtn');
     const pw=document.getElementById('amsNewPassword').value,confirmPw=document.getElementById('amsConfirmPassword').value;
@@ -7714,26 +7715,30 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
     if(!AMS_AUTH_TOKEN){dest.textContent='Session หมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง';return;}
     button.disabled=true;button.textContent='กำลังบันทึก...';
     try{
-      await api('/auth/change-password',{method:'POST',body:JSON.stringify({old_password:document.getElementById('amsLoginPassword').value,new_password:pw})});
+      await api('/auth/change-password',{method:'POST',body:JSON.stringify({old_password:amsPendingLoginPassword ?? document.getElementById('amsLoginPassword').value,new_password:pw})});
       document.getElementById('amsPasswordChangePanel').hidden=true;
       document.getElementById('amsLoginButton').hidden=false;
       document.getElementById('amsNewPassword').value='';document.getElementById('amsConfirmPassword').value='';
       AMS_AUTH_TOKEN=null;AMS_AUTH_USER=null;AMS_AUTH_PERMISSIONS=[];
+      amsPendingLoginPassword=null;
       document.getElementById('amsLoginPassword').value='';
       document.getElementById('amsAuthError').textContent='เปลี่ยนรหัสผ่านสำเร็จ กรุณาเข้าสู่ระบบด้วยรหัสผ่านใหม่';
-    }catch(err){dest.textContent='ไม่สามารถเปลี่ยนรหัสผ่านได้: '+err.message+ (err.message.includes('Invalid password')?' (โปรดตรวจสอบรหัสผ่านเดิม)':'');}
+    }catch(err){dest.textContent='ไม่สามารถเปลี่ยนรหัสผ่านได้: '+err.message+ ;}
     finally{button.disabled=false;button.textContent='บันทึกรหัสผ่านใหม่';}
   });
   form.addEventListener('submit',async e=>{
     e.preventDefault();error.textContent='';
     const button=document.getElementById('amsLoginButton');button.disabled=true;button.textContent='กำลังตรวจสอบ...';
     try{
-      const result=await api('/auth/login',{method:'POST',body:JSON.stringify({username:document.getElementById('amsLoginUsername').value.trim(),password:document.getElementById('amsLoginPassword').value})});
+      const loginPassword = document.getElementById('amsLoginPassword').value;
+      const result=await api('/auth/login',{method:'POST',body:JSON.stringify({username:document.getElementById('amsLoginUsername').value.trim(),password:loginPassword})});
+      amsPendingLoginPassword = result.user?.must_change_password ? loginPassword : null;
       await activate(result.token,result.user);
+      if (!AMS_AUTH_USER?.must_change_password) amsPendingLoginPassword=null;
       // Keep the original password only while first-login password change is pending.
       // The Worker verifies old_password against the original credential.
       if (!AMS_AUTH_USER?.must_change_password) document.getElementById('amsLoginPassword').value='';
-    }catch(err){AMS_AUTH_TOKEN=null;AMS_AUTH_USER=null;AMS_AUTH_PERMISSIONS=[];error.textContent='เข้าสู่ระบบไม่สำเร็จ: '+err.message;}
+    }catch(err){AMS_AUTH_TOKEN=null;AMS_AUTH_USER=null;AMS_AUTH_PERMISSIONS=[];amsPendingLoginPassword=null;error.textContent='เข้าสู่ระบบไม่สำเร็จ: '+err.message;}
     finally{button.disabled=false;button.textContent='เข้าสู่ระบบ';}
   });
   document.getElementById('amsLogoutBtn').addEventListener('click',async()=>{
@@ -7799,9 +7804,10 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
     await load();notify('เปลี่ยนสถานะบัญชีสำเร็จ');
    }else if(b.dataset.action==='delete'){
     if(u.username?.toLowerCase()==='amsnetwork_admin')throw Error('ไม่อนุญาตให้ลบบัญชี Admin หลัก');
-    if(!confirm('ยืนยันลบบัญชี '+u.username+' ออกจากรายการผู้ใช้งาน?\nระบบจะระงับการเข้าใช้ทันทีและเก็บ Audit/Remark เดิมไว้'))return;
+    const check=prompt('ลบบัญชี '+u.username+' อย่างถาวร\nพิมพ์ชื่อบัญชีเพื่อยืนยัน (การลบอาจกระทบ Audit เดิม):');
+    if(check!==u.username)return;
     await req('/users/'+encodeURIComponent(u.id),'DELETE');
-    await load();notify('นำบัญชี '+u.username+' ออกจากรายการแล้ว (เก็บ Audit เดิม)');
+    await load();notify('ลบบัญชี '+u.username+' สำเร็จ');
    }else if(b.dataset.action==='audit'){
     el('umAuditTitle').textContent='Audit: '+u.username;
     el('umAuditRows').innerHTML='<tr><td colspan="4">กำลังโหลดประวัติ…</td></tr>';
