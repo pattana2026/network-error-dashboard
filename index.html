@@ -7697,13 +7697,21 @@ setInterval(()=>{try{captureDailyRecord(false);}catch(e){}},10*60*1000);
       if(ts){ts.textContent='· กำลังโหลด AMS Direct...';ts.title='กำลังอ่านข้อมูลจาก AMS API';}
       await refreshFromLocalClient({silent:true});
     }
+    // The earlier page-load audit request can run before authentication and be skipped.
+    // Fetch D1 audit after login and AMS snapshot, then repaint the Remark author labels.
+    if(typeof refreshCentralRemarkAuditCache==='function'){
+      if(await refreshCentralRemarkAuditCache()) renderTable();
+    }
     // 5-minute live monitoring, one request at a time, authenticated sessions only.
     // The timer is intentionally not started until the first login fetch has finished.
     if(window._amsRefreshTimer)clearInterval(window._amsRefreshTimer);
     window._amsRefreshTimer=setInterval(()=>{
       if(!AMS_AUTH_TOKEN || !document.documentElement.classList.contains('ams-authenticated'))return;
       if(document.visibilityState==='hidden')return; // resume on tab visibility
-      void refreshFromLocalClient({silent:true});
+      void (async()=>{
+        await refreshFromLocalClient({silent:true});
+        if(AMS_AUTH_TOKEN && await refreshCentralRemarkAuditCache()) renderTable();
+      })();
     },5*60*1000);
   }
   document.getElementById('amsBackToLoginBtn').addEventListener('click',()=>{amsPendingLoginPassword=null;document.getElementById('amsPasswordChangePanel').hidden=true;document.getElementById('amsLoginButton').hidden=false;document.getElementById('amsPasswordChangeError').textContent='';AMS_AUTH_TOKEN=null;AMS_AUTH_USER=null;AMS_AUTH_PERMISSIONS=[];});
