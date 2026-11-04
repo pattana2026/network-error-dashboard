@@ -5597,6 +5597,7 @@ async function saveNoteOverride(siteId,note){
     LIVE_REMARK_AUDIT[String(siteId)]={event:'remark_save',source:'DASHBOARD',
       site_id:String(siteId),note:verified,username:j.saved_by||'',
       uid:j.saved_by_uid||'',saved_at:j.saved_at||new Date().toISOString()};
+    try { if(await refreshCentralRemarkAuditCache()) renderTable(); } catch(e) { console.warn('Audit refresh after save failed',e); }
     const overrides=lsLoad(SK_NOTE_OVERRIDES,{});
     delete overrides[siteId];lsSave(SK_NOTE_OVERRIDES,overrides);
     const row=displayData.find(x=>String(x.siteId)===String(siteId));
@@ -7180,25 +7181,26 @@ let REMARK_AUDIT_REPORT={events:[],users:[],total_events:0,unique_users:0,unique
 
 // Silent shared cache for the main Network Error table. This does not touch the Audit Report UI.
 async function refreshCentralRemarkAuditCache(){
+  if(!AMS_AUTH_TOKEN || !amsAllowed('network_error','can_view')) return false;
+  const token=AMS_AUTH_TOKEN;
   try{
     const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),3000);
+    const timer=setTimeout(()=>controller.abort(),8000);
     try{
-      const res=await fetch(`${MANAGER_AUDIT_PROXY}/api/audit/report?limit=50000`,{
-        cache:'no-store', signal:controller.signal
+      const res=await fetch(`${AMS_AUTH_API}/ams/remark-audit`,{
+        headers:{Authorization:'Bearer '+token},cache:'no-store',signal:controller.signal
       });
+      if(!res.ok) throw new Error(`Central Audit HTTP ${res.status}`);
       const j=await res.json();
-      if(res.ok && j && j.success && Array.isArray(j.events)){
-        REMARK_AUDIT_REPORT=j;
-        return true;
-      }
-    } finally {
-      if(timer)clearTimeout(timer);
-    }
+      if(!j?.success || !Array.isArray(j.events)) throw new Error('Invalid Central Audit response');
+      if(AMS_AUTH_TOKEN!==token) return false;
+      REMARK_AUDIT_REPORT={...REMARK_AUDIT_REPORT,events:j.events};
+      return true;
+    }finally{clearTimeout(timer);}
   }catch(e){
-    console.warn('Central Remark Audit unavailable; Local Audit fallback remains active',e?.message||e);
+    console.warn('Cloudflare Remark Audit unavailable; legacy fallback remains active',e?.message||e);
+    return false;
   }
-  return false;
 }
 
 async function openRemarkAuditReport(){
