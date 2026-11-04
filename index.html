@@ -2179,30 +2179,17 @@ body > header > .header-right .utility-nav-row{display:flex!important;align-item
         </div>
       </div>
       <div class="side-col">
-        <div class="mini-panel">
-          <div class="mini-header">👥 ผู้บันทึก Remark <span id="remarkAuditSummary" style="float:right;font-weight:800">—</span></div>
-          <div style="padding:14px">
-            <button class="nav-btn" onclick="openRemarkAuditReport()" title="ตรวจสอบว่าใครเป็นผู้บันทึกหมายเหตุ" style="width:100%;justify-content:center;display:flex;align-items:center;gap:8px">👥 เปิดรายงานผู้บันทึก Remark</button>
-            <div style="font-size:11px;color:var(--muted);margin-top:9px;line-height:1.5">ตรวจสอบผู้บันทึก Remark, UID, เวลา และแหล่งที่มาของรายการ</div>
+        <div class="mini-panel side-action-panel">
+          <div class="mini-header">📊 REPORTS &amp; AUDIT CENTER <span id="remarkAuditSummary" style="float:right;font-size:10px;font-weight:700">—</span></div>
+          <div class="side-action-list" style="padding:12px;display:flex;flex-direction:column;gap:8px">
+            <button class="nav-btn side-action-btn" onclick="openRemarkAuditReport()" style="display:flex;width:100%;justify-content:flex-start">👥 รายงานผู้บันทึก Remark</button>
+            <button class="nav-btn side-action-btn" id="navAnalysis" onclick="showPage('analysis')" style="display:none">📊 วิเคราะห์ &amp; แนวทางแก้ไข</button>
+            <button class="nav-btn side-action-btn" id="exportBtn" onclick="openExportModal()" style="display:none">📄 Export Report</button>
+            <button type="button" class="nav-btn side-action-btn ams-email-action" onclick="sendEmailOutlook()" style="display:flex;width:100%;justify-content:flex-start">✉️ Email · Excel รายงานประจำวัน</button>
+            <div style="font-size:11px;color:var(--muted);line-height:1.5;padding:3px 4px">Audit ส่วนกลางจาก Cloudflare D1 · ไม่ใช้ข้อมูลเก่าจาก Browser สำหรับรายงานผู้บันทึก</div>
           </div>
           <div class="timeline" id="timeline" style="display:none"><div class="empty-state"></div></div>
-        </div>
-        <div class="mini-panel side-action-panel">
-          <div class="mini-header">📊 Reports &amp; Analytics</div>
-          <div class="side-action-list">
-            <div class="storage-badge side-action-btn" id="storageBadge" hidden style="display:none!important" aria-hidden="true">💾 —</div>
-            <button class="nav-btn side-action-btn" id="navAnalysis" onclick="showPage('analysis')" style="display:none">📊 วิเคราะห์ &amp; แนวทางแก้ไข</button>
-            
-            <button class="nav-btn side-action-btn" id="exportBtn" onclick="openExportModal()" style="display:none">📄 Export Report</button>
-          </div>
-        </div>
-        <div class="mini-panel">
-          <div class="mini-header">🔔 Export / แจ้งเตือน</div>
-          <div class="notify-form">
-            <div class="notify-option"><div class="notify-icon" style="background:var(--green-dim)">💬</div><div><div class="notify-name">Line Notify</div><div class="notify-desc">ส่งรายการ Error</div></div></div>
-            <button type="button" class="notify-option ams-email-action" onclick="sendEmailOutlook()" title="เปิด Outlook พร้อมดาวน์โหลด Excel รายงานประจำวัน"><div class="notify-icon" style="background:var(--blue-dim)">✉️</div><div><div class="notify-name">Email</div><div class="notify-desc">เปิด Outlook + ดาวน์โหลด Excel ประจำวัน</div></div></button>
-
-          </div>
+          <div class="storage-badge" id="storageBadge" hidden style="display:none!important" aria-hidden="true">💾 —</div>
         </div>
       </div>
     </div>
@@ -5242,36 +5229,17 @@ function formatAuditTimeGlobal(v){
 }
 
 async function getExportRemarkAuditEvents(){
-  // Export must never freeze while waiting for Manager Audit Server.
-  // Use a short timeout, then fall back to data already available in this browser/local client.
+  // Always fetch fresh, authoritative D1 events for exports. No stale local-client fallback.
+  if(!AMS_AUTH_TOKEN)throw new Error('กรุณา Login ก่อน Export');
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);
   try{
-    const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),2500);
-    try{
-      const res=await fetch(`${MANAGER_AUDIT_PROXY}/api/audit/report?limit=50000`,{
-        cache:'no-store',signal:controller.signal
-      });
-      const j=await res.json();
-      if(res.ok && j && j.success && Array.isArray(j.events)){
-        REMARK_AUDIT_REPORT=j;
-        return j.events;
-      }
-    } finally {
-      if(timer)clearTimeout(timer);
-    }
-  }catch(e){
-    console.warn('Export Audit: Manager Audit unavailable, using fallback',e?.message||e);
-  }
-
-  // Fallback: use any report already loaded in this browser.
-  if(Array.isArray(REMARK_AUDIT_REPORT?.events) && REMARK_AUDIT_REPORT.events.length){
-    return REMARK_AUDIT_REPORT.events;
-  }
-
-  // Last fallback: latest-per-site audit from Local Client.
-  return Object.values(LIVE_REMARK_AUDIT||{}).filter(Boolean);
+    const res=await fetch(`${AMS_AUTH_API}/ams/remark-audit`,{headers:{Authorization:'Bearer '+AMS_AUTH_TOKEN},cache:'no-store',signal:controller.signal});
+    const j=await res.json();
+    if(!res.ok||!j?.success||!Array.isArray(j.events))throw new Error(j?.error||`Central Audit HTTP ${res.status}`);
+    REMARK_AUDIT_REPORT={...REMARK_AUDIT_REPORT,events:j.events,source:'CLOUDFLARE_D1'};
+    return j.events;
+  }finally{clearTimeout(timer);}
 }
-
 function exportAuditMeta(siteId,note,auditEvents){
   const sid=String(siteId||'');
   const targetNote=String(note??'');
@@ -5466,44 +5434,118 @@ function renderHistory(){
 
 // ══ SEND EMAIL VIA OUTLOOK (mailto) ══
 function sendEmailOutlook(){
-  // Same mailto launch as Contract Management; browsers cannot auto-attach files to mailto.
-  // Only use current live AMS rows; never silently fall back to embedded historical snapshots.
+  // Management report: current AMS status + evidence-backed central audit + available history.
   const rows=Array.isArray(displayData)?displayData:[];
   if(!rows.length){alert('ยังไม่มีข้อมูล AMS ล่าสุด กรุณารีโหลดข้อมูลก่อนเปิด Email');return;}
-  if(typeof XLSX==='undefined'){alert('ไม่สามารถสร้างไฟล์ Excel ได้ เนื่องจาก XLSX library ยังไม่พร้อม');return;}
-  const now=new Date();
+  if(typeof XLSX==='undefined'){alert('ไม่สามารถสร้าง Excel ได้ เนื่องจาก XLSX library ยังไม่พร้อม');return;}
+  const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
   const dateStr=now.toLocaleDateString('th-TH',{day:'2-digit',month:'2-digit',year:'numeric'});
   const timeStr=now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
   const stamp=now.getFullYear()+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0');
-  const active=rows.filter(r=>r.status!=='resolved');
-  const crisis=active.filter(r=>r.ageLabel==='crisis');
-  const fields=active.map(r=>({
-    'Station ID':r.siteId||'', 'Station Name':r.siteName||'',
-    'Province':r.province||'', 'Status':r.status||'Network Error',
+  const active=rows.filter(r=>r&&r.status!=='resolved');
+  const overdue=active.filter(r=>Number(r.ageDays||0)>3).sort((a,b)=>Number(b.ageDays||0)-Number(a.ageDays||0));
+  const noRemark=active.filter(r=>!String(r.note||'').trim());
+  const audit=Array.isArray(REMARK_AUDIT_REPORT?.events)?REMARK_AUDIT_REPORT.events:[];
+  const todayEvents=audit.filter(e=>{const d=typeof opsParseDate==='function'?opsParseDate(e.saved_at||e.requested_at||e.received_at):new Date(e.saved_at);return d&&!Number.isNaN(d.getTime())&&d>=today&&d<=now;});
+  const remarkEvents=todayEvents.filter(e=>String(e.event||'remark_save')==='remark_save');
+  const auditStations=new Set(remarkEvents.map(e=>String(e.site_id||'')).filter(Boolean));
+  const byUser={};remarkEvents.forEach(e=>{const k=String(e.username||e.saved_by||'ไม่ระบุ');byUser[k]=(byUser[k]||0)+1;});
+  const history=Array.isArray(ERROR_HISTORY)?ERROR_HISTORY:[];
+  const windowStart=new Date(today);windowStart.setDate(windowStart.getDate()-29);
+  const recurrent=history.map(h=>{const entries=Array.isArray(h.errors)?h.errors:[];const n=entries.filter(e=>{const d=typeof opsParseDate==='function'?opsParseDate(e.start||e.end):new Date(e.start||e.end);return d&&d>=windowStart&&d<=now;}).length;return {id:String(h.site_id||''),name:String(h.site_name||''),count:n};}).filter(x=>x.id&&x.count>=3).sort((a,b)=>b.count-a.count).slice(0,15);
+  const activeMap=new Map(active.map(r=>[String(r.siteId),r]));
+  const causeGuidance={
+    'อินเทอร์เน็ต':'ตรวจ ISP/Router/SIM, สัญญาณและเส้นทางสำรอง',
+    'คอมพิวเตอร์':'ตรวจ PC/Service/Auto-restart และ Log การหยุดทำงาน',
+    'ATG เสีย':'ตรวจ Hardware/Interface และประสานช่างพร้อม Job/ETA',
+    'Ping ATG ไม่เจอ':'ตรวจ LAN/RS232/TCP-IP และการเชื่อมต่อ ATG',
+    'ส่งช่าง':'ติดตาม Job, ผู้รับผิดชอบ, ETA และผลตรวจหน้างาน',
+    'ค้างค่าเช่า':'ประสานผู้ดูแลสัญญาและ Account Manager',
+    'ไม่ระบุ':'เก็บหลักฐาน Error/Log เพื่อวิเคราะห์สาเหตุจริง'
+  };
+  const classify=r=>{const causes=typeof extractCause==='function'?extractCause(String(r.note||'')):['ไม่ระบุ'];return causes[0]||'ไม่ระบุ';};
+  const recommendation=r=>causeGuidance[classify(r)]||'ตรวจสอบสาเหตุและกำหนดมาตรการป้องกันเกิดซ้ำ';
+  const summary=[
+    ['วันที่รายงาน',dateStr+' '+timeStr],['แหล่งสถานะ','AMS Dashboard (ข้อมูลที่โหลดปัจจุบัน)'],
+    ['สถานี Network Error คงค้าง',active.length],['ค้างเกิน 3 วัน (เสนอ Escalate)',overdue.length],
+    ['ค้างโดยไม่มี Remark',noRemark.length],['สถานีเกิดซ้ำ >=3 ครั้ง ใน 30 วัน (ตามประวัติที่มี)',recurrent.length],
+    ['กิจกรรมบันทึก Remark วันนี้ (Audit)',remarkEvents.length],['สถานีที่มีการบันทึก Remark วันนี้',auditStations.size],
+    ['จำนวนผู้บันทึก Remark วันนี้',Object.keys(byUser).length],
+    ['ขอบเขต Audit','ตามรายการที่ Cloudflare D1 API ส่งกลับมา (อาจจำกัด 1,000 รายการล่าสุด)'],
+    ['ข้อจำกัด','Remark คือกิจกรรมการบันทึก ไม่ยืนยันว่าลูกค้าดำเนินการหรือปิดงานแล้ว'],
+    ['ข้อจำกัดประวัติ','สถิติเกิดซ้ำอ้างอิง ERROR_HISTORY ที่ Dashboard มี ไม่ใช่ข้อมูลย้อนหลังครบทุกวัน']
+  ];
+  const activity=remarkEvents.slice().sort((a,b)=>String(b.saved_at||'').localeCompare(String(a.saved_at||''))).map(e=>({
+    'เวลา':e.saved_at?new Date(e.saved_at).toLocaleString('th-TH'):'',
+    'Station ID':String(e.site_id||''),'ผู้บันทึก':String(e.username||e.saved_by||''),
+    'กิจกรรม':'บันทึก Remark','รายละเอียด':String(e.note||'').slice(0,1500),
+    'หลักฐาน':'Cloudflare D1 Audit'
+  }));
+  const repeated=recurrent.map(h=>{const r=activeMap.get(h.id);return {
+    'Station ID':h.id,'ชื่อสถานี':r?.siteName||h.name,'Error 30 วัน (ครั้ง)':h.count,
+    'สถานะปัจจุบัน':r?'Network Error':'ไม่อยู่ในรายการ Error ปัจจุบัน',
+    'Aging (วัน)':r?Number(r.ageDays||0):'', 'สาเหตุจาก Remark (เบื้องต้น)':r?classify(r):'ต้องตรวจสอบ',
+    'แนวทางตรวจต้นเหตุ':r?recommendation(r):'ตรวจ Timeline, Event Log และสาเหตุซ้ำ',
+    'หมายเหตุ':'จำนวนครั้งจากประวัติที่ Dashboard มี; ต้องยืนยัน Root Cause ก่อนสั่งแก้ไข'
+  };});
+  const escalations=overdue.map(r=>({
+    'Priority':'P1 (เสนอให้ตรวจสอบ)','Station ID':String(r.siteId||''),'ชื่อสถานี':r.siteName||'',
+    'จังหวัด':r.province||'','ค้าง (วัน)':Number(r.ageDays||0),
+    'Remark ปัจจุบัน':r.note||'ยังไม่มี Remark','สาเหตุเบื้องต้น':classify(r),
+    'การดำเนินการที่เสนอ':recommendation(r),
+    'Escalation Status':'ต้องตรวจสอบ Owner/Job/ETA และการแจ้งจริง',
+    'หมายเหตุ':'เกิน 3 วันเป็นเกณฑ์คัดกรอง ไม่ใช่หลักฐานว่าได้ส่ง Escalation แล้ว'
+  }));
+  const stationRows=active.map(r=>({
+    'Station ID':String(r.siteId||''),'ชื่อสถานี':r.siteName||'','จังหวัด':r.province||'',
+    'สถานะ':'Network Error','ค้าง (วัน)':Number(r.ageDays||0),
     'Last Inventory':r.lastData instanceof Date?r.lastData.toLocaleString('th-TH'):(r.lastData||''),
-    'Error Days':Number.isFinite(Number(r.ageDays))?Number(r.ageDays):'',
-    'Site Remark':r.note||'', 'Report Date':dateStr, 'Report Time':timeStr
+    'Remark':r.note||'','ควร Escalate (>3 วัน)':Number(r.ageDays||0)>3?'ตรวจสอบ':'',
+    'แนวทางแก้ไขเบื้องต้น':recommendation(r)
   }));
   const wb=XLSX.utils.book_new();
-  const summary=[{'Metric':'Report Date','Value':dateStr+' '+timeStr},
-    {'Metric':'Network Error Stations','Value':active.length},
-    {'Metric':'Critical (>3 days)','Value':crisis.length},
-    {'Metric':'Source','Value':'AMS Dashboard current loaded data'}];
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(summary),'Daily Summary');
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(fields.length?fields:[{'Station ID':'No active network errors'}]),'Network Error');
-  const filename='AMS_Daily_Network_Error_'+stamp+'.xlsx';
-  try{XLSX.writeFile(wb,filename);}catch(e){alert('สร้าง Excel ไม่สำเร็จ: '+(e&&e.message||e));return;}
-  const subject='[AMS Network Error] รายงานประจำวันที่ '+dateStr;
-  const body='เรียน ทีมงานที่เกี่ยวข้อง\n\n'+
-    'รายงาน AMS Network Error ประจำวันที่ '+dateStr+' เวลา '+timeStr+' น.\n'+
-    'Network Error: '+active.length+' สถานี\n'+
-    'Critical (>3 วัน): '+crisis.length+' สถานี\n\n'+
-    'ไฟล์รายงาน: '+filename+'\n'+
-    'กรุณาแนบไฟล์ Excel ที่ดาวน์โหลดก่อนกดส่งอีเมล\n\n'+
-    'ขอแสดงความนับถือ\nAMS Monitoring Team';
+  const add=(name,data)=>{const ws=XLSX.utils.json_to_sheet(data.length?data:[{'ข้อมูล':'ไม่มีรายการตามเงื่อนไข'}]);ws['!cols']=Object.keys(data[0]||{'ข้อมูล':''}).map(k=>({wch:Math.min(58,Math.max(16,k.length+10))}));XLSX.utils.book_append_sheet(wb,ws,name);};
+  add('Executive Summary',summary.map(([Metric,Value])=>({Metric,Value})));
+  add('Today Activity',activity);
+  add('Recurring 30D',repeated);
+  add('Escalation Review',escalations);
+  add('Active Network Error',stationRows);
+  add('Activity by User',Object.entries(byUser).sort((a,b)=>b[1]-a[1]).map(([user,n])=>({'ผู้บันทึก':user,'จำนวน Remark วันนี้':n})));
+  const filename='AMS_Daily_Management_Report_'+stamp+'.xlsx';
+  try{XLSX.writeFile(wb,filename);}catch(e){alert('สร้าง Excel ไม่สำเร็จ: '+(e?.message||e));return;}
+  const top=recurrent.slice(0,5).map((h,i)=>`${i+1}. ${h.id} ${h.name||''} — ${h.count} ครั้ง/30 วัน${activeMap.has(h.id)?' (ยัง Error)':''}`);
+  const critical=overdue.slice(0,5).map((r,i)=>`${i+1}. ${r.siteId} ${r.siteName||''} — ${Number(r.ageDays||0).toFixed(1)} วัน${String(r.note||'').trim()?'':' (ไม่มี Remark)'}`);
+  const userText=Object.entries(byUser).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([u,n])=>`${u}: ${n} รายการ`).join(', ')||'ไม่พบรายการใน Audit ที่โหลด';
+  const subject=`[AMS Daily Management] ${dateStr} | Error ${active.length} | Escalate ${overdue.length} | Recurring ${recurrent.length}`;
+  const body=[
+    'เรียน ผู้จัดการและทีมงานที่เกี่ยวข้อง','',
+    `สรุปภาพรวม AMS Network Operations ประจำวันที่ ${dateStr} ณ เวลา ${timeStr} น.`,
+    '', '1) ภาพรวมสถานการณ์',
+    `• Network Error คงค้าง: ${active.length} สถานี`,
+    `• ค้างเกิน 3 วัน (เสนอพิจารณา Escalate): ${overdue.length} สถานี`,
+    `• ค้างโดยไม่มี Remark: ${noRemark.length} สถานี`,
+    `• สถานี Error ซ้ำ >=3 ครั้ง/30 วัน: ${recurrent.length} สถานี (จากประวัติที่มี)`,
+    '', '2) กิจกรรมที่ตรวจสอบได้วันนี้ (Cloudflare D1 Audit)',
+    `• บันทึก Remark: ${remarkEvents.length} รายการ ใน ${auditStations.size} สถานี`,
+    `• ผู้บันทึก: ${userText}`,
+    '• การบันทึก Remark ไม่เท่ากับการแก้ไขปัญหาสำเร็จ และไม่ยืนยันว่าลูกค้าดำเนินการแล้ว',
+    '', '3) สถานีเกิดซ้ำที่ควรวิเคราะห์ Root Cause',
+    ...(top.length?top:['• ไม่พบสถานีถึงเกณฑ์จากประวัติที่มี']),
+    'ข้อเสนอ: ตรวจ Timeline, ISP/Router/SIM, PC/Service, ATG และ Job ก่อนกำหนด Corrective/Preventive Action',
+    '', '4) รายการเสนอ Escalation (>3 วัน)',
+    ...(critical.length?critical:['• ไม่พบรายการค้างเกิน 3 วัน']),
+    'ข้อเสนอ: ยืนยัน Owner, Job No., ETA, ผลติดตาม และผู้รับ Escalation ก่อนส่งต่อ',
+    '', '5) ประเด็นให้ผู้จัดการพิจารณา',
+    '• มอบหมายเจ้าของปัญหาสถานีเกิดซ้ำ และกำหนดแผนแก้ที่ต้นเหตุพร้อมวันติดตาม',
+    '• ติดตามสถานีเกิน 3 วัน และสถานีไม่มี Remark เป็นลำดับแรก',
+    '• แยกการบันทึก/ติดตามงาน ออกจากผลแก้ไขสำเร็จในการประเมินผลงาน',
+    '',`ไฟล์ประกอบ: ${filename} (6 Sheets: Summary, Activity, Recurring, Escalation, Active, Users)`,
+    'กรุณาแนบไฟล์ Excel ที่ดาวน์โหลดก่อนกดส่งอีเมล',
+    'หมายเหตุ: สถานะมาจาก AMS ที่โหลดล่าสุด; Audit อาจจำกัด 1,000 รายการล่าสุด และประวัติ Error ขึ้นกับข้อมูลที่ Dashboard มี',
+    '', 'ขอแสดงความนับถือ','AMS Monitoring Team'
+  ].join('\n');
   window.location.href='mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
 }
-
 
 // ══ INLINE NOTE EDITING ══
 const SK_NOTE_OVERRIDES = 'ned_note_overrides';
@@ -7211,18 +7253,32 @@ function auditEventUser(ev){return String(ev?.username||ev?.saved_by||'ไม่
 function auditEventUid(ev){return String(ev?.uid||ev?.saved_by_uid||'')}
 function auditSourceLabel(src){return src==='AMS_DIRECT'?'AMS':src==='DASHBOARD'?'Dashboard':(src||'—')}
 async function loadRemarkAuditReport(force){
-  const k=document.getElementById('auditReportKpis'); if(k)k.innerHTML='<div class="audit-empty" style="grid-column:1/-1">⏳ กำลังอ่าน Audit...</div>';
+  const k=document.getElementById('auditReportKpis');
+  if(k)k.innerHTML='<div class="audit-empty" style="grid-column:1/-1">⏳ กำลังอ่าน Audit ส่วนกลางจาก Cloudflare D1...</div>';
   try{
-    let res=await fetch(`${MANAGER_AUDIT_PROXY}/api/audit/report?limit=50000`,{cache:'no-store'});
-    let j=await res.json();
-    if(!res.ok||!j||!j.success) throw new Error((j&&j.message)||`HTTP ${res.status}`);
-    REMARK_AUDIT_REPORT=j;
+    if(!AMS_AUTH_TOKEN)throw new Error('กรุณา Login ก่อนเปิดรายงาน');
+    const controller=new AbortController(), timer=setTimeout(()=>controller.abort(),12000);
+    let res,j;
+    try{
+      res=await fetch(`${AMS_AUTH_API}/ams/remark-audit`,{headers:{Authorization:'Bearer '+AMS_AUTH_TOKEN},cache:'no-store',signal:controller.signal});
+      j=await res.json();
+    }finally{clearTimeout(timer);}
+    if(!res.ok||!j?.success||!Array.isArray(j.events))throw new Error(j?.error||`Central Audit HTTP ${res.status}`);
+    const events=j.events.slice().sort((a,b)=>String(b.saved_at||'').localeCompare(String(a.saved_at||'')));
+    REMARK_AUDIT_REPORT={events,source:'CLOUDFLARE_D1',users:[],total_events:events.length};
     const sel=document.getElementById('auditUserFilter');
-    if(sel){const keep=sel.value;sel.innerHTML='<option value="">ผู้ใช้ทั้งหมด</option>'+((j.users||[]).map(u=>`<option value="${escapeHtml(String(u.username||''))}|${escapeHtml(String(u.uid||''))}">${escapeHtml(String(u.username||'ไม่ทราบผู้ใช้'))}${u.uid?` (UID ${escapeHtml(String(u.uid))})`:''}</option>`).join(''));sel.value=keep;}
+    if(sel){
+      const keep=sel.value;
+      const users=[...new Map(events.map(e=>[auditEventUser(e)+'|'+auditEventUid(e),{username:auditEventUser(e),uid:auditEventUid(e)}])).values()];
+      sel.innerHTML='<option value="">ผู้ใช้ทั้งหมด</option>'+users.map(u=>`<option value="${escapeHtml(u.username+'|'+u.uid)}">${escapeHtml(u.username)}${u.uid?' (UID '+escapeHtml(u.uid)+')':''}</option>`).join('');
+      sel.value=keep;
+    }
     renderRemarkAuditReport();
+    updateRemarkAuditSummary();
   }catch(e){
-    if(k)k.innerHTML=`<div class="audit-empty" style="grid-column:1/-1">⚠️ อ่าน Audit ไม่ได้: ${escapeHtml(e.message||String(e))}<br><small>ตรวจว่า Manager Audit Server กำลังทำงานที่ 127.0.0.1:8766</small></div>`;
-    const ub=document.getElementById('auditUserBody');if(ub)ub.innerHTML='';const eb=document.getElementById('auditEventBody');if(eb)eb.innerHTML='';
+    if(k)k.innerHTML=`<div class="audit-empty" style="grid-column:1/-1">⚠️ ไม่สามารถอ่าน Audit ส่วนกลางได้: ${escapeHtml(e.message||String(e))}<br><small>ไม่แสดงข้อมูลเก่าจากเครื่องเพื่อป้องกันรายงานคลาดเคลื่อน</small></div>`;
+    const ub=document.getElementById('auditUserBody');if(ub)ub.innerHTML='';
+    const eb=document.getElementById('auditEventBody');if(eb)eb.innerHTML='';
   }
 }
 function renderRemarkAuditReport(){
