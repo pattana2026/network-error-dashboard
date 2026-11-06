@@ -2102,6 +2102,11 @@ body > header > .header-right .utility-nav-row{display:flex!important;align-item
 .ams-drill{cursor:pointer;transition:box-shadow .15s,transform .15s}.ams-drill:hover,.ams-drill:focus-visible{outline:2px solid #4f83e6;outline-offset:2px;box-shadow:0 3px 14px #315bd71c}.ams-drill:focus-visible{transform:translateY(-1px)}
 .ams-history-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 14px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;margin-bottom:14px}.ams-history-toolbar button,.ams-history-toolbar input{border:1px solid var(--border2);background:var(--surface);color:var(--text);border-radius:7px;padding:7px 10px}.ams-history-toolbar button.active{background:#315bd7;color:#fff}.ams-drill-row{cursor:pointer}.ams-drill-row:hover{background:rgba(72,120,225,.10)}.ams-history-note{font-size:11px;color:var(--text-muted);margin:6px 0 10px}
 </style>
+<style id="ams-remark-author-inline-only-20261106">
+/* Presentation only: author/time remain outside contenteditable Remark. */
+#tableBody .remark-inline .note-editable{display:inline!important;width:auto!important;max-width:100%!important;min-width:10ch!important;vertical-align:baseline!important;overflow-wrap:anywhere!important;}
+#tableBody .remark-inline .remark-author-inline{display:inline!important;margin:0 0 0 5px!important;font-size:11px!important;line-height:1.65!important;vertical-align:baseline!important;white-space:normal!important;}
+</style>
 </head>
 <!-- DASHBOARD VERSION: V2.11.15 | BUILD: 2026.11.03 | APPROVED HEADER MOCKUP -->
 <body>
@@ -3463,10 +3468,8 @@ function remarkAuditHtml(siteId, currentNote){
     return `<div class="remark-audit-meta unknown">แก้ไขภายหลัง แต่ Audit ที่เครื่องนี้ยังไม่ตรงกับ Remark ปัจจุบัน</div>`;
   }
   const who = escapeHtml(a.saved_by || 'ไม่ทราบผู้ใช้');
-  const uid = a.saved_by_uid ? ` · UID ${escapeHtml(String(a.saved_by_uid))}` : '';
   const when = escapeHtml(formatAuditTime(a.saved_at || ''));
-  const src = a.source==='AMS_DIRECT' ? ' · จาก AMS' : (a.source==='DASHBOARD' ? ' · จาก Dashboard' : '');
-  return `<div class="remark-audit-meta known">👤 ${who}${uid}${when ? ` · ${when}` : ''}${src}</div>`;
+  return `<span class="remark-audit-meta known remark-author-inline"> · ผู้บันทึก: ${who}${when ? ` · เวลาบันทึก: ${when}` : ''}</span>`;
 }
 
 
@@ -3482,8 +3485,8 @@ function remarkAuditHtml(siteId, currentNote){
            <div class="note-editable${!r.note?' placeholder':''}" contenteditable="true" data-idx="${r._idx}"
                 onfocus="onNoteFocus(this)" onblur="onNoteBlur(this,${r._idx})"
                 onkeydown="onNoteKeydown(event,this)">${r.note?escapeHtml(r.note):'🔴 รอดำเนินการ (คลิกตรงนี้เพื่อบันทึกหมายเหตุ)'}</div>
-           <div class="note-save-hint">Enter เพื่อบันทึก · Shift+Enter ขึ้นบรรทัดใหม่</div>
             ${remarkAuditHtml(r.siteId, r.note)}
+           <div class="note-save-hint">Enter เพื่อบันทึก · Shift+Enter ขึ้นบรรทัดใหม่</div>
          </div>`;
 
     // รหัสสถานีเป็น text ธรรมดา ไม่ click / ไม่ copy / ไม่เปิด modal
