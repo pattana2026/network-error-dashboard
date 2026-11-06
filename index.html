@@ -3461,7 +3461,16 @@ function formatAuditTime(v){
   return raw;
 }
 
+function amsSplitSignedRemark(value){
+  const text=String(value??'');
+  const match=text.match(/(?:^|\n)ผู้บันทึก: ([^\n]*?) \| เวลาบันทึก: (\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2} น\.)\s*$/u);
+  if(!match)return {body:text,signature:''};
+  return {body:text.slice(0,match.index).trimEnd(),signature:match[0].trim()};
+}
+
 function remarkAuditHtml(siteId, currentNote){
+  const signed=amsSplitSignedRemark(currentNote);
+  if(signed.signature)return `<span class="remark-audit-meta known remark-author-inline"> · ${escapeHtml(signed.signature)}</span>`;
   const a = getRemarkAudit(siteId, currentNote);
   if(!a) return '';
   if(a.unknown){
@@ -3484,7 +3493,7 @@ function remarkAuditHtml(siteId, currentNote){
            <div style="font-size:11px;color:var(--text-muted);margin-bottom:3px">หมายเหตุ</div>
            <div class="note-editable${!r.note?' placeholder':''}" contenteditable="true" data-idx="${r._idx}"
                 onfocus="onNoteFocus(this)" onblur="onNoteBlur(this,${r._idx})"
-                onkeydown="onNoteKeydown(event,this)">${r.note?escapeHtml(r.note):'🔴 รอดำเนินการ (คลิกตรงนี้เพื่อบันทึกหมายเหตุ)'}</div>
+                onkeydown="onNoteKeydown(event,this)">${r.note?escapeHtml(amsSplitSignedRemark(r.note).body):'🔴 รอดำเนินการ (คลิกตรงนี้เพื่อบันทึกหมายเหตุ)'}</div>
             ${remarkAuditHtml(r.siteId, r.note)}
            <div class="note-save-hint">Enter เพื่อบันทึก · Shift+Enter ขึ้นบรรทัดใหม่</div>
          </div>`;
@@ -5586,38 +5595,57 @@ function placeCaretAtEnd(el){
 function onNoteKeydown(event, el){
   if(event.key === 'Enter' && !event.shiftKey){
     event.preventDefault();
-    el.blur(); // trigger onNoteBlur to save
-  }
-  if(event.key === 'Escape'){
+    // Save explicitly: relying on blur alone can silently skip the save.
+    const idx=Number(el.dataset.idx);
+    if(document.activeElement===el)el.blur();
+    // blur invokes onNoteBlur; if blur did not fire, invoke it here.
+    if(!el.dataset.remarkSaveStarted){
+      void onNoteBlur(el,idx);
+    }
+  }else if(event.key === 'Escape'){
     event.preventDefault();
+    el.dataset.remarkCancel='1';
     el.blur();
   }
 }
 
 async function onNoteBlur(el, idx){
-  const r=displayData.find(x=>x._idx===idx);
-  if(!r)return;
-  const previous=r.note||'';
-  const note=el.textContent.trim();
-  if(note===previous)return;
-  if(!AMS_AUTH_TOKEN||!AMS_AUTH_USER||!amsAllowed('network_error','can_comment')){
-    el.textContent=previous||'🔴 รอดำเนินการ (คลิกเพื่อบันทึกหมายเหตุ)';
-    el.classList.toggle('placeholder',!previous);
-    showInfoToast('⛔ ไม่มีสิทธิ์บันทึก Remark','ต้องเข้าสู่ระบบ Central Login และมีสิทธิ์ can_comment');
+  if(el.dataset.remarkCancel==='1'){
+    delete el.dataset.remarkCancel;
+    const row=displayData.find(x=>x._idx===idx);
+    if(row)el.textContent=amsSplitSignedRemark(row.note||'').body;
     return;
   }
-  el.contentEditable='false';
+  if(el.dataset.remarkSaveStarted==='1')return;
+  el.dataset.remarkSaveStarted='1';
   try{
+    const r=displayData.find(x=>x._idx===idx);
+    if(!r)return;
+    const previous=r.note||'';
+    const note=el.textContent.trim();
+    if(note===amsSplitSignedRemark(previous).body)return;
+    if(!AMS_AUTH_TOKEN||!AMS_AUTH_USER||!amsAllowed('network_error','can_comment')){
+      el.textContent=amsSplitSignedRemark(previous).body||'🔴 รอดำเนินการ (คลิกเพื่อบันทึกหมายเหตุ)';
+      el.classList.toggle('placeholder',!previous);
+      showInfoToast('⛔ ไม่มีสิทธิ์บันทึก Remark','ต้องเข้าสู่ระบบ Central Login และมีสิทธิ์ can_comment');
+      return;
+    }
+    el.contentEditable='false';
     const saved=await saveNoteOverride(r.siteId,note);
-    if(!saved)throw Error('AMS did not confirm save');
-    r.note=note;
-    el.classList.toggle('placeholder',!note);
-    el.classList.add('note-saved-flash');
-    setTimeout(()=>el.classList.remove('note-saved-flash'),1000);
+    if(saved===false){
+      el.textContent=amsSplitSignedRemark(previous).body||'🔴 รอดำเนินการ (คลิกเพื่อบันทึกหมายเหตุ)';
+      el.classList.toggle('placeholder',!previous);
+      return;
+    }
+    r.note=typeof saved==='string'?saved:note;
+    renderTable();
   }catch(e){
-    el.textContent=previous||'🔴 รอดำเนินการ (คลิกเพื่อบันทึกหมายเหตุ)';
-    el.classList.toggle('placeholder',!previous);
-  }finally{el.contentEditable='true';}
+    console.error('Remark save handler failed',e);
+    showInfoToast('⚠️ บันทึก Remark ไม่สำเร็จ',String(e?.message||e));
+  }finally{
+    el.contentEditable='true';
+    delete el.dataset.remarkSaveStarted;
+  }
 }
 
 async function saveNoteOverride(siteId,note){
@@ -5642,7 +5670,7 @@ async function saveNoteOverride(siteId,note){
     LIVE_REMARK_AUDIT[String(siteId)]={event:'remark_save',source:'DASHBOARD',
       site_id:String(siteId),note:verified,username:j.saved_by||'',
       uid:j.saved_by_uid||'',saved_at:j.saved_at||new Date().toISOString()};
-    try { if(await refreshCentralRemarkAuditCache()) renderTable(); } catch(e) { console.warn('Audit refresh after save failed',e); }
+    try { await refreshCentralRemarkAuditCache(); } catch(e) { console.warn('Audit refresh after save failed',e); }
     const overrides=lsLoad(SK_NOTE_OVERRIDES,{});
     delete overrides[siteId];lsSave(SK_NOTE_OVERRIDES,overrides);
     const row=displayData.find(x=>String(x.siteId)===String(siteId));
@@ -5654,7 +5682,7 @@ async function saveNoteOverride(siteId,note){
       const ap=document.getElementById('alarmPage');
       if((ap&&ap.style.display!=='none')||ALARM_DATA.length)await refreshAlarmDashboard(true);
     }catch(refreshError){console.warn('Post-save refresh failed:',refreshError);}
-    return true;
+    return verified;
   }catch(e){
     showInfoToast('⚠️ ยังไม่ได้บันทึกเข้า AMS',
       `Station ID: ${siteId}\n${e.message||e}\nไม่ถือว่าบันทึกสำเร็จ`);
