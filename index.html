@@ -3461,16 +3461,7 @@ function formatAuditTime(v){
   return raw;
 }
 
-function amsSplitSignedRemark(value){
-  const text=String(value??'');
-  const match=text.match(/(?:^|\n)ผู้บันทึก: ([^\n]*?) \| เวลาบันทึก: (\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2} น\.)\s*$/u);
-  if(!match)return {body:text,signature:''};
-  return {body:text.slice(0,match.index).trimEnd(),signature:match[0].trim()};
-}
-
 function remarkAuditHtml(siteId, currentNote){
-  const signed=amsSplitSignedRemark(currentNote);
-  if(signed.signature)return `<span class="remark-audit-meta known remark-author-inline"> · ${escapeHtml(signed.signature)}</span>`;
   const a = getRemarkAudit(siteId, currentNote);
   if(!a) return '';
   if(a.unknown){
@@ -3493,7 +3484,7 @@ function remarkAuditHtml(siteId, currentNote){
            <div style="font-size:11px;color:var(--text-muted);margin-bottom:3px">หมายเหตุ</div>
            <div class="note-editable${!r.note?' placeholder':''}" contenteditable="true" data-idx="${r._idx}"
                 onfocus="onNoteFocus(this)" onblur="onNoteBlur(this,${r._idx})"
-                onkeydown="onNoteKeydown(event,this)">${r.note?escapeHtml(amsSplitSignedRemark(r.note).body):'🔴 รอดำเนินการ (คลิกตรงนี้เพื่อบันทึกหมายเหตุ)'}</div>
+                onkeydown="onNoteKeydown(event,this)">${r.note?escapeHtml(r.note):'🔴 รอดำเนินการ (คลิกตรงนี้เพื่อบันทึกหมายเหตุ)'}</div>
             ${remarkAuditHtml(r.siteId, r.note)}
            <div class="note-save-hint">Enter เพื่อบันทึก · Shift+Enter ขึ้นบรรทัดใหม่</div>
          </div>`;
@@ -5608,7 +5599,7 @@ async function onNoteBlur(el, idx){
   if(!r)return;
   const previous=r.note||'';
   const note=el.textContent.trim();
-  if(note===amsSplitSignedRemark(previous).body)return;
+  if(note===previous)return;
   if(!AMS_AUTH_TOKEN||!AMS_AUTH_USER||!amsAllowed('network_error','can_comment')){
     el.textContent=previous||'🔴 รอดำเนินการ (คลิกเพื่อบันทึกหมายเหตุ)';
     el.classList.toggle('placeholder',!previous);
@@ -5619,8 +5610,7 @@ async function onNoteBlur(el, idx){
   try{
     const saved=await saveNoteOverride(r.siteId,note);
     if(!saved)throw Error('AMS did not confirm save');
-    r.note=typeof saved==='string'?saved:note;
-    renderTable();
+    r.note=note;
     el.classList.toggle('placeholder',!note);
     el.classList.add('note-saved-flash');
     setTimeout(()=>el.classList.remove('note-saved-flash'),1000);
@@ -5664,7 +5654,7 @@ async function saveNoteOverride(siteId,note){
       const ap=document.getElementById('alarmPage');
       if((ap&&ap.style.display!=='none')||ALARM_DATA.length)await refreshAlarmDashboard(true);
     }catch(refreshError){console.warn('Post-save refresh failed:',refreshError);}
-    return verified;
+    return true;
   }catch(e){
     showInfoToast('⚠️ ยังไม่ได้บันทึกเข้า AMS',
       `Station ID: ${siteId}\n${e.message||e}\nไม่ถือว่าบันทึกสำเร็จ`);
