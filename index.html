@@ -3349,64 +3349,7 @@ function renderStationMasterTable(){
   document.getElementById('pagination').innerHTML=phtml;
 }
 
-function renderTable(){
-  if(currentTab==='all'||currentTab==='online'){ renderStationMasterTable(); return; }
-  const rows=getFiltered();
-  const isResolved=currentTab==='resolved',isCloseday=currentTab==='closeday';
-
-  // V15: รวมรหัส + ชื่อ + หมายเหตุ + Action ไว้ใน Station block เดียว
-  const cols=[
-    {key:'siteId',label:'รหัสสถานี / ชื่อสถานี ↕'},
-    {key:'province',label:'จังหวัด'},
-    {key:'ts',label:isCloseday?'ปิดวันล่าสุด':'คงเหลือล่าสุด'},
-    ...(!isResolved?[{key:'ageDays',label:'ค้างมา'}]:[]),
-    {key:'status',label:'สถานะ',nosort:true}
-  ];
-
-  document.getElementById('tableHead').innerHTML='<tr>'+cols.map(c=>{
-    if(c.nosort)return`<th>${c.label}</th>`;
-    const cls2=sortCol===c.key?(sortDir===1?'sort-asc':'sort-desc'):'';
-    return`<th class="${cls2}" onclick="applySort('${c.key}')">${c.label}</th>`;
-  }).join('')+'</tr>';
-
-  document.getElementById('panelTitle').textContent=
-    currentTab==='network'?'รายการ Network Error':
-    currentTab==='closeday'?'รายการ Closeday Error':'รายการ Resolved';
-
-  rows.sort((a,b)=>{
-    if(!sortCol&&currentTab!=='resolved'){
-      const o={crisis:0,days13:1,today:2};
-      return(o[a.ageLabel]??3)-(o[b.ageLabel]??3);
-    }
-    if(!sortCol)return 0;
-    if(sortCol==='ts'){
-      const av=isCloseday?(a.closeday||new Date(0)):(a.lastData||new Date(0));
-      const bv=isCloseday?(b.closeday||new Date(0)):(b.lastData||new Date(0));
-      return sortDir*(av-bv);
-    }
-    const av=a[sortCol]??'',bv=b[sortCol]??'';
-    if(typeof av==='number')return sortDir*(av-bv);
-    return sortDir*String(av).localeCompare(String(bv),'th');
-  });
-
-  const ROWS=10,pageRows=rows.slice((currentPage-1)*ROWS,currentPage*ROWS);
-
-  if(!pageRows.length){
-    document.getElementById('tableBody').innerHTML=
-      `<tr><td colspan="${cols.length}"><div class="empty-state"><div style="font-size:36px">✅</div><div>ไม่มีรายการ</div></div></td></tr>`;
-    document.getElementById('rowCount').textContent='ไม่มีรายการ';
-    document.getElementById('pagination').innerHTML='';
-    return;
-  }
-
-  document.getElementById('tableBody').innerHTML=pageRows.map(r=>{
-    const isCrisis=r.ageLabel==='crisis'&&!isResolved;
-    const durHtml=!isResolved
-      ? `<span class="age-chip ${r.ageLabel}">${r.ageLabel==='crisis'?'🚨':r.ageLabel==='days13'?'⚠':'⚡'} ${fmtAge(r.ageDays)}</span>`
-      : '';
-    const tsCell=isCloseday?fmtTS(r.closeday):fmtTS(r.lastData);
-
-    
+// Remark helpers are top-level so both renderTable and onNoteBlur can access them.
 function normalizeAuditEvent(a){
   if(!a || typeof a!=='object') return null;
   return {
@@ -3480,6 +3423,66 @@ function remarkAuditHtml(siteId, currentNote){
   const when = escapeHtml(formatAuditTime(a.saved_at || ''));
   return `<span class="remark-audit-meta known remark-author-inline"> · ผู้บันทึก: ${who}${when ? ` · เวลาบันทึก: ${when}` : ''}</span>`;
 }
+
+
+function renderTable(){
+  if(currentTab==='all'||currentTab==='online'){ renderStationMasterTable(); return; }
+  const rows=getFiltered();
+  const isResolved=currentTab==='resolved',isCloseday=currentTab==='closeday';
+
+  // V15: รวมรหัส + ชื่อ + หมายเหตุ + Action ไว้ใน Station block เดียว
+  const cols=[
+    {key:'siteId',label:'รหัสสถานี / ชื่อสถานี ↕'},
+    {key:'province',label:'จังหวัด'},
+    {key:'ts',label:isCloseday?'ปิดวันล่าสุด':'คงเหลือล่าสุด'},
+    ...(!isResolved?[{key:'ageDays',label:'ค้างมา'}]:[]),
+    {key:'status',label:'สถานะ',nosort:true}
+  ];
+
+  document.getElementById('tableHead').innerHTML='<tr>'+cols.map(c=>{
+    if(c.nosort)return`<th>${c.label}</th>`;
+    const cls2=sortCol===c.key?(sortDir===1?'sort-asc':'sort-desc'):'';
+    return`<th class="${cls2}" onclick="applySort('${c.key}')">${c.label}</th>`;
+  }).join('')+'</tr>';
+
+  document.getElementById('panelTitle').textContent=
+    currentTab==='network'?'รายการ Network Error':
+    currentTab==='closeday'?'รายการ Closeday Error':'รายการ Resolved';
+
+  rows.sort((a,b)=>{
+    if(!sortCol&&currentTab!=='resolved'){
+      const o={crisis:0,days13:1,today:2};
+      return(o[a.ageLabel]??3)-(o[b.ageLabel]??3);
+    }
+    if(!sortCol)return 0;
+    if(sortCol==='ts'){
+      const av=isCloseday?(a.closeday||new Date(0)):(a.lastData||new Date(0));
+      const bv=isCloseday?(b.closeday||new Date(0)):(b.lastData||new Date(0));
+      return sortDir*(av-bv);
+    }
+    const av=a[sortCol]??'',bv=b[sortCol]??'';
+    if(typeof av==='number')return sortDir*(av-bv);
+    return sortDir*String(av).localeCompare(String(bv),'th');
+  });
+
+  const ROWS=10,pageRows=rows.slice((currentPage-1)*ROWS,currentPage*ROWS);
+
+  if(!pageRows.length){
+    document.getElementById('tableBody').innerHTML=
+      `<tr><td colspan="${cols.length}"><div class="empty-state"><div style="font-size:36px">✅</div><div>ไม่มีรายการ</div></div></td></tr>`;
+    document.getElementById('rowCount').textContent='ไม่มีรายการ';
+    document.getElementById('pagination').innerHTML='';
+    return;
+  }
+
+  document.getElementById('tableBody').innerHTML=pageRows.map(r=>{
+    const isCrisis=r.ageLabel==='crisis'&&!isResolved;
+    const durHtml=!isResolved
+      ? `<span class="age-chip ${r.ageLabel}">${r.ageLabel==='crisis'?'🚨':r.ageLabel==='days13'?'⚠':'⚡'} ${fmtAge(r.ageDays)}</span>`
+      : '';
+    const tsCell=isCloseday?fmtTS(r.closeday):fmtTS(r.lastData);
+
+    
 
 
     // Remark เป็นพื้นที่แก้ไขโดยตรง จึงไม่มีปุ่ม Remark ซ้ำ
